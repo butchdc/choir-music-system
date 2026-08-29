@@ -26,7 +26,11 @@
 }
 else
 {
-    <table class="table table-striped align-middle">
+    <div class="mb-3">
+        <input type="text" id="musicSearch" class="form-control"
+               placeholder="Search title, composer, arrangement, key or suggested part..." autocomplete="off" />
+    </div>
+    <table class="table table-striped align-middle" id="musicTable">
         <thead>
             <tr>
                 <th>Title</th>
@@ -72,4 +76,24 @@ else
             }
         </tbody>
     </table>
+}
+@section Scripts
+{
+    <script>
+        const searchInput = document.getElementById("musicSearch");
+        const rows = document.querySelectorAll("#musicTable tbody tr");
+
+        searchInput?.addEventListener("input", function () {
+            const search = this.value
+                .toLowerCase()
+                .trim();
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+
+                row.style.display =
+                    text.includes(search) ? "" : "none";
+            });
+        });
+    </script>
 }

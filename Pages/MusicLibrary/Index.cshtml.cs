@@ -1,5 +1,6 @@
 using choir_music_system.Data;
 using choir_music_system.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +15,11 @@ public class IndexModel : PageModel
         _context = context;
     }
 
-    public IList<MusicSheet> MusicSheets { get; set; } = new List<MusicSheet>();
+    [BindProperty(SupportsGet = true)]
+    public string? Search { get; set; }
+
+    public IList<MusicSheet> MusicSheets { get; set; }
+        = new List<MusicSheet>();
 
     public async Task OnGetAsync()
     {
