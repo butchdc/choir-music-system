@@ -25,6 +25,9 @@ public class EditModel : PageModel
     [BindProperty]
     public IFormFile? PdfFile { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public string? ReturnUrl { get; set; }
+
     public async Task<IActionResult> OnGetAsync(int id)
     {
         var musicSheet = await _context.MusicSheets
@@ -128,6 +131,12 @@ public class EditModel : PageModel
         existingMusicSheet.UpdatedDate = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+
+        if (!string.IsNullOrWhiteSpace(ReturnUrl) &&
+    Url.IsLocalUrl(ReturnUrl))
+        {
+            return LocalRedirect(ReturnUrl);
+        }
 
         return RedirectToPage("Index");
     }

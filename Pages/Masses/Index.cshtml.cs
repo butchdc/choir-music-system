@@ -18,11 +18,31 @@ public class IndexModel : PageModel
     public IList<Mass> Masses { get; set; }
         = new List<Mass>();
 
-    public async Task OnGetAsync()
+    public string? ActiveFilter { get; set; }
+
+    public async Task OnGetAsync(string? filter)
     {
-        Masses = await _context.Masses
+        ActiveFilter = filter;
+
+        var today = DateTime.Today;
+
+        var query = _context.Masses
             .Include(x => x.MusicSheets)
                 .ThenInclude(x => x.MusicSheet)
+            .AsQueryable();
+
+        switch (filter?.ToLowerInvariant())
+        {
+            case "upcoming":
+                query = query.Where(x => x.MassDate >= today);
+                break;
+
+            case "past":
+                query = query.Where(x => x.MassDate < today);
+                break;
+        }
+
+        Masses = await query
             .OrderByDescending(x => x.MassDate)
             .ToListAsync();
     }

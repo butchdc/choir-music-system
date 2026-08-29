@@ -66,8 +66,9 @@ else
                             <i class="bi bi-file-earmark-pdf"></i>
                         </a>
 
-                        <a asp-page="Edit" asp-route-id="@musicSheet.Id" class="btn btn-sm btn-outline-secondary table-action"
-                           title="Edit" data-bs-toggle="tooltip">
+                        <a asp-page="Edit" asp-route-id="@musicSheet.Id"
+                           asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                           class="btn btn-sm btn-outline-secondary table-action" title="Edit" data-bs-toggle="tooltip">
                             <i class="bi bi-pencil"></i>
                         </a>
 

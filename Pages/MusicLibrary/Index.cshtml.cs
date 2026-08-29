@@ -21,10 +21,32 @@ public class IndexModel : PageModel
     public IList<MusicSheet> MusicSheets { get; set; }
         = new List<MusicSheet>();
 
-    public async Task OnGetAsync()
+    public string? ActivePart { get; set; }
+
+    public async Task OnGetAsync(string? part)
     {
-        MusicSheets = await _context.MusicSheets
+        ActivePart = part;
+
+        var query = _context.MusicSheets
             .Where(x => x.IsActive)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(part))
+        {
+            if (part == "Not specified")
+            {
+                query = query.Where(x =>
+                    x.SuggestedMassPart == null ||
+                    x.SuggestedMassPart == "");
+            }
+            else
+            {
+                query = query.Where(x =>
+                    x.SuggestedMassPart == part);
+            }
+        }
+
+        MusicSheets = await query
             .OrderBy(x => x.Title)
             .ToListAsync();
     }

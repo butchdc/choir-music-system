@@ -17,8 +17,7 @@
 <div class="row g-3 mb-4">
 
     <div class="col-6 col-lg-3">
-        <a asp-page="/MusicLibrary/Index"
-           class="metric-card">
+        <a asp-page="/MusicLibrary/Index" class="metric-card">
             <div>
                 <div class="metric-label">Music Sheets</div>
                 <div class="metric-value">@Model.MusicSheetCount</div>
@@ -31,8 +30,7 @@
     </div>
 
     <div class="col-6 col-lg-3">
-        <a asp-page="/Masses/Index"
-           class="metric-card">
+        <a asp-page="/Masses/Index" class="metric-card">
             <div>
                 <div class="metric-label">Masses</div>
                 <div class="metric-value">@Model.MassCount</div>
@@ -45,8 +43,8 @@
     </div>
 
     <div class="col-6 col-lg-3">
-        <a asp-page="/Masses/Index"
-           class="metric-card">
+        <a asp-page="/Masses/Index" asp-route-filter="upcoming" class="metric-card">
+
             <div>
                 <div class="metric-label">Upcoming Masses</div>
                 <div class="metric-value">@Model.UpcomingMassCount</div>
@@ -55,6 +53,7 @@
             <div class="metric-icon">
                 <i class="bi bi-calendar-check"></i>
             </div>
+
         </a>
     </div>
 
@@ -77,24 +76,21 @@
 <div class="row g-2 mb-4">
 
     <div class="col-md-4">
-        <a asp-page="/MusicLibrary/Create"
-           class="quick-action">
+        <a asp-page="/MusicLibrary/Create" class="quick-action">
             <i class="bi bi-file-earmark-arrow-up"></i>
             Upload Music
         </a>
     </div>
 
     <div class="col-md-4">
-        <a asp-page="/MusicLibrary/BulkUpload"
-           class="quick-action">
+        <a asp-page="/MusicLibrary/BulkUpload" class="quick-action">
             <i class="bi bi-files"></i>
             Bulk Upload
         </a>
     </div>
 
     <div class="col-md-4">
-        <a asp-page="/Masses/Create"
-           class="quick-action">
+        <a asp-page="/Masses/Create" class="quick-action">
             <i class="bi bi-plus-circle"></i>
             Create Mass
         </a>
@@ -115,8 +111,7 @@
                     <span>Next scheduled Masses and planning status</span>
                 </div>
 
-                <a asp-page="/Masses/Index"
-                   class="dashboard-panel-link">
+                <a asp-page="/Masses/Index" class="dashboard-panel-link">
                     View all
                 </a>
             </div>
@@ -162,21 +157,15 @@
 
                             <div class="dashboard-list-actions">
 
-                                <a asp-page="/Masses/Plan"
-                                   asp-route-id="@mass.Id"
-                                   class="btn btn-sm btn-outline-primary"
-                                   title="Plan Music"
-                                   data-bs-toggle="tooltip">
+                                <a asp-page="/Masses/Plan" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-primary"
+                                   title="Plan Music" data-bs-toggle="tooltip">
                                     <i class="bi bi-music-note-list"></i>
                                 </a>
 
                                 @if (mass.MusicCount > 0)
                                 {
-                                    <a asp-page="/Masses/MusicPack"
-                                       asp-route-id="@mass.Id"
-                                       class="btn btn-sm btn-outline-secondary"
-                                       title="Generate Music Pack"
-                                       data-bs-toggle="tooltip">
+                                    <a asp-page="/Masses/MusicPack" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-secondary"
+                                       title="Generate Music Pack" data-bs-toggle="tooltip">
                                         <i class="bi bi-file-earmark-pdf"></i>
                                     </a>
                                 }
@@ -204,8 +193,7 @@
                     <span>Latest changes in the library</span>
                 </div>
 
-                <a asp-page="/MusicLibrary/Index"
-                   class="dashboard-panel-link">
+                <a asp-page="/MusicLibrary/Index" class="dashboard-panel-link">
                     Library
                 </a>
             </div>
@@ -247,13 +235,8 @@
 
                         </div>
 
-                        <a asp-page="/MusicLibrary/View"
-                           asp-route-id="@music.Id"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           class="btn btn-sm btn-outline-secondary table-action"
-                           title="View PDF"
-                           data-bs-toggle="tooltip">
+                        <a asp-page="/MusicLibrary/View" asp-route-id="@music.Id" target="_blank" rel="noopener noreferrer"
+                           class="btn btn-sm btn-outline-secondary table-action" title="View PDF" data-bs-toggle="tooltip">
                             <i class="bi bi-file-earmark-pdf"></i>
                         </a>
 
@@ -286,7 +269,8 @@
                 ? 0
                 : (item.Count * 100.0 / Model.MusicSheetCount);
 
-            <div class="library-breakdown-item">
+            <a asp-page="/MusicLibrary/Index" asp-route-part="@item.Name"
+               class="library-breakdown-item text-decoration-none">
 
                 <div class="library-breakdown-heading">
 
@@ -304,7 +288,7 @@
 
                 </div>
 
-            </div>
+            </a>
         }
 
     </div>
