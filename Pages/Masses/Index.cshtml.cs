@@ -21,6 +21,8 @@ public class IndexModel : PageModel
     public async Task OnGetAsync()
     {
         Masses = await _context.Masses
+            .Include(x => x.MusicSheets)
+                .ThenInclude(x => x.MusicSheet)
             .OrderByDescending(x => x.MassDate)
             .ToListAsync();
     }

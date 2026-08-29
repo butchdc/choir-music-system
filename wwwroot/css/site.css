@@ -393,7 +393,7 @@ textarea.form-control {
     --bs-table-hover-bg: transparent;
 }
 
-.table > :not(caption) > * > * {
+.table> :not(caption)>*>* {
     padding: 0.62rem 0.75rem;
 
     vertical-align: middle;
@@ -406,14 +406,13 @@ textarea.form-control {
 }
 
 .table thead th {
-    padding-top: 0.58rem;
-    padding-bottom: 0.58rem;
+    padding-top: 0.62rem;
+    padding-bottom: 0.62rem;
 
-    color: var(--text-muted);
+    color: #e2e8f0;
+    background: #334155 !important;
 
-    background: #f8fafc !important;
-
-    border-bottom: 1px solid var(--border-strong);
+    border-bottom: 1px solid #1e293b;
 
     font-size: 0.73rem;
     font-weight: 700;
@@ -423,7 +422,6 @@ textarea.form-control {
 
     white-space: nowrap;
 }
-
 .table tbody tr:last-child td {
     border-bottom: 0;
 }
@@ -436,8 +434,8 @@ textarea.form-control {
     font-weight: 550;
 }
 
-.table-striped > tbody > tr:nth-of-type(odd) > *,
-.table-striped > tbody > tr:nth-of-type(even) > * {
+.table-striped>tbody>tr:nth-of-type(odd)>*,
+.table-striped>tbody>tr:nth-of-type(even)>* {
     background: var(--surface) !important;
     box-shadow: none !important;
 }
@@ -492,22 +490,19 @@ textarea.form-control {
 }
 
 .sortable-header:hover {
-    background: #f1f5f9 !important;
+    background: #475569 !important;
 }
 
 .sort-icon {
     margin-left: 0.25rem;
-
     color: #94a3b8;
-
     font-size: 0.68rem;
-
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .sortable-header[data-sort-direction="asc"] .sort-icon,
 .sortable-header[data-sort-direction="desc"] .sort-icon {
-    color: var(--primary);
+    color: #ffffff;
     opacity: 1;
 }
 
@@ -1035,7 +1030,7 @@ a.metric-card:hover {
     color: var(--text-muted);
 }
 
-.dashboard-empty > i {
+.dashboard-empty>i {
     font-size: 1.6rem;
     color: var(--text-soft);
 }
@@ -1101,4 +1096,89 @@ a.metric-card:hover {
     background: var(--primary);
 
     border-radius: 999px;
+}
+
+/* =========================================================
+   Mass Lineup Summary
+   ========================================================= */
+
+.mass-lineup-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.14rem;
+}
+
+.mass-lineup-item {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.28rem;
+
+    font-size: 0.78rem;
+    line-height: 1.3;
+}
+
+.mass-lineup-part {
+    color: var(--text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.mass-lineup-link {
+    color: var(--primary);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.mass-lineup-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+
+/* Additional songs */
+
+.mass-lineup-more {
+    padding: 0.05rem 0.35rem;
+
+    color: var(--primary);
+    background: var(--primary-soft);
+
+    border: 0;
+    border-radius: 999px;
+
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.35;
+
+    cursor: pointer;
+}
+
+.mass-lineup-more:hover {
+    background: #dbeafe;
+}
+
+.mass-lineup-extra {
+    width: 100%;
+    padding-left: 4.2rem;
+    margin-top: 0.1rem;
+}
+
+.mass-lineup-extra-link {
+    display: block;
+    margin-top: 0.1rem;
+
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-decoration: none;
+}
+
+.mass-lineup-extra-link::before {
+    content: "↳ ";
+    color: var(--text-soft);
+}
+
+.mass-lineup-extra-link:hover {
+    color: var(--primary);
+    text-decoration: underline;
 }

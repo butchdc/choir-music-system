@@ -13,8 +13,9 @@
         </p>
     </div>
 
-    <a asp-page="Create" class="btn btn-primary">
-        Create Mass
+    <a asp-page="Create" class="btn btn-primary app-primary-action">
+        <i class="bi bi-plus-lg"></i>
+        <span>Create Mass</span>
     </a>
 </div>
 
@@ -31,7 +32,7 @@ else
             <tr>
                 <th>Date</th>
                 <th>Name</th>
-                <th>Notes</th>
+                <th>Lineup</th>
                 <th></th>
             </tr>
         </thead>
@@ -49,7 +50,58 @@ else
                     </td>
 
                     <td>
-                        @mass.Notes
+                        @{
+                            var lineup = mass.MusicSheets
+                                .Where(x => x.MusicSheet != null)
+                                .OrderBy(x => x.DisplayOrder)
+                                .GroupBy(x => x.MassPart)
+                                .ToList();
+                        }
+
+                        @if (lineup.Count == 0)
+                        {
+                            <span class="text-muted">No music planned</span>
+                        }
+                        else
+                        {
+                            <div class="mass-lineup-summary">
+                                @foreach (var part in lineup)
+                                {
+                                    var songs = part.ToList();
+
+                                    <div class="mass-lineup-item">
+                                        <span class="mass-lineup-part">@part.Key:</span>
+
+                                        <a asp-page="/MusicLibrary/View" asp-route-id="@songs[0].MusicSheet.Id" target="_blank"
+                                           rel="noopener noreferrer" class="mass-lineup-link">
+                                            @songs[0].MusicSheet.Title
+                                        </a>
+
+                                        @if (songs.Count > 1)
+                                        {
+                                            var extraId = $"extra-{mass.Id}-{part.Key.Replace(" ", "-")}";
+
+                                            <button type="button" class="mass-lineup-more" data-bs-toggle="collapse"
+                                                    data-bs-target="#@extraId" aria-expanded="false" aria-controls="@extraId">
+                                                +@(songs.Count - 1)
+                                            </button>
+
+                                            <div class="collapse mass-lineup-extra" id="@extraId">
+
+                                                @foreach (var extraSong in songs.Skip(1))
+                                                {
+                                                    <a asp-page="/MusicLibrary/View" asp-route-id="@extraSong.MusicSheet.Id" target="_blank"
+                                                       rel="noopener noreferrer" class="mass-lineup-extra-link">
+                                                        @extraSong.MusicSheet.Title
+                                                    </a>
+                                                }
+
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
                     </td>
 
                     <td class="text-end">
