@@ -1,0 +1,382 @@
+@page "{id:int}"
+@model choir_music_system.Pages.Masses.PlanModel
+
+@{
+    ViewData["Title"] = "Plan Music";
+
+    var massParts = new[]
+    {
+        "Entrance",
+        "Kyrie",
+        "Gloria",
+        "Psalm",
+        "Alleluia",
+        "Offertory",
+        "Holy",
+        "Memorial Acclamation",
+        "Amen",
+        "Lamb of God",
+        "Communion",
+        "Recessional"
+    };
+}
+
+<div class="mb-4">
+    <h1>Plan Music</h1>
+
+    <p class="text-muted mb-0">
+        @Model.Mass.Name
+        —
+        @Model.Mass.MassDate.ToString("dd MMM yyyy")
+    </p>
+</div>
+
+<form method="post" id="musicPlanForm">
+
+    <div id="massParts">
+
+        @foreach (var part in massParts)
+        {
+            var partSelections = Model.Selections
+                .Where(x => x.MassPart == part)
+                .ToList();
+
+            <div class="card mb-3 mass-part"
+                 data-mass-part="@part">
+
+                <div class="card-header">
+                    <strong>@part</strong>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="music-rows">
+
+                        @foreach (var selection in partSelections)
+                        {
+                            var selectedMusic = selection.MusicSheetId.HasValue
+                                ? Model.MusicSheets.FirstOrDefault(
+                                    x => x.Id == selection.MusicSheetId.Value)
+                                : null;
+
+                            <div class="music-row d-flex gap-2 mb-2">
+
+                                <div class="music-picker flex-grow-1 position-relative">
+
+                                    <input type="text"
+                                           class="form-control music-search"
+                                           value="@selectedMusic?.Title"
+                                           data-music-id="@selectedMusic?.Id"
+                                           placeholder="Search music..."
+                                           autocomplete="off" />
+
+                                    <div class="music-results list-group position-absolute w-100 shadow"
+                                         style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
+                                    </div>
+
+                                </div>
+
+                                <button type="button"
+                                        class="btn btn-outline-danger remove-song">
+                                    Remove
+                                </button>
+
+                            </div>
+                        }
+
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-sm btn-outline-primary add-song">
+                        + Add another song
+                    </button>
+
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit"
+                class="btn btn-primary">
+            Save Music Plan
+        </button>
+
+        <a asp-page="Index"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+    </div>
+
+</form>
+
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const form = document.getElementById("musicPlanForm");
+
+            const musicLibrary = [
+                @foreach (var music in Model.MusicSheets)
+                {
+                    @:{
+                    @:    id: @music.Id,
+                    @:    title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))"
+                    @:},
+                }
+            ];
+
+
+            function createMusicRow() {
+
+                const row = document.createElement("div");
+
+                row.className = "music-row d-flex gap-2 mb-2";
+
+                row.innerHTML = `
+                    <div class="music-picker flex-grow-1 position-relative">
+
+                        <input type="text"
+                               class="form-control music-search"
+                               data-music-id=""
+                               placeholder="Search music..."
+                               autocomplete="off" />
+
+                        <div class="music-results list-group position-absolute w-100 shadow"
+                             style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
+                        </div>
+
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-outline-danger remove-song">
+                        Remove
+                    </button>
+                `;
+
+                return row;
+            }
+
+
+            document.addEventListener("input", function (event) {
+
+                if (!event.target.classList.contains("music-search")) {
+                    return;
+                }
+
+                const input = event.target;
+
+                const picker =
+                    input.closest(".music-picker");
+
+                const results =
+                    picker.querySelector(".music-results");
+
+                const search =
+                    input.value.toLowerCase().trim();
+
+                input.dataset.musicId = "";
+                input.classList.remove("is-invalid");
+
+                results.innerHTML = "";
+
+                if (!search) {
+                    results.style.display = "none";
+                    return;
+                }
+
+                const matches = musicLibrary
+                    .filter(music =>
+                        music.title
+                            .toLowerCase()
+                            .includes(search))
+                    .slice(0, 15);
+
+                if (matches.length === 0) {
+                    results.style.display = "none";
+                    return;
+                }
+
+                matches.forEach(music => {
+
+                    const item =
+                        document.createElement("button");
+
+                    item.type = "button";
+
+                    item.className =
+                        "list-group-item list-group-item-action";
+
+                    item.textContent = music.title;
+
+                    item.addEventListener("click", function () {
+
+                        input.value = music.title;
+                        input.dataset.musicId = music.id;
+
+                        results.style.display = "none";
+                    });
+
+                    results.appendChild(item);
+                });
+
+                results.style.display = "block";
+            });
+
+
+            document.addEventListener("click", function (event) {
+
+                const addButton =
+                    event.target.closest(".add-song");
+
+                if (addButton) {
+
+                    const card =
+                        addButton.closest(".mass-part");
+
+                    const rows =
+                        card.querySelector(".music-rows");
+
+                    const newRow = createMusicRow();
+
+                    rows.appendChild(newRow);
+
+                    newRow
+                        .querySelector(".music-search")
+                        .focus();
+
+                    return;
+                }
+
+
+                const removeButton =
+                    event.target.closest(".remove-song");
+
+                if (removeButton) {
+
+                    const card =
+                        removeButton.closest(".mass-part");
+
+                    const rows =
+                        card.querySelector(".music-rows");
+
+                    const row =
+                        removeButton.closest(".music-row");
+
+                    if (
+                        rows.querySelectorAll(".music-row").length > 1
+                    ) {
+                        row.remove();
+                    }
+                    else {
+                        const input =
+                            row.querySelector(".music-search");
+
+                        input.value = "";
+                        input.dataset.musicId = "";
+                    }
+
+                    return;
+                }
+
+
+                if (!event.target.closest(".music-picker")) {
+                    document
+                        .querySelectorAll(".music-results")
+                        .forEach(results => {
+                            results.style.display = "none";
+                        });
+                }
+
+            });
+
+
+            form.addEventListener("submit", function (event) {
+
+                form.querySelectorAll(".generated-field")
+                    .forEach(x => x.remove());
+
+                let index = 0;
+                let invalidMusic = false;
+
+                document
+                    .querySelectorAll(".mass-part")
+                    .forEach(card => {
+
+                        const massPart =
+                            card.dataset.massPart;
+
+                        card
+                            .querySelectorAll(".music-search")
+                            .forEach(input => {
+
+                                const title =
+                                    input.value.trim();
+
+                                if (!title) {
+                                    return;
+                                }
+
+                                const musicId =
+                                    input.dataset.musicId;
+
+                                if (!musicId) {
+
+                                    input.classList.add("is-invalid");
+
+                                    invalidMusic = true;
+
+                                    return;
+                                }
+
+                                addHidden(
+                                    `Selections[${index}].MassPart`,
+                                    massPart
+                                );
+
+                                addHidden(
+                                    `Selections[${index}].MusicSheetId`,
+                                    musicId
+                                );
+
+                                addHidden(
+                                    `Selections[${index}].DisplayOrder`,
+                                    index + 1
+                                );
+
+                                index++;
+                            });
+
+                    });
+
+
+                if (invalidMusic) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Please select music from the search results."
+                    );
+                }
+
+            });
+
+
+            function addHidden(name, value) {
+
+                const input =
+                    document.createElement("input");
+
+                input.type = "hidden";
+                input.name = name;
+                input.value = value;
+                input.className = "generated-field";
+
+                form.appendChild(input);
+            }
+
+        });
+    </script>
+}

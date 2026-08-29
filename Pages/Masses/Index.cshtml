@@ -1,0 +1,88 @@
+@page
+@model choir_music_system.Pages.Masses.IndexModel
+
+@{
+    ViewData["Title"] = "Masses";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Masses</h1>
+        <p class="text-muted mb-0">
+            Plan and manage music for Mass.
+        </p>
+    </div>
+
+    <a asp-page="Create" class="btn btn-primary">
+        Create Mass
+    </a>
+</div>
+
+@if (Model.Masses.Count == 0)
+{
+    <div class="alert alert-info">
+        No Masses have been created yet.
+    </div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Notes</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var mass in Model.Masses)
+            {
+                <tr>
+                    <td>
+                        @mass.MassDate.ToString("dd MMM yyyy")
+                    </td>
+
+                    <td>
+                        @mass.Name
+                    </td>
+
+                    <td>
+                        @mass.Notes
+                    </td>
+
+                    <td class="text-end">
+                        <div class="d-flex gap-2 justify-content-end">
+
+                            <a asp-page="Edit"
+                               asp-route-id="@mass.Id"
+                               class="btn btn-sm btn-outline-secondary">
+                                Edit
+                            </a>
+
+                            <a asp-page="Plan"
+                               asp-route-id="@mass.Id"
+                               class="btn btn-sm btn-primary">
+                                Plan Music
+                            </a>
+
+                            <a asp-page="MusicPack"
+                               asp-route-id="@mass.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Music Pack
+                            </a>
+
+                            <a asp-page="Delete"
+                               asp-route-id="@mass.Id"
+                               class="btn btn-sm btn-outline-danger">
+                                Delete
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

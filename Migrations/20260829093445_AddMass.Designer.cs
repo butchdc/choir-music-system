@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using choir_music_system.Data;
 
@@ -10,9 +11,11 @@ using choir_music_system.Data;
 namespace choir_music_system.Migrations
 {
     [DbContext(typeof(ChoirDbContext))]
-    partial class ChoirDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260829093445_AddMass")]
+    partial class AddMass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.11");
@@ -44,35 +47,6 @@ namespace choir_music_system.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Masses");
-                });
-
-            modelBuilder.Entity("choir_music_system.Models.MassMusicSheet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MassId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("MassPart")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("MusicSheetId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MassId");
-
-                    b.HasIndex("MusicSheetId");
-
-                    b.ToTable("MassMusicSheets");
                 });
 
             modelBuilder.Entity("choir_music_system.Models.MusicSheet", b =>
@@ -121,30 +95,6 @@ namespace choir_music_system.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MusicSheets");
-                });
-
-            modelBuilder.Entity("choir_music_system.Models.MassMusicSheet", b =>
-                {
-                    b.HasOne("choir_music_system.Models.Mass", "Mass")
-                        .WithMany("MusicSheets")
-                        .HasForeignKey("MassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("choir_music_system.Models.MusicSheet", "MusicSheet")
-                        .WithMany()
-                        .HasForeignKey("MusicSheetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Mass");
-
-                    b.Navigation("MusicSheet");
-                });
-
-            modelBuilder.Entity("choir_music_system.Models.Mass", b =>
-                {
-                    b.Navigation("MusicSheets");
                 });
 #pragma warning restore 612, 618
         }

@@ -11,4 +11,6 @@ public class ChoirDbContext : DbContext
     }
 
     public DbSet<MusicSheet> MusicSheets => Set<MusicSheet>();
+    public DbSet<Mass> Masses => Set<Mass>();
+    public DbSet<MassMusicSheet> MassMusicSheets => Set<MassMusicSheet>();
 }
