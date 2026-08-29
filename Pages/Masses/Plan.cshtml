@@ -15,6 +15,7 @@
         "Holy",
         "Memorial Acclamation",
         "Amen",
+        "Our Father",
         "Lamb of God",
         "Communion",
         "Recessional"
@@ -39,16 +40,16 @@
         {
             var partSelections = Model.Selections
                 .Where(x => x.MassPart == part)
+                .OrderBy(x => x.DisplayOrder)
                 .ToList();
 
-            <div class="card mb-3 mass-part"
-                 data-mass-part="@part">
-
-                <div class="card-header">
-                    <strong>@part</strong>
-                </div>
+            <div class="card mb-3 mass-part" data-mass-part="@part">
 
                 <div class="card-body">
+
+                    <h5 class="card-title mb-3">
+                        @part
+                    </h5>
 
                     <div class="music-rows">
 
@@ -63,11 +64,28 @@
 
                                 <div class="music-picker flex-grow-1 position-relative">
 
-                                    <input type="text"
-                                           class="form-control music-search"
-                                           value="@selectedMusic?.Title"
-                                           data-music-id="@selectedMusic?.Id"
-                                           placeholder="Search music..."
+                                    <input type="text" class="form-control music-search"
+                                           value="@(
+                                           selectedMusic is null
+                                               ? ""
+                                               : string.Join(
+                                                   " — ",
+                                                   new[]
+                                                   {
+                                                                                          selectedMusic.Title,
+                                                                                          selectedMusic.Composer,
+                                                                                          string.IsNullOrWhiteSpace(selectedMusic.Arrangement)
+                                                                                              ? null
+                                                                                              : $"Arr: {selectedMusic.Arrangement}",
+                                                                                          selectedMusic.SuggestedMassPart,
+                                                                                          string.IsNullOrWhiteSpace(selectedMusic.Key)
+                                                                                              ? null
+                                                                                              : $"Key: {selectedMusic.Key}"
+                                                   }
+                                                   .Where(x => !string.IsNullOrWhiteSpace(x))
+                                               )
+                                                                                                                                                                                                                                          )"
+                                           data-music-id="@selectedMusic?.Id" placeholder="Search title, composer, part or key..."
                                            autocomplete="off" />
 
                                     <div class="music-results list-group position-absolute w-100 shadow"
@@ -76,8 +94,14 @@
 
                                 </div>
 
-                                <button type="button"
-                                        class="btn btn-outline-danger remove-song">
+                                <a class="btn btn-outline-secondary view-music" href="@(selectedMusic is null
+                                                                             ? "#"
+                                                                             : $"/MusicLibrary/View/{selectedMusic.Id}")" target="_blank"
+                                   rel="noopener noreferrer" style="@(selectedMusic is null ? "display:none;" : "")">
+                                    View
+                                </a>
+
+                                <button type="button" class="btn btn-outline-danger remove-song">
                                     Remove
                                 </button>
 
@@ -86,25 +110,23 @@
 
                     </div>
 
-                    <button type="button"
-                            class="btn btn-sm btn-outline-primary add-song">
+                    <button type="button" class="btn btn-sm btn-outline-primary add-song">
                         + Add another song
                     </button>
 
                 </div>
+
             </div>
         }
 
     </div>
 
     <div class="d-flex gap-2 mt-4">
-        <button type="submit"
-                class="btn btn-primary">
+        <button type="submit" class="btn btn-primary">
             Save Music Plan
         </button>
 
-        <a asp-page="Index"
-           class="btn btn-secondary">
+        <a asp-page="Index" class="btn btn-secondary">
             Cancel
         </a>
     </div>
@@ -119,264 +141,394 @@
             const form = document.getElementById("musicPlanForm");
 
             const musicLibrary = [
-                @foreach (var music in Model.MusicSheets)
+                                                                    @foreach (var music in Model.MusicSheets)
                 {
                     @:{
-                    @:    id: @music.Id,
-                    @:    title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))"
-                    @:},
+                                                                                                                            @:id: @music.Id,
+                    @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
+                    @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
+                    @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
+                    @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
+                    @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
+                                                                                                                            @:},
+            }
+                                                                ];
+
+        function createMusicRow() {
+
+            const row = document.createElement("div");
+
+            row.className = "music-row d-flex gap-2 mb-2";
+
+            row.innerHTML = `
+                                            <div class="music-picker flex-grow-1 position-relative">
+
+                                                <input type="text"
+                                                       class="form-control music-search"
+                                                       data-music-id=""
+                                                       placeholder="Search title, composer, part or key..."
+                                                       autocomplete="off" />
+
+                                                <div class="music-results list-group position-absolute w-100 shadow"
+                                                     style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
+                                                </div>
+
+                                            </div>
+
+                                            <a class="btn btn-outline-secondary view-music"
+                                               href="#"
+                                               target="_blank"
+                                               style="display:none;">
+                                                View
+                                            </a>
+
+                                            <button type="button"
+                                                    class="btn btn-outline-danger remove-song">
+                                                Remove
+                                            </button>
+                                        `;
+
+            return row;
+        }
+
+
+        document.addEventListener("input", function (event) {
+
+            if (!event.target.classList.contains("music-search")) {
+                return;
+            }
+
+            const input = event.target;
+
+            const picker =
+                input.closest(".music-picker");
+
+            const results =
+                picker.querySelector(".music-results");
+
+            const search =
+                input.value.toLowerCase().trim();
+
+            input.dataset.musicId = "";
+            input.classList.remove("is-invalid");
+
+            results.innerHTML = "";
+
+            if (!search) {
+                results.style.display = "none";
+                return;
+            }
+
+            const massPart =
+                input.closest(".mass-part").dataset.massPart;
+
+            const matches = musicLibrary
+                .filter(music => {
+
+                    const searchableText = [
+                        music.title,
+                        music.composer,
+                        music.arrangement,
+                        music.suggestedPart,
+                        music.key
+                    ]
+                        .join(" ")
+                        .toLowerCase();
+
+                    return searchableText.includes(search);
+                })
+                .sort((a, b) => {
+
+                    const aExactTitle =
+                        a.title.toLowerCase() === search;
+
+                    const bExactTitle =
+                        b.title.toLowerCase() === search;
+
+                    if (aExactTitle !== bExactTitle) {
+                        return aExactTitle ? -1 : 1;
+                    }
+
+                    const aTitleStarts =
+                        a.title.toLowerCase().startsWith(search);
+
+                    const bTitleStarts =
+                        b.title.toLowerCase().startsWith(search);
+
+                    if (aTitleStarts !== bTitleStarts) {
+                        return aTitleStarts ? -1 : 1;
+                    }
+
+                    const aSuggested =
+                        a.suggestedPart.toLowerCase() ===
+                        massPart.toLowerCase();
+
+                    const bSuggested =
+                        b.suggestedPart.toLowerCase() ===
+                        massPart.toLowerCase();
+
+                    if (aSuggested !== bSuggested) {
+                        return aSuggested ? -1 : 1;
+                    }
+
+                    return a.title.localeCompare(b.title);
+                })
+                .slice(0, 15);
+
+            if (matches.length === 0) {
+                results.style.display = "none";
+                return;
+            }
+
+            matches.forEach(music => {
+
+                const item =
+                    document.createElement("button");
+
+                item.type = "button";
+
+                item.className =
+                    "list-group-item list-group-item-action";
+
+                const title =
+                    document.createElement("div");
+
+                title.className = "fw-semibold";
+                title.textContent = music.title;
+
+                const details =
+                    document.createElement("div");
+
+                details.className = "small text-muted";
+
+                const detailParts = [];
+
+                if (music.composer) {
+                    detailParts.push(music.composer);
                 }
-            ];
+
+                if (music.arrangement) {
+                    detailParts.push(`Arr: ${music.arrangement}`);
+                }
+
+                if (music.suggestedPart) {
+                    detailParts.push(music.suggestedPart);
+                }
+
+                if (music.key) {
+                    detailParts.push(`Key: ${music.key}`);
+                }
+
+                details.textContent =
+                    detailParts.join(" • ");
+
+                item.appendChild(title);
+
+                if (detailParts.length > 0) {
+                    item.appendChild(details);
+                }
+
+                item.addEventListener("click", function () {
+
+                    const selectedDetails = [];
+
+                    selectedDetails.push(music.title);
+
+                    if (music.composer) {
+                        selectedDetails.push(music.composer);
+                    }
+
+                    if (music.arrangement) {
+                        selectedDetails.push(`Arr: ${music.arrangement}`);
+                    }
+
+                    if (music.suggestedPart) {
+                        selectedDetails.push(music.suggestedPart);
+                    }
+
+                    if (music.key) {
+                        selectedDetails.push(`Key: ${music.key}`);
+                    }
+
+                    input.value = selectedDetails.join(" — ");
+                    input.dataset.musicId = music.id;
+                    const row =
+                        input.closest(".music-row");
+
+                    const viewButton =
+                        row.querySelector(".view-music");
+
+                    viewButton.href =
+                        `/MusicLibrary/View/${music.id}`;
+
+                    viewButton.style.display = "";
+
+                    results.style.display = "none";
+                });
+
+                results.appendChild(item);
+            });
+
+            results.style.display = "block";
+        });
 
 
-            function createMusicRow() {
+        document.addEventListener("click", function (event) {
 
-                const row = document.createElement("div");
+            const addButton =
+                event.target.closest(".add-song");
 
-                row.className = "music-row d-flex gap-2 mb-2";
+            if (addButton) {
 
-                row.innerHTML = `
-                    <div class="music-picker flex-grow-1 position-relative">
+                const card =
+                    addButton.closest(".mass-part");
 
-                        <input type="text"
-                               class="form-control music-search"
-                               data-music-id=""
-                               placeholder="Search music..."
-                               autocomplete="off" />
+                const rows =
+                    card.querySelector(".music-rows");
 
-                        <div class="music-results list-group position-absolute w-100 shadow"
-                             style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
-                        </div>
+                const newRow = createMusicRow();
 
-                    </div>
+                rows.appendChild(newRow);
 
-                    <button type="button"
-                            class="btn btn-outline-danger remove-song">
-                        Remove
-                    </button>
-                `;
+                newRow
+                    .querySelector(".music-search")
+                    .focus();
 
-                return row;
+                return;
             }
 
 
-            document.addEventListener("input", function (event) {
+            const removeButton =
+                event.target.closest(".remove-song");
 
-                if (!event.target.classList.contains("music-search")) {
-                    return;
+            if (removeButton) {
+
+                const card =
+                    removeButton.closest(".mass-part");
+
+                const rows =
+                    card.querySelector(".music-rows");
+
+                const row =
+                    removeButton.closest(".music-row");
+
+                if (
+                    rows.querySelectorAll(".music-row").length > 1
+                ) {
+                    row.remove();
+                }
+                else {
+                    const input =
+                        row.querySelector(".music-search");
+
+                    input.value = "";
+                    input.dataset.musicId = "";
+                    const viewButton =
+                        row.querySelector(".view-music");
+
+                    viewButton.href = "#";
+                    viewButton.style.display = "none";
                 }
 
-                const input = event.target;
+                return;
+            }
 
-                const picker =
-                    input.closest(".music-picker");
 
-                const results =
-                    picker.querySelector(".music-results");
-
-                const search =
-                    input.value.toLowerCase().trim();
-
-                input.dataset.musicId = "";
-                input.classList.remove("is-invalid");
-
-                results.innerHTML = "";
-
-                if (!search) {
-                    results.style.display = "none";
-                    return;
-                }
-
-                const matches = musicLibrary
-                    .filter(music =>
-                        music.title
-                            .toLowerCase()
-                            .includes(search))
-                    .slice(0, 15);
-
-                if (matches.length === 0) {
-                    results.style.display = "none";
-                    return;
-                }
-
-                matches.forEach(music => {
-
-                    const item =
-                        document.createElement("button");
-
-                    item.type = "button";
-
-                    item.className =
-                        "list-group-item list-group-item-action";
-
-                    item.textContent = music.title;
-
-                    item.addEventListener("click", function () {
-
-                        input.value = music.title;
-                        input.dataset.musicId = music.id;
-
+            if (!event.target.closest(".music-picker")) {
+                document
+                    .querySelectorAll(".music-results")
+                    .forEach(results => {
                         results.style.display = "none";
                     });
-
-                    results.appendChild(item);
-                });
-
-                results.style.display = "block";
-            });
-
-
-            document.addEventListener("click", function (event) {
-
-                const addButton =
-                    event.target.closest(".add-song");
-
-                if (addButton) {
-
-                    const card =
-                        addButton.closest(".mass-part");
-
-                    const rows =
-                        card.querySelector(".music-rows");
-
-                    const newRow = createMusicRow();
-
-                    rows.appendChild(newRow);
-
-                    newRow
-                        .querySelector(".music-search")
-                        .focus();
-
-                    return;
-                }
-
-
-                const removeButton =
-                    event.target.closest(".remove-song");
-
-                if (removeButton) {
-
-                    const card =
-                        removeButton.closest(".mass-part");
-
-                    const rows =
-                        card.querySelector(".music-rows");
-
-                    const row =
-                        removeButton.closest(".music-row");
-
-                    if (
-                        rows.querySelectorAll(".music-row").length > 1
-                    ) {
-                        row.remove();
-                    }
-                    else {
-                        const input =
-                            row.querySelector(".music-search");
-
-                        input.value = "";
-                        input.dataset.musicId = "";
-                    }
-
-                    return;
-                }
-
-
-                if (!event.target.closest(".music-picker")) {
-                    document
-                        .querySelectorAll(".music-results")
-                        .forEach(results => {
-                            results.style.display = "none";
-                        });
-                }
-
-            });
-
-
-            form.addEventListener("submit", function (event) {
-
-                form.querySelectorAll(".generated-field")
-                    .forEach(x => x.remove());
-
-                let index = 0;
-                let invalidMusic = false;
-
-                document
-                    .querySelectorAll(".mass-part")
-                    .forEach(card => {
-
-                        const massPart =
-                            card.dataset.massPart;
-
-                        card
-                            .querySelectorAll(".music-search")
-                            .forEach(input => {
-
-                                const title =
-                                    input.value.trim();
-
-                                if (!title) {
-                                    return;
-                                }
-
-                                const musicId =
-                                    input.dataset.musicId;
-
-                                if (!musicId) {
-
-                                    input.classList.add("is-invalid");
-
-                                    invalidMusic = true;
-
-                                    return;
-                                }
-
-                                addHidden(
-                                    `Selections[${index}].MassPart`,
-                                    massPart
-                                );
-
-                                addHidden(
-                                    `Selections[${index}].MusicSheetId`,
-                                    musicId
-                                );
-
-                                addHidden(
-                                    `Selections[${index}].DisplayOrder`,
-                                    index + 1
-                                );
-
-                                index++;
-                            });
-
-                    });
-
-
-                if (invalidMusic) {
-
-                    event.preventDefault();
-
-                    alert(
-                        "Please select music from the search results."
-                    );
-                }
-
-            });
-
-
-            function addHidden(name, value) {
-
-                const input =
-                    document.createElement("input");
-
-                input.type = "hidden";
-                input.name = name;
-                input.value = value;
-                input.className = "generated-field";
-
-                form.appendChild(input);
             }
 
         });
+
+
+        form.addEventListener("submit", function (event) {
+
+            form.querySelectorAll(".generated-field")
+                .forEach(x => x.remove());
+
+            let index = 0;
+            let invalidMusic = false;
+
+            document
+                .querySelectorAll(".mass-part")
+                .forEach(card => {
+
+                    const massPart =
+                        card.dataset.massPart;
+
+                    card
+                        .querySelectorAll(".music-search")
+                        .forEach(input => {
+
+                            const title =
+                                input.value.trim();
+
+                            if (!title) {
+                                return;
+                            }
+
+                            const musicId =
+                                input.dataset.musicId;
+
+                            if (!musicId) {
+
+                                input.classList.add("is-invalid");
+
+                                invalidMusic = true;
+
+                                return;
+                            }
+
+                            addHidden(
+                                `Selections[${index}].MassPart`,
+                                massPart
+                            );
+
+                            addHidden(
+                                `Selections[${index}].MusicSheetId`,
+                                musicId
+                            );
+
+                            addHidden(
+                                `Selections[${index}].DisplayOrder`,
+                                index + 1
+                            );
+
+                            index++;
+                        });
+
+                });
+
+
+            if (invalidMusic) {
+
+                event.preventDefault();
+
+                alert(
+                    "Please select music from the search results."
+                );
+            }
+
+        });
+
+
+        function addHidden(name, value) {
+
+            const input =
+                document.createElement("input");
+
+            input.type = "hidden";
+            input.name = name;
+            input.value = value;
+            input.className = "generated-field";
+
+            form.appendChild(input);
+        }
+
+                                                            });
     </script>
 }

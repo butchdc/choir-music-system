@@ -127,20 +127,21 @@ public class PlanModel : PageModel
     private static List<string> GetMassParts()
     {
         return new List<string>
-        {
-            "Entrance",
-            "Kyrie",
-            "Gloria",
-            "Psalm",
-            "Alleluia",
-            "Offertory",
-            "Holy",
-            "Memorial Acclamation",
-            "Amen",
-            "Lamb of God",
-            "Communion",
-            "Recessional"
-        };
+    {
+        "Entrance",
+        "Kyrie",
+        "Gloria",
+        "Psalm",
+        "Alleluia",
+        "Offertory",
+        "Holy",
+        "Memorial Acclamation",
+        "Amen",
+        "Our Father",
+        "Lamb of God",
+        "Communion",
+        "Recessional"
+    };
     }
 
     public class MassPartSelection

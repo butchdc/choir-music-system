@@ -55,27 +55,23 @@ else
                     <td class="text-end">
                         <div class="d-flex gap-2 justify-content-end">
 
-                            <a asp-page="Edit"
-                               asp-route-id="@mass.Id"
-                               class="btn btn-sm btn-outline-secondary">
+                            <a asp-page="Edit" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-secondary">
                                 Edit
                             </a>
+                            <a asp-page="Index" asp-page-handler="Duplicate" asp-route-id="@mass.Id"
+                               class="btn btn-sm btn-outline-success">
+                                Duplicate
+                            </a>
 
-                            <a asp-page="Plan"
-                               asp-route-id="@mass.Id"
-                               class="btn btn-sm btn-primary">
+                            <a asp-page="Plan" asp-route-id="@mass.Id" class="btn btn-sm btn-primary">
                                 Plan Music
                             </a>
 
-                            <a asp-page="MusicPack"
-                               asp-route-id="@mass.Id"
-                               class="btn btn-sm btn-outline-primary">
+                            <a asp-page="MusicPack" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-primary">
                                 Music Pack
                             </a>
 
-                            <a asp-page="Delete"
-                               asp-route-id="@mass.Id"
-                               class="btn btn-sm btn-outline-danger">
+                            <a asp-page="Delete" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-danger">
                                 Delete
                             </a>
 
