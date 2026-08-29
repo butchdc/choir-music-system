@@ -1,0 +1,196 @@
+# ============================================
+
+# Choir Music System - Git Ignore
+
+# ============================================
+
+# --------------------------------------------
+
+# .NET build output
+
+# --------------------------------------------
+
+bin/
+obj/
+
+# --------------------------------------------
+
+# Visual Studio / VS Code
+
+# --------------------------------------------
+
+.vs/
+.vscode/
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# --------------------------------------------
+
+# JetBrains Rider
+
+# --------------------------------------------
+
+.idea/
+*.sln.iml
+
+# --------------------------------------------
+
+# macOS
+
+# --------------------------------------------
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# --------------------------------------------
+
+# Windows
+
+# --------------------------------------------
+
+Thumbs.db
+Desktop.ini
+
+# --------------------------------------------
+
+# SQLite local databases
+
+# Database schema is maintained using
+
+# Entity Framework Core migrations.
+
+# --------------------------------------------
+
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# --------------------------------------------
+
+# Local music-sheet storage
+
+# Do not commit uploaded choir PDFs.
+
+# --------------------------------------------
+
+Storage/MusicSheets/*
+!Storage/MusicSheets/.gitkeep
+
+# --------------------------------------------
+
+# Generated files
+
+# --------------------------------------------
+
+Storage/Generated/*
+!Storage/Generated/.gitkeep
+
+# --------------------------------------------
+
+# Future PowerPoint storage
+
+# --------------------------------------------
+
+Storage/PowerPointTemplates/*
+!Storage/PowerPointTemplates/.gitkeep
+
+Storage/Backgrounds/*
+!Storage/Backgrounds/.gitkeep
+
+# --------------------------------------------
+
+# User-uploaded files
+
+# --------------------------------------------
+
+uploads/
+
+# --------------------------------------------
+
+# Logs
+
+# --------------------------------------------
+
+logs/
+*.log
+
+# --------------------------------------------
+
+# Temporary files
+
+# --------------------------------------------
+
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# --------------------------------------------
+
+# Local environment configuration / secrets
+
+# --------------------------------------------
+
+.env
+.env.*
+!.env.example
+
+appsettings.Local.json
+appsettings.*.Local.json
+
+# --------------------------------------------
+
+# ASP.NET Core development secrets should use:
+
+#
+
+# dotnet user-secrets
+
+#
+
+# Never commit passwords, API keys or secrets.
+
+# --------------------------------------------
+
+# --------------------------------------------
+
+# Test / coverage output
+
+# --------------------------------------------
+
+TestResults/
+coverage/
+coverage.xml
+coverage.json
+*.coverage
+*.coveragexml
+
+# --------------------------------------------
+
+# NuGet
+
+# --------------------------------------------
+
+*.nupkg
+*.snupkg
+packages/
+
+# Keep NuGet package lock files if we use them.
+
+!packages.lock.json
+
+# --------------------------------------------
+
+# Publish output
+
+# --------------------------------------------
+
+publish/
+artifacts/

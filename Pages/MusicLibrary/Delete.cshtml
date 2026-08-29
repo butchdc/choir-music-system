@@ -1,0 +1,33 @@
+@page "{id:int}"
+@model choir_music_system.Pages.MusicLibrary.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete Music Sheet";
+}
+
+<h1>Delete Music Sheet</h1>
+
+<div class="alert alert-warning">
+    Are you sure you want to permanently delete this music sheet?
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Title</dt>
+    <dd class="col-sm-9">@Model.MusicSheet.Title</dd>
+
+    <dt class="col-sm-3">PDF</dt>
+    <dd class="col-sm-9">@Model.MusicSheet.PdfFileName</dd>
+</dl>
+
+<form method="post">
+    <input type="hidden" asp-for="MusicSheet.Id" />
+
+    <button type="submit" class="btn btn-danger">
+        Delete
+    </button>
+
+    <a asp-page="Index"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+</form>

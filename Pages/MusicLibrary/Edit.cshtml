@@ -1,0 +1,110 @@
+@page "{id:int}"
+@model choir_music_system.Pages.MusicLibrary.EditModel
+
+@{
+    ViewData["Title"] = "Edit Music Sheet";
+}
+
+<h1>Edit Music Sheet</h1>
+
+<form method="post" enctype="multipart/form-data">
+
+    <input type="hidden" asp-for="MusicSheet.Id" />
+
+    <div class="mb-3">
+        <label asp-for="MusicSheet.Title" class="form-label">
+            Title
+        </label>
+
+        <input asp-for="MusicSheet.Title" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MusicSheet.SuggestedMassPart" class="form-label">
+            Suggested Mass Part
+        </label>
+
+        <select asp-for="MusicSheet.SuggestedMassPart" class="form-select">
+            <option value="">None / Not specified</option>
+            <option>Entrance</option>
+            <option>Kyrie</option>
+            <option>Gloria</option>
+            <option>Psalm</option>
+            <option>Alleluia</option>
+            <option>Offertory</option>
+            <option>Holy</option>
+            <option>Memorial Acclamation</option>
+            <option>Amen</option>
+            <option>Lamb of God</option>
+            <option>Communion</option>
+            <option>Recessional</option>
+            <option>Mass Setting</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MusicSheet.Composer" class="form-label">
+            Composer
+        </label>
+
+        <input asp-for="MusicSheet.Composer" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MusicSheet.Arrangement" class="form-label">
+            Arrangement
+        </label>
+
+        <input asp-for="MusicSheet.Arrangement" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MusicSheet.Key" class="form-label">
+            Key
+        </label>
+
+        <input asp-for="MusicSheet.Key" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Current PDF
+        </label>
+
+        <div>
+            @Model.MusicSheet.PdfFileName
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PdfFile" class="form-label">
+            Replace PDF
+        </label>
+
+        <input asp-for="PdfFile" type="file" accept=".pdf,application/pdf" class="form-control" />
+
+        <div class="form-text">
+            Leave blank to keep the existing PDF.
+        </div>
+
+        <span asp-validation-for="PdfFile" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MusicSheet.Notes" class="form-label">
+            Notes
+        </label>
+
+        <textarea asp-for="MusicSheet.Notes" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+            Save Changes
+        </button>
+
+        <a asp-page="Index" class="btn btn-secondary">
+            Cancel
+        </a>
+    </div>
+</form>
