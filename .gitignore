@@ -194,3 +194,6 @@ packages/
 
 publish/
 artifacts/
+
+Storage/Temp/*
+!Storage/Temp/.gitkeep

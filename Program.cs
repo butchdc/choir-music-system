@@ -1,9 +1,11 @@
 using choir_music_system.Data;
+using choir_music_system.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<PdfMetadataExtractorService>();
 
 builder.Services.AddDbContext<ChoirDbContext>(options =>
     options.UseSqlite(

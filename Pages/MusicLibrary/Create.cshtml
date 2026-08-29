@@ -11,33 +11,48 @@
     Add a PDF music sheet to the choir library.
 </p>
 
-<form method="post"
-      enctype="multipart/form-data">
-
-    <div asp-validation-summary="ModelOnly"
-         class="text-danger mb-3"></div>
+<form method="post" enctype="multipart/form-data" asp-page="/MusicLibrary/Create">
+    <input type="hidden" asp-for="PendingPdfFileName" />
+    <input type="hidden" asp-for="OriginalPdfFileName" />
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.Title"
-               class="form-label">
+        <label asp-for="PdfFile" class="form-label">
+            Music Sheet PDF
+        </label>
+
+        <input asp-for="PdfFile" type="file" accept=".pdf,application/pdf" class="form-control" id="pdfFileInput" />
+
+        @if (string.IsNullOrWhiteSpace(Model.PendingPdfFileName))
+        {
+            <span asp-validation-for="PdfFile" class="text-danger"></span>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Model.OriginalPdfFileName))
+        {
+            <div class="form-text text-success">
+                PDF ready: @Model.OriginalPdfFileName
+            </div>
+        }
+    </div>
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="MusicSheet.Title" class="form-label">
             Title
         </label>
 
-        <input asp-for="MusicSheet.Title"
-               class="form-control" />
+        <input asp-for="MusicSheet.Title" class="form-control" />
 
-        <span asp-validation-for="MusicSheet.Title"
-              class="text-danger"></span>
+        <span asp-validation-for="MusicSheet.Title" class="text-danger"></span>
     </div>
 
-        <div class="mb-3">
-        <label asp-for="MusicSheet.SuggestedMassPart"
-               class="form-label">
+    <div class="mb-3">
+        <label asp-for="MusicSheet.SuggestedMassPart" class="form-label">
             Suggested Mass Part
         </label>
 
-        <select asp-for="MusicSheet.SuggestedMassPart"
-                class="form-select">
+        <select asp-for="MusicSheet.SuggestedMassPart" class="form-select">
             <option value="">None / Not specified</option>
             <option>Entrance</option>
             <option>Kyrie</option>
@@ -60,68 +75,43 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.Composer"
-               class="form-label">
+        <label asp-for="MusicSheet.Composer" class="form-label">
             Composer
         </label>
 
-        <input asp-for="MusicSheet.Composer"
-               class="form-control" />
+        <input asp-for="MusicSheet.Composer" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.Arrangement"
-               class="form-label">
+        <label asp-for="MusicSheet.Arrangement" class="form-label">
             Arrangement
         </label>
 
-        <input asp-for="MusicSheet.Arrangement"
-               class="form-control" />
+        <input asp-for="MusicSheet.Arrangement" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.Key"
-               class="form-label">
+        <label asp-for="MusicSheet.Key" class="form-label">
             Key
         </label>
 
-        <input asp-for="MusicSheet.Key"
-               class="form-control" />
+        <input asp-for="MusicSheet.Key" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label class="form-label">
-            Music Sheet PDF
-        </label>
-
-        <input asp-for="PdfFile"
-               type="file"
-               accept=".pdf,application/pdf"
-               class="form-control" />
-
-        <span asp-validation-for="PdfFile"
-              class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="MusicSheet.Notes"
-               class="form-label">
+        <label asp-for="MusicSheet.Notes" class="form-label">
             Notes
         </label>
 
-        <textarea asp-for="MusicSheet.Notes"
-                  class="form-control"
-                  rows="4"></textarea>
+        <textarea asp-for="MusicSheet.Notes" class="form-control" rows="4"></textarea>
     </div>
 
     <div class="d-flex gap-2">
-        <button type="submit"
-                class="btn btn-primary">
+        <button type="submit" asp-page="/MusicLibrary/Create" class="btn btn-primary">
             Save Music Sheet
         </button>
 
-        <a asp-page="Index"
-           class="btn btn-secondary">
+        <a asp-page="Index" class="btn btn-secondary">
             Cancel
         </a>
     </div>
@@ -130,4 +120,21 @@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const pdfInput = document.getElementById("pdfFileInput");
+
+        pdfInput?.addEventListener("change", function () {
+            if (!this.files || this.files.length === 0) {
+                return;
+            }
+
+            const form = this.form;
+
+            // Send this POST specifically to OnPostDetectAsync()
+            form.action = "?handler=Detect";
+            form.noValidate = true;
+            form.submit();
+        });
+    </script>
 }
