@@ -1,10 +1,312 @@
 ﻿@page
 @model IndexModel
+
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="page-header">
+    <div>
+        <h1>Choir Music System</h1>
+        <p class="text-muted">
+            Manage music sheets, plan Mass music, and generate choir music packs.
+        </p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-6 col-lg-3">
+        <a asp-page="/MusicLibrary/Index"
+           class="metric-card">
+            <div>
+                <div class="metric-label">Music Sheets</div>
+                <div class="metric-value">@Model.MusicSheetCount</div>
+            </div>
+
+            <div class="metric-icon">
+                <i class="bi bi-music-note-beamed"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <a asp-page="/Masses/Index"
+           class="metric-card">
+            <div>
+                <div class="metric-label">Masses</div>
+                <div class="metric-value">@Model.MassCount</div>
+            </div>
+
+            <div class="metric-icon">
+                <i class="bi bi-calendar3"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <a asp-page="/Masses/Index"
+           class="metric-card">
+            <div>
+                <div class="metric-label">Upcoming Masses</div>
+                <div class="metric-value">@Model.UpcomingMassCount</div>
+            </div>
+
+            <div class="metric-icon">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="metric-card">
+            <div>
+                <div class="metric-label">Music Packs</div>
+                <div class="metric-value">@Model.MusicPackCount</div>
+            </div>
+
+            <div class="metric-icon">
+                <i class="bi bi-file-earmark-pdf"></i>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row g-2 mb-4">
+
+    <div class="col-md-4">
+        <a asp-page="/MusicLibrary/Create"
+           class="quick-action">
+            <i class="bi bi-file-earmark-arrow-up"></i>
+            Upload Music
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-page="/MusicLibrary/BulkUpload"
+           class="quick-action">
+            <i class="bi bi-files"></i>
+            Bulk Upload
+        </a>
+    </div>
+
+    <div class="col-md-4">
+        <a asp-page="/Masses/Create"
+           class="quick-action">
+            <i class="bi bi-plus-circle"></i>
+            Create Mass
+        </a>
+    </div>
+
+</div>
+
+
+<div class="row g-3 mb-4">
+
+    <div class="col-lg-7">
+
+        <div class="dashboard-panel h-100">
+
+            <div class="dashboard-panel-header">
+                <div>
+                    <h5>Upcoming Masses</h5>
+                    <span>Next scheduled Masses and planning status</span>
+                </div>
+
+                <a asp-page="/Masses/Index"
+                   class="dashboard-panel-link">
+                    View all
+                </a>
+            </div>
+
+            @if (Model.UpcomingMasses.Count == 0)
+            {
+                <div class="dashboard-empty">
+                    <i class="bi bi-calendar"></i>
+
+                    <div>
+                        <strong>No upcoming Masses</strong>
+                        <p>Create a Mass when you're ready to start planning.</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="dashboard-list">
+
+                    @foreach (var mass in Model.UpcomingMasses)
+                    {
+                        <div class="dashboard-list-item">
+
+                            <div class="dashboard-date">
+                                <span class="dashboard-date-day">
+                                    @mass.MassDate.ToString("dd")
+                                </span>
+
+                                <span class="dashboard-date-month">
+                                    @mass.MassDate.ToString("MMM")
+                                </span>
+                            </div>
+
+                            <div class="dashboard-list-content">
+                                <strong>@mass.Name</strong>
+
+                                <div class="dashboard-list-meta">
+                                    @mass.MassDate.ToString("dddd, dd MMM yyyy")
+                                    <span>•</span>
+                                    @mass.MusicCount song@(mass.MusicCount == 1 ? "" : "s") planned
+                                </div>
+                            </div>
+
+                            <div class="dashboard-list-actions">
+
+                                <a asp-page="/Masses/Plan"
+                                   asp-route-id="@mass.Id"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Plan Music"
+                                   data-bs-toggle="tooltip">
+                                    <i class="bi bi-music-note-list"></i>
+                                </a>
+
+                                @if (mass.MusicCount > 0)
+                                {
+                                    <a asp-page="/Masses/MusicPack"
+                                       asp-route-id="@mass.Id"
+                                       class="btn btn-sm btn-outline-secondary"
+                                       title="Generate Music Pack"
+                                       data-bs-toggle="tooltip">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                    </a>
+                                }
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-5">
+
+        <div class="dashboard-panel h-100">
+
+            <div class="dashboard-panel-header">
+                <div>
+                    <h5>Recently Updated Music</h5>
+                    <span>Latest changes in the library</span>
+                </div>
+
+                <a asp-page="/MusicLibrary/Index"
+                   class="dashboard-panel-link">
+                    Library
+                </a>
+            </div>
+
+            <div class="dashboard-list">
+
+                @foreach (var music in Model.RecentMusic)
+                {
+                    <div class="dashboard-list-item">
+
+                        <div class="recent-music-icon">
+                            <i class="bi bi-file-earmark-music"></i>
+                        </div>
+
+                        <div class="dashboard-list-content">
+
+                            <strong>@music.Title</strong>
+
+                            <div class="dashboard-list-meta">
+
+                                @if (!string.IsNullOrWhiteSpace(music.Composer))
+                                {
+                                    <span>@music.Composer</span>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(music.SuggestedMassPart))
+                                {
+                                    <span>•</span>
+                                    <span>@music.SuggestedMassPart</span>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(music.Key))
+                                {
+                                    <span>•</span>
+                                    <span>Key: @music.Key</span>
+                                }
+
+                            </div>
+
+                        </div>
+
+                        <a asp-page="/MusicLibrary/View"
+                           asp-route-id="@music.Id"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn btn-sm btn-outline-secondary table-action"
+                           title="View PDF"
+                           data-bs-toggle="tooltip">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                        </a>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="dashboard-panel">
+
+    <div class="dashboard-panel-header">
+        <div>
+            <h5>Music Library Overview</h5>
+            <span>Music sheets grouped by suggested Mass part</span>
+        </div>
+    </div>
+
+    <div class="library-breakdown">
+
+        @foreach (var item in Model.LibraryBreakdown)
+        {
+            var percentage = Model.MusicSheetCount == 0
+                ? 0
+                : (item.Count * 100.0 / Model.MusicSheetCount);
+
+            <div class="library-breakdown-item">
+
+                <div class="library-breakdown-heading">
+
+                    <span>@item.Name</span>
+
+                    <strong>@item.Count</strong>
+
+                </div>
+
+                <div class="library-breakdown-bar">
+
+                    <div class="library-breakdown-fill"
+                         style="width:@percentage.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%">
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
 </div>

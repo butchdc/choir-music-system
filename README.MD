@@ -30,7 +30,9 @@ Phase 1       Future
 
 # Phase 1 — Music Sheets
 
-Phase 1 will provide:
+**Status: Core Music Library complete; Mass Planning and Music Pack generation in progress.**
+
+Phase 1 provides:
 
 * Upload PDF music sheets
 * Maintain the music library
@@ -287,7 +289,7 @@ Initial fields may include:
 ```text
 Id
 Title
-MassPart
+SuggestedMassPart
 Composer
 Arrangement
 Key
@@ -346,6 +348,7 @@ Offertory
 Holy
 Memorial Acclamation
 Amen
+Our Father
 Lamb of God
 Communion
 Recessional
@@ -678,7 +681,17 @@ Add Entity Framework Core design support:
 dotnet add package Microsoft.EntityFrameworkCore.Design
 ```
 
-The PDF-processing package will be selected and added when the PDF-generation functionality is implemented.
+Add PDF metadata/title extraction support:
+
+```bash
+dotnet add package PdfPig
+```
+
+Add PDF music-pack generation support:
+
+```bash
+dotnet add package PdfSharpCore
+```
 
 After cloning the repository on another computer, restore project dependencies with:
 
@@ -832,88 +845,116 @@ Do not store passwords, connection-string credentials, API keys, or other secret
 
 # Development Roadmap
 
-## Stage 1 — Foundation
+## Stage 1 — Foundation — Complete
 
-Create:
+Implemented:
 
-* ASP.NET Core project
+* ASP.NET Core 10 Razor Pages project
 * SQLite configuration
-* Entity Framework Core configuration
-* Initial models
-* Database migrations
-* Storage service
+* Entity Framework Core and migrations
+* Core `MusicSheet`, `Mass`, and `MassMusicSheet` models
+* Local cross-platform storage structure
+* Git/GitHub workflow
 
-## Stage 2 — Music Library
+## Stage 2 — Music Library — Complete
 
-Create:
+Implemented:
 
-* Upload PDF
-* Music library
-* Search
-* View music details
-* Edit metadata
-* Replace PDF
-* Preview PDF
-* Archive music
+* Upload individual PDF music sheets
+* Bulk upload existing PDF music sheets
+* Automatic title detection from PDFs using PdfPig
+* Maintain title, composer, arrangement, key, suggested Mass part, and notes
+* Edit music metadata
+* Replace an existing PDF
+* View/preview PDFs
+* Delete music sheets and their physical PDF files
+* Instant client-side Music Library search
+* Reuse the same music sheet across multiple Masses
 
-The first functional milestone is:
+The completed Music Library workflow is:
 
 ```text
-Upload PDF
-    ↓
-Save File
-    ↓
-Save Metadata
-    ↓
-Display in Music Library
-    ↓
-Preview PDF
+Upload PDF / Bulk Upload
+        ↓
+Detect Title
+        ↓
+Maintain Metadata
+        ↓
+Music Library
+   ├── Search
+   ├── View PDF
+   ├── Edit / Replace
+   └── Delete
 ```
 
-## Stage 3 — Mass Planning
+PDF remains the source document used when generating choir music packs. Optional MuseScore support may be considered later and is not part of the current phase.
 
-Create:
+## Stage 3 — Mass Planning — In Progress
 
-* New Mass
-* Mass name
-* Mass date
-* Notes
-* Mass parts
-* Music selection
-* Music ordering
-* Edit existing Mass
+Implemented:
 
-## Stage 4 — Music Pack Generation
+* Create a Mass
+* Edit and delete a Mass
+* Duplicate a Mass together with its music plan
+* Mass name, date, and notes
+* Standard Mass parts, including Our Father
+* Select music from the Music Library
+* Multiple songs per Mass part
+* Preserve music display order
+* Search while planning by title, composer, arrangement, suggested Mass part, and key
+* Display richer song information to distinguish music with the same title
+* Open a selected music-sheet PDF in a new browser tab
+* Prioritise useful song metadata while keeping `MusicSheetId` as the saved selection identifier
 
-Create the PDF-generation service.
+Current Mass parts:
 
-The service should:
+```text
+Entrance
+Kyrie
+Gloria
+Psalm
+Alleluia
+Offertory
+Holy
+Memorial Acclamation
+Amen
+Our Father
+Lamb of God
+Communion
+Recessional
+```
 
-1. Read the selected music for the Mass.
-2. Sort it by Mass order.
-3. Identify duplicate source PDFs.
-4. Include each required PDF once.
-5. Merge the PDFs.
-6. Save the generated music pack.
-7. Allow the user to preview or download it.
+## Stage 4 — Music Pack Generation — In Progress
 
-The resulting workflow will be:
+Implemented foundation:
+
+* PdfSharpCore PDF merge service
+* Read selected music for a Mass
+* Sort selections by Mass/display order
+* Deduplicate selections by `MusicSheetId`
+* Include a source PDF only once when it is used for several Mass parts
+* Merge source PDFs into one choir music pack
+* Save generated packs under `Storage/Generated/MusicPacks/`
+
+The workflow is:
 
 ```text
 Music Library
       ↓
-Create Mass
+Create / Duplicate Mass
       ↓
-Select Music
+Plan Music
       ↓
 Generate Music Pack
       ↓
 Combined PDF
 ```
 
-## Stage 5 — PowerPoint
+Further testing and polish of generated packs remains before this stage is considered complete.
 
-After the music-sheet functionality is stable:
+## Stage 5 — PowerPoint — Future
+
+PowerPoint work starts only after the PDF music-sheet workflow is stable. Planned capabilities include importing lyrics/order from existing presentations, using a choir template, configurable backgrounds and overlays, preserving template fonts/layout/logo, and generating songs in Mass order.
 
 ```text
 Music Library
@@ -932,8 +973,6 @@ PowerPoint Settings
       ↓
 Generate PPTX
 ```
-
-Existing PowerPoint files may also be used to populate the song/lyrics library.
 
 ---
 
@@ -961,28 +1000,33 @@ The project should follow these principles throughout development:
 
 # Current Milestone
 
-The first development target is deliberately small:
+The Music Library core workflow is complete. Development is currently focused on completing and polishing Mass Planning and Music Pack generation.
 
 ```text
-START
-  │
-  ▼
-Upload a PDF
-  │
-  ▼
-Enter music information
-  │
-  ▼
-Save
-  │
-  ▼
-Music appears in library
-  │
-  ▼
-Open / preview PDF
-  │
-  ▼
-DONE
+Music Library                 COMPLETE
+      ↓
+Create / Edit / Duplicate Mass    WORKING
+      ↓
+Plan Music                        WORKING
+      ↓
+Generate Music Pack               IN PROGRESS
+      ↓
+PowerPoint                        FUTURE
 ```
 
-Once this works reliably on both macOS and Windows, development can move to Mass planning and combined PDF generation.
+The next priority is to verify and polish the generated choir music pack before beginning PowerPoint functionality.
+
+---
+
+# Backup Requirements
+
+The local application data is split between the SQLite database and physical files. A useful backup must therefore include both:
+
+```text
+Data/choir.db
+Storage/MusicSheets/
+```
+
+The database contains the music metadata and file paths, while `Storage/MusicSheets/` contains the actual PDF music sheets. Backing up only one of these locations is not sufficient to restore the complete Music Library.
+
+Generated music packs under `Storage/Generated/` can normally be regenerated from the database and source PDFs.

@@ -30,7 +30,7 @@ else
         <input type="text" id="musicSearch" class="form-control"
                placeholder="Search title, composer, arrangement, key or suggested part..." autocomplete="off" />
     </div>
-    <table class="table table-striped align-middle" id="musicTable">
+    <table class="table table-hover align-middle" id="musicTable">
         <thead>
             <tr>
                 <th>Title</th>
@@ -60,17 +60,20 @@ else
                     <td>@musicSheet.Key</td>
 
                     <td class="text-end">
-                        <a asp-page="View" asp-route-id="@musicSheet.Id" target="_blank" class="btn btn-sm btn-outline-primary">
-                            View PDF
-                        </a>
-                        <a asp-page="Edit" asp-route-id="@musicSheet.Id" class="btn btn-sm btn-outline-secondary">
-                            Edit
+                        <a asp-page="View" asp-route-id="@musicSheet.Id" target="_blank" rel="noopener noreferrer"
+                           class="btn btn-sm btn-outline-primary table-action" title="View PDF" data-bs-toggle="tooltip">
+                            <i class="bi bi-file-earmark-pdf"></i>
                         </a>
 
-                        <a asp-page="Delete" asp-route-id="@musicSheet.Id" class="btn btn-sm btn-outline-danger">
-                            Delete
+                        <a asp-page="Edit" asp-route-id="@musicSheet.Id" class="btn btn-sm btn-outline-secondary table-action"
+                           title="Edit" data-bs-toggle="tooltip">
+                            <i class="bi bi-pencil"></i>
                         </a>
 
+                        <a asp-page="Delete" asp-route-id="@musicSheet.Id" class="btn btn-sm btn-outline-danger table-action"
+                           title="Delete" data-bs-toggle="tooltip">
+                            <i class="bi bi-trash"></i>
+                        </a>
                     </td>
                 </tr>
             }
