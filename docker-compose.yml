@@ -1,0 +1,20 @@
+services:
+  choir-music-system:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: choir-music-system
+
+    restart: unless-stopped
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+
+    ports:
+      - "5105:8080"
+
+    volumes:
+      - ./Data:/app/Data
+      - ./Storage:/app/Storage

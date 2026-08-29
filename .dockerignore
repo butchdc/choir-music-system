@@ -1,0 +1,13 @@
+bin/
+obj/
+.git/
+.vscode/
+
+Data/*.db
+Data/*.db-shm
+Data/*.db-wal
+
+Storage/MusicSheets/*
+Storage/Generated/*
+
+.DS_Store
