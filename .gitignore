@@ -45,7 +45,7 @@ Desktop.ini
 # Runtime database files do not.
 # --------------------------------------------
 
-Data/
+#Data/
 
 *.db
 *.db-shm
