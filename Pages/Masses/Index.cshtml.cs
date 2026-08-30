@@ -1,5 +1,6 @@
 using choir_music_system.Data;
 using choir_music_system.Models;
+using choir_music_system.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -9,16 +10,48 @@ namespace choir_music_system.Pages.Masses;
 public class IndexModel : PageModel
 {
     private readonly ChoirDbContext _context;
+    private readonly PowerPointService _powerPointService;
 
-    public IndexModel(ChoirDbContext context)
+    public IndexModel(
+        ChoirDbContext context,
+        PowerPointService powerPointService)
     {
         _context = context;
+        _powerPointService = powerPointService;
     }
 
     public IList<Mass> Masses { get; set; }
         = new List<Mass>();
 
     public string? ActiveFilter { get; set; }
+
+    public async Task<IActionResult> OnGetGeneratePptAsync(int id)
+    {
+        var mass = await _context.Masses
+            .Include(x => x.Songs)
+                .ThenInclude(x => x.Song)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (mass is null)
+        {
+            return NotFound();
+        }
+
+        var filePath =
+            _powerPointService.GenerateMassPresentation(mass);
+
+        var bytes =
+            await System.IO.File.ReadAllBytesAsync(filePath);
+
+        var safeName = string.Join(
+            "_",
+            mass.Name.Split(Path.GetInvalidFileNameChars()));
+
+        return File(
+            bytes,
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            $"{safeName}-{mass.MassDate:yyyyMMdd}.pptx");
+    }
 
     public async Task OnGetAsync(string? filter)
     {

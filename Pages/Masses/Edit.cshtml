@@ -7,7 +7,7 @@
 
 <h1>Edit Mass</h1>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
 
     <input type="hidden" asp-for="Mass.Id" />
 
@@ -25,6 +25,28 @@
     <div class="mb-3">
         <label asp-for="Mass.Notes" class="form-label"></label>
         <textarea asp-for="Mass.Notes" class="form-control" rows="4"></textarea>
+    </div>
+    <div class="mb-3">
+        <label asp-for="BackgroundImage" class="form-label">
+            Presentation Background
+        </label>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Mass.PresentationBackgroundPath))
+        {
+            <div class="mb-2 text-muted small">
+                A presentation background is currently set.
+                Upload a new image to replace it.
+            </div>
+        }
+
+        <input asp-for="BackgroundImage" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+               class="form-control" />
+
+        <div class="form-text">
+            Optional. Leave blank to keep the existing background.
+        </div>
+
+        <span asp-validation-for="BackgroundImage" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">

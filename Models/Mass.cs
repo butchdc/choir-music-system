@@ -21,4 +21,7 @@ public class Mass
 
     public ICollection<MassSong> Songs { get; set; }
         = new List<MassSong>();
+
+    [StringLength(500)]
+    public string? PresentationBackgroundPath { get; set; }
 }

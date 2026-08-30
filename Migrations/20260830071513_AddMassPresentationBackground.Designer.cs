@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using choir_music_system.Data;
 
@@ -10,9 +11,11 @@ using choir_music_system.Data;
 namespace choir_music_system.Migrations
 {
     [DbContext(typeof(ChoirDbContext))]
-    partial class ChoirDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260830071513_AddMassPresentationBackground")]
+    partial class AddMassPresentationBackground
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.11");

@@ -145,6 +145,12 @@ else
                                 <i class="bi bi-file-earmark-pdf"></i>
                             </a>
 
+                            <a asp-page="./Index" asp-page-handler="GeneratePpt" asp-route-id="@mass.Id"
+                               class="btn btn-sm btn-outline-secondary table-action" title="Generate PowerPoint"
+                               data-bs-toggle="tooltip">
+                                <i class="bi bi-file-earmark-slides"></i>
+                            </a>
+
                             <a asp-page="Delete" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-danger table-action"
                                title="Delete Mass" data-bs-toggle="tooltip">
                                 <i class="bi bi-trash"></i>
