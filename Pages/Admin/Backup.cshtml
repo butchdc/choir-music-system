@@ -1,0 +1,89 @@
+@page
+@model choir_music_system.Pages.Admin.BackupModel
+
+@{
+    ViewData["Title"] = "Backup & Restore";
+}
+
+<div class="mb-4">
+    <h1>Backup & Restore</h1>
+
+    <p class="text-muted">
+        Export system data from one environment and restore it into another.
+    </p>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <div class="alert alert-info">
+        @Model.StatusMessage
+    </div>
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+
+        <h5 class="card-title">
+            Export Backup
+        </h5>
+
+        <p class="text-muted">
+            Downloads the database and stored system files.
+            Generated presentations are excluded.
+        </p>
+
+        <form method="post"
+              asp-page-handler="Export">
+
+            <button type="submit"
+                    class="btn btn-primary">
+
+                <i class="bi bi-download me-1"></i>
+                Export Backup
+
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+
+        <h5 class="card-title">
+            Import Backup
+        </h5>
+
+        <p class="text-muted">
+            Restore a backup exported from another environment.
+            A safety backup of the current database will be created first.
+        </p>
+
+        <form method="post"
+              asp-page-handler="Import"
+              enctype="multipart/form-data">
+
+            <div class="mb-3">
+
+                <input asp-for="BackupFile"
+                       type="file"
+                       accept=".zip,application/zip"
+                       class="form-control"
+                       required />
+
+            </div>
+
+            <button type="submit"
+                    class="btn btn-danger"
+                    onclick="return confirm('This will replace the current system data. Continue?');">
+
+                <i class="bi bi-upload me-1"></i>
+                Restore Backup
+
+            </button>
+
+        </form>
+
+    </div>
+</div>

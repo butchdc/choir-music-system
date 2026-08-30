@@ -112,7 +112,7 @@ public class PlanModel : PageModel
             .Where(x => x.SongId.HasValue)
             .ToList();
 
-        // Keep MassSongs for Music Pack / existing workflows.
+        // Keep MassSongs in sync for Music Pack / existing workflows.
         var existingMassSongs = await _context.MassSongs
             .Where(x => x.MassId == id)
             .ToListAsync();
@@ -132,75 +132,63 @@ public class PlanModel : PageModel
             });
         }
 
-        // Load current unified plan.
+        // Load the current unified presentation plan.
         var existingPlanItems = await _context.MassPlanItems
             .Where(x => x.MassId == id)
             .OrderBy(x => x.DisplayOrder)
             .ToListAsync();
 
-        var presentationItems = existingPlanItems
-            .Where(x => x.ItemType == "Presentation")
-            .ToList();
-
-        var oldSongPlanItems = existingPlanItems
+        var existingSongItems = existingPlanItems
             .Where(x => x.ItemType == "Song")
             .ToList();
 
-        _context.MassPlanItems.RemoveRange(oldSongPlanItems);
+        // Track which existing song rows have been reused.
+        var usedSongItemIds = new HashSet<int>();
 
-        var finalItems = new List<MassPlanItem>();
-
-        foreach (var part in GetMassParts())
+        foreach (var selection in songSelections)
         {
-            var partSongs = songSelections
-                .Where(x => x.MassPart == part)
-                .ToList();
-
-            var partPresentations = presentationItems
-                .Where(x =>
+            // Try to reuse an existing matching Song plan item first.
+            var existingItem = existingSongItems
+                .FirstOrDefault(x =>
+                    !usedSongItemIds.Contains(x.Id) &&
+                    x.SongId == selection.SongId &&
                     string.Equals(
                         x.MassPart,
-                        part,
-                        StringComparison.OrdinalIgnoreCase))
-                .OrderBy(x => x.DisplayOrder)
-                .ToList();
+                        selection.MassPart,
+                        StringComparison.OrdinalIgnoreCase));
 
-            foreach (var song in partSongs)
+            if (existingItem is not null)
             {
-                finalItems.Add(new MassPlanItem
-                {
-                    MassId = id,
-                    ItemType = "Song",
-                    SongId = song.SongId!.Value,
-                    MassPart = part
-                });
+                usedSongItemIds.Add(existingItem.Id);
+                continue;
             }
 
-            // Presentation items for the same Mass Part
-            // remain grouped with that section.
-            finalItems.AddRange(partPresentations);
+            // This is a newly added song.
+            // Put it at the end of the current presentation order.
+            var nextOrder = existingPlanItems.Count == 0
+                ? 10
+                : existingPlanItems.Max(x => x.DisplayOrder) + 10;
+
+            var newItem = new MassPlanItem
+            {
+                MassId = id,
+                ItemType = "Song",
+                SongId = selection.SongId!.Value,
+                MassPart = selection.MassPart,
+                DisplayOrder = nextOrder
+            };
+
+            _context.MassPlanItems.Add(newItem);
+
+            existingPlanItems.Add(newItem);
         }
 
-        // Keep any presentation items with no Mass Part.
-        var unassignedPresentations = presentationItems
-            .Where(x => string.IsNullOrWhiteSpace(x.MassPart))
-            .OrderBy(x => x.DisplayOrder)
+        // Remove Song plan items that are no longer selected.
+        var removedSongItems = existingSongItems
+            .Where(x => !usedSongItemIds.Contains(x.Id))
             .ToList();
 
-        finalItems.AddRange(unassignedPresentations);
-
-        var displayOrder = 10;
-
-        foreach (var item in finalItems)
-        {
-            item.DisplayOrder = displayOrder;
-            displayOrder += 10;
-
-            if (item.Id == 0)
-            {
-                _context.MassPlanItems.Add(item);
-            }
-        }
+        _context.MassPlanItems.RemoveRange(removedSongItems);
 
         mass.UpdatedDate = DateTime.UtcNow;
 
@@ -208,7 +196,6 @@ public class PlanModel : PageModel
 
         return RedirectToPage(new { id });
     }
-
     public async Task<IActionResult> OnPostAddPresentationAsync(
         int id,
         int presentationItemId,
@@ -243,59 +230,6 @@ public class PlanModel : PageModel
         return RedirectToPage(new { id });
     }
 
-    public async Task<IActionResult> OnPostMoveUpAsync(
-        int id,
-        int planItemId)
-    {
-        var items = await _context.MassPlanItems
-            .Where(x => x.MassId == id)
-            .OrderBy(x => x.DisplayOrder)
-            .ToListAsync();
-
-        var index = items.FindIndex(x => x.Id == planItemId);
-
-        if (index > 0)
-        {
-            var current = items[index];
-            var previous = items[index - 1];
-
-            var currentOrder = current.DisplayOrder;
-
-            current.DisplayOrder = previous.DisplayOrder;
-            previous.DisplayOrder = currentOrder;
-
-            await _context.SaveChangesAsync();
-        }
-
-        return RedirectToPage(new { id });
-    }
-
-    public async Task<IActionResult> OnPostMoveDownAsync(
-        int id,
-        int planItemId)
-    {
-        var items = await _context.MassPlanItems
-            .Where(x => x.MassId == id)
-            .OrderBy(x => x.DisplayOrder)
-            .ToListAsync();
-
-        var index = items.FindIndex(x => x.Id == planItemId);
-
-        if (index >= 0 && index < items.Count - 1)
-        {
-            var current = items[index];
-            var next = items[index + 1];
-
-            var currentOrder = current.DisplayOrder;
-
-            current.DisplayOrder = next.DisplayOrder;
-            next.DisplayOrder = currentOrder;
-
-            await _context.SaveChangesAsync();
-        }
-
-        return RedirectToPage(new { id });
-    }
     private static List<string> GetMassParts()
     {
         return new List<string>
@@ -403,5 +337,34 @@ public class PlanModel : PageModel
         }
 
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<IActionResult> OnPostSavePlanOrderAsync(
+    int id,
+    List<int> itemIds)
+    {
+        var items = await _context.MassPlanItems
+            .Where(x => x.MassId == id)
+            .ToListAsync();
+
+        var lookup = items.ToDictionary(x => x.Id);
+
+        var displayOrder = 10;
+
+        foreach (var itemId in itemIds)
+        {
+            if (lookup.TryGetValue(itemId, out var item))
+            {
+                item.DisplayOrder = displayOrder;
+                displayOrder += 10;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        return new JsonResult(new
+        {
+            success = true
+        });
     }
 }

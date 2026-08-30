@@ -97,6 +97,11 @@ public class IndexModel : PageModel
             .OrderBy(x => x.DisplayOrder)
             .ToListAsync();
 
+        var sourcePlanItems = await _context.MassPlanItems
+            .Where(x => x.MassId == id)
+            .OrderBy(x => x.DisplayOrder)
+            .ToListAsync();
+
         var newMass = new Mass
         {
             Name = $"{sourceMass.Name} Copy",
@@ -119,6 +124,21 @@ public class IndexModel : PageModel
                     SongId = selection.SongId,
                     MassPart = selection.MassPart,
                     DisplayOrder = selection.DisplayOrder
+                }
+            );
+        }
+
+        foreach (var item in sourcePlanItems)
+        {
+            _context.MassPlanItems.Add(
+                new MassPlanItem
+                {
+                    MassId = newMass.Id,
+                    ItemType = item.ItemType,
+                    SongId = item.SongId,
+                    PresentationItemId = item.PresentationItemId,
+                    MassPart = item.MassPart,
+                    DisplayOrder = item.DisplayOrder
                 }
             );
         }

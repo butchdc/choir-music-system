@@ -72,19 +72,19 @@
                                                    " — ",
                                                    new[]
                                                    {
-                                                                                                                      selectedMusic.Title,
-                                                                                                                      selectedMusic.Composer,
-                                                                                                                      string.IsNullOrWhiteSpace(selectedMusic.Arrangement)
-                                                                                                                          ? null
-                                                                                                                          : $"Arr: {selectedMusic.Arrangement}",
-                                                                                                                      selectedMusic.SuggestedMassPart,
-                                                                                                                      string.IsNullOrWhiteSpace(selectedMusic.Key)
-                                                                                                                          ? null
-                                                                                                                          : $"Key: {selectedMusic.Key}"
+                                                                                                                                                                                     selectedMusic.Title,
+                                                                                                                                                                                     selectedMusic.Composer,
+                                                                                                                                                                                     string.IsNullOrWhiteSpace(selectedMusic.Arrangement)
+                                                                                                                                                                                         ? null
+                                                                                                                                                                                         : $"Arr: {selectedMusic.Arrangement}",
+                                                                                                                                                                                     selectedMusic.SuggestedMassPart,
+                                                                                                                                                                                     string.IsNullOrWhiteSpace(selectedMusic.Key)
+                                                                                                                                                                                         ? null
+                                                                                                                                                                                         : $"Key: {selectedMusic.Key}"
                                                    }
                                                    .Where(x => !string.IsNullOrWhiteSpace(x))
                                                )
-                                                                                                                                                                                                                                                                                                                                                                                                      )"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     )"
                                            data-music-id="@selectedMusic?.Id" placeholder="Search title, composer, part or key..."
                                            autocomplete="off" />
 
@@ -96,8 +96,8 @@
 
                                 <a class="btn btn-outline-secondary view-music"
                                    href="@(selectedMusic is null
-                                                                                                                                                                                                                         ? "#"
-                                                                                                                                                                                                                         : $"/MusicLibrary/View/{selectedMusic.Id}")"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ? "#"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    : $"/MusicLibrary/View/{selectedMusic.Id}")"
                                    target="_blank" rel="noopener noreferrer"
                                    style="@(selectedMusic is null ? "display:none;" : "")">
                                     View
@@ -151,23 +151,25 @@
         .ToList();
 
     <div class="card mb-4">
-        <div class="list-group list-group-flush">
+        <div class="list-group" id="massPlanList">
 
             @for (var i = 0; i < orderedItems.Count; i++)
             {
                 var planItem = orderedItems[i];
 
-                <div class="list-group-item">
+                <div class="list-group-item mass-plan-item" data-plan-item-id="@planItem.Id">
                     <div class="d-flex align-items-center gap-3">
 
                         <div class="text-muted text-center" style="width: 35px;">
-                            @(i + 1)
+                            <span class="plan-item-number">
+                                @(i + 1)
+                            </span>
                         </div>
 
                         <div class="flex-grow-1">
 
                             @if (planItem.ItemType == "Song" &&
-                                 planItem.Song is not null)
+                                planItem.Song is not null)
                             {
                                 <div class="fw-semibold">
                                     🎵 @planItem.Song.Title
@@ -182,49 +184,45 @@
                                     }
                                 </div>
                             }
-                            else if (planItem.ItemType == "Presentation" &&
-                                     planItem.PresentationItem is not null)
+                            else if (planItem.ItemType == "Presentation")
                             {
-                                <div class="fw-semibold">
-                                    📄 @planItem.PresentationItem.Title
-                                </div>
+                                @if (planItem.PresentationItem is not null)
+                                {
+                                    <a asp-page="/PresentationLibrary/Edit" asp-route-id="@planItem.PresentationItem.Id"
+                                       asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")" class="text-decoration-none">
+                                        @planItem.PresentationItem.Title
+                                    </a>
 
-                                <div class="small text-muted">
-                                    @if (!string.IsNullOrWhiteSpace(planItem.MassPart))
-                                    {
-                                        <span>@planItem.MassPart · </span>
-                                    }
+                                    <div class="small text-muted">
+                                        @if (!string.IsNullOrWhiteSpace(planItem.MassPart))
+                                        {
+                                            <span>@planItem.MassPart · </span>
+                                        }
 
-                                    @planItem.PresentationItem.Type
-                                </div>
+                                        @planItem.PresentationItem.Type
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="fw-semibold text-danger">
+                                        📄 Presentation item unavailable
+                                    </div>
+                                }
                             }
 
                         </div>
 
                         <div class="d-flex gap-1">
 
-                            <form method="post" asp-page-handler="MoveUp">
-
-                                <input type="hidden" name="id" value="@Model.Mass.Id" />
-
-                                <input type="hidden" name="planItemId" value="@planItem.Id" />
-
-                                <button type="submit" class="btn btn-sm btn-outline-secondary" disabled="@(i == 0)">
+                            <div class="d-flex gap-1">
+                                <button type="button" class="btn btn-sm btn-outline-secondary move-up" title="Move up">
                                     ↑
                                 </button>
-                            </form>
 
-                            <form method="post" asp-page-handler="MoveDown">
-
-                                <input type="hidden" name="id" value="@Model.Mass.Id" />
-
-                                <input type="hidden" name="planItemId" value="@planItem.Id" />
-
-                                <button type="submit" class="btn btn-sm btn-outline-secondary"
-                                        disabled="@(i == orderedItems.Count - 1)">
+                                <button type="button" class="btn btn-sm btn-outline-secondary move-down" title="Move down">
                                     ↓
                                 </button>
-                            </form>
+                            </div>
 
                             @if (planItem.ItemType == "Presentation")
                             {
@@ -324,18 +322,18 @@
             const form = document.getElementById("musicPlanForm");
 
             const musicLibrary = [
-                                                                                    @foreach (var music in Model.Songs)
+                                                                                                                        @foreach (var music in Model.Songs)
                 {
                     @:{
-                                                                                                                                                            @:id: @music.Id,
+                                                                                                                                                                                                                                    @:id: @music.Id,
                     @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
                     @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
                     @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
                     @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
                     @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
-                                                                                                                                                            @:},
+                                                                                                                                                                                                                                    @:},
             }
-                                                                                ];
+                                                                                                                    ];
 
         function createMusicRow() {
 
@@ -344,32 +342,32 @@
             row.className = "music-row d-flex gap-2 mb-2";
 
             row.innerHTML = `
-                                                            <div class="music-picker flex-grow-1 position-relative">
+                                                                                                <div class="music-picker flex-grow-1 position-relative">
 
-                                                                <input type="text"
-                                                                       class="form-control music-search"
-                                                                       data-music-id=""
-                                                                       placeholder="Search title, composer, part or key..."
-                                                                       autocomplete="off" />
+                                                                                                    <input type="text"
+                                                                                                           class="form-control music-search"
+                                                                                                           data-music-id=""
+                                                                                                           placeholder="Search title, composer, part or key..."
+                                                                                                           autocomplete="off" />
 
-                                                                <div class="music-results list-group position-absolute w-100 shadow"
-                                                                     style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
-                                                                </div>
+                                                                                                    <div class="music-results list-group position-absolute w-100 shadow"
+                                                                                                         style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
+                                                                                                    </div>
 
-                                                            </div>
+                                                                                                </div>
 
-                                                            <a class="btn btn-outline-secondary view-music"
-                                                               href="#"
-                                                               target="_blank"
-                                                               style="display:none;">
-                                                                View
-                                                            </a>
+                                                                                                <a class="btn btn-outline-secondary view-music"
+                                                                                                   href="#"
+                                                                                                   target="_blank"
+                                                                                                   style="display:none;">
+                                                                                                    View
+                                                                                                </a>
 
-                                                            <button type="button"
-                                                                    class="btn btn-outline-danger remove-song">
-                                                                Remove
-                                                            </button>
-                                                        `;
+                                                                                                <button type="button"
+                                                                                                        class="btn btn-outline-danger remove-song">
+                                                                                                    Remove
+                                                                                                </button>
+                                                                                            `;
 
             return row;
         }
@@ -711,7 +709,133 @@
 
             form.appendChild(input);
         }
+        const massPlanList = document.getElementById('massPlanList');
 
-                                                                            });
+        if (massPlanList) {
+            massPlanList.addEventListener('click', async function (event) {
+                const upButton = event.target.closest('.move-up');
+                const downButton = event.target.closest('.move-down');
+
+                if (!upButton && !downButton) {
+                    return;
+                }
+
+                const row = event.target.closest('.mass-plan-item');
+
+                if (!row) {
+                    return;
+                }
+
+                if (upButton) {
+                    const previous = row.previousElementSibling;
+
+                    if (!previous) {
+                        return;
+                    }
+
+                    massPlanList.insertBefore(row, previous);
+                }
+
+                if (downButton) {
+                    const next = row.nextElementSibling;
+
+                    if (!next) {
+                        return;
+                    }
+
+                    massPlanList.insertBefore(next, row);
+                }
+
+                updatePlanNumbers();
+                await savePlanOrder();
+            });
+        }
+
+        function updatePlanNumbers() {
+            const rows = document.querySelectorAll(
+                '#massPlanList .mass-plan-item'
+            );
+
+            rows.forEach((row, index) => {
+                const number = row.querySelector('.plan-item-number');
+
+                if (number) {
+                    number.textContent = index + 1;
+                }
+            });
+        }
+
+        async function savePlanOrder() {
+            const rows =
+                massPlanList.querySelectorAll(
+                    ".mass-plan-item"
+                );
+
+            const formData = new FormData();
+
+            formData.append(
+                "id",
+                "@Model.Mass.Id"
+            );
+
+            rows.forEach(row => {
+                formData.append(
+                    "itemIds",
+                    row.dataset.planItemId
+                );
+            });
+
+            const token =
+                document.querySelector(
+                    'input[name="__RequestVerificationToken"]'
+                );
+
+            if (token) {
+                formData.append(
+                    "__RequestVerificationToken",
+                    token.value
+                );
+            }
+
+            try {
+                const response = await fetch(
+                    "?handler=SavePlanOrder",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+                if (!response.ok) {
+                    console.error(
+                        "SavePlanOrder failed:",
+                        response.status,
+                        await response.text()
+                    );
+
+                    alert(
+                        "Unable to save presentation order."
+                    );
+
+                    return false;
+                }
+
+                return true;
+            }
+            catch (error) {
+                console.error(
+                    "SavePlanOrder error:",
+                    error
+                );
+
+                alert(
+                    "Unable to save presentation order."
+                );
+
+                return false;
+            }
+        }
+
+                                                                                                                });
     </script>
 }

@@ -8,6 +8,8 @@ namespace choir_music_system.Pages.PresentationLibrary;
 
 public class EditModel : PageModel
 {
+    [BindProperty(SupportsGet = true)]
+    public string? ReturnUrl { get; set; }
     private readonly ChoirDbContext _context;
 
     public EditModel(ChoirDbContext context)
@@ -49,6 +51,12 @@ public class EditModel : PageModel
 
         await _context.SaveChangesAsync();
 
-        return RedirectToPage("Index");
+        if (!string.IsNullOrWhiteSpace(ReturnUrl) &&
+            Url.IsLocalUrl(ReturnUrl))
+        {
+            return LocalRedirect(ReturnUrl);
+        }
+
+        return RedirectToPage("./Index");
     }
 }
