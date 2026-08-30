@@ -1,0 +1,52 @@
+@page
+@model choir_music_system.Pages.PowerPointTestModel
+
+@{
+    ViewData["Title"] = "PowerPoint Template Test";
+}
+
+<h1>PowerPoint Template Test</h1>
+
+<form method="post"
+      asp-page-handler="Generate"
+      class="mb-4">
+
+    <div class="input-group" style="max-width: 420px;">
+        <input asp-for="SongId"
+               type="number"
+               class="form-control"
+               placeholder="Song ID" />
+
+        <button type="submit"
+                class="btn btn-primary">
+            Generate Song PPT
+        </button>
+    </div>
+</form>
+
+@if (Model.Layouts.Count == 0)
+{
+    <div class="alert alert-warning">
+        No slide layouts were found.
+    </div>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var layout in Model.Layouts)
+        {
+            <li class="list-group-item">
+                @layout
+            </li>
+        }
+    </ul>
+}
+
+<hr class="my-4">
+
+<h2>Template Placeholders</h2>
+
+<pre class="bg-light border rounded p-3">@string.Join(
+    Environment.NewLine,
+    Model.Placeholders)
+</pre>

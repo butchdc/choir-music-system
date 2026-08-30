@@ -131,6 +131,7 @@ public class EditModel : PageModel
         existingSong.OneLicenseNumber = Song.OneLicenseNumber;
         existingSong.Publisher = Song.Publisher;
         existingSong.CopyrightText = Song.CopyrightText;
+        existingSong.PresentationLyrics = Song.PresentationLyrics;
         existingSong.UpdatedDate = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();

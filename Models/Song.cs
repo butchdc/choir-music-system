@@ -32,6 +32,9 @@ public class Song
     [StringLength(500)]
     public string? CopyrightText { get; set; }
 
+    [StringLength(10000)]
+    public string? PresentationLyrics { get; set; }
+
     public bool IsActive { get; set; } = true;
 
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;

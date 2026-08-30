@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<PdfMetadataExtractorService>();
 builder.Services.AddScoped<PdfMergeService>();
+builder.Services.AddScoped<PowerPointService>();
 
 builder.Services.AddDbContext<ChoirDbContext>(options =>
     options.UseSqlite(

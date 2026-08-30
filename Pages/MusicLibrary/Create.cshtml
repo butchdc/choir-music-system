@@ -133,6 +133,24 @@
         <textarea asp-for="Song.CopyrightText" class="form-control" rows="2"
                   placeholder="Optional copyright or licence wording"></textarea>
     </div>
+    <h5 class="mt-4 mb-3">Presentation Lyrics</h5>
+
+    <div class="mb-3">
+        <label asp-for="Song.PresentationLyrics" class="form-label">
+            Presentation Lyrics
+        </label>
+
+        <textarea asp-for="Song.PresentationLyrics" class="form-control font-monospace" rows="14" placeholder="[SLIDE:TITLED]
+        First slide lyrics here...
+
+        [SLIDE]
+        Next slide lyrics here..."></textarea>
+
+        <div class="form-text">
+            Use <code>[SLIDE:TITLED]</code> for a slide with song title, composer and licence details.
+            Use <code>[SLIDE]</code> for lyrics-only continuation slides.
+        </div>
+    </div>
 
     <div class="d-flex gap-2">
         <button type="submit" asp-page="/MusicLibrary/Create" class="btn btn-primary">
