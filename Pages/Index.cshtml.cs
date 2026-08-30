@@ -18,7 +18,7 @@ public class IndexModel : PageModel
         _environment = environment;
     }
 
-    public int MusicSheetCount { get; set; }
+    public int SongCount { get; set; }
     public int MassCount { get; set; }
     public int UpcomingMassCount { get; set; }
     public int MusicPackCount { get; set; }
@@ -26,8 +26,8 @@ public class IndexModel : PageModel
     public IList<UpcomingMassItem> UpcomingMasses { get; set; }
         = new List<UpcomingMassItem>();
 
-    public IList<MusicSheet> RecentMusic { get; set; }
-        = new List<MusicSheet>();
+    public IList<Song> RecentMusic { get; set; }
+        = new List<Song>();
 
     public IList<MassPartCount> LibraryBreakdown { get; set; }
         = new List<MassPartCount>();
@@ -36,7 +36,7 @@ public class IndexModel : PageModel
     {
         var today = DateTime.Today;
 
-        MusicSheetCount = await _context.MusicSheets
+        SongCount = await _context.Songs
             .CountAsync(x => x.IsActive);
 
         MassCount = await _context.Masses.CountAsync();
@@ -54,18 +54,18 @@ public class IndexModel : PageModel
                 Name = x.Name,
                 MassDate = x.MassDate,
 
-                MusicCount = _context.MassMusicSheets
+                MusicCount = _context.MassSongs
                     .Count(m => m.MassId == x.Id)
             })
             .ToListAsync();
 
-        RecentMusic = await _context.MusicSheets
+        RecentMusic = await _context.Songs
             .Where(x => x.IsActive)
             .OrderByDescending(x => x.UpdatedDate)
             .Take(5)
             .ToListAsync();
 
-        LibraryBreakdown = await _context.MusicSheets
+        LibraryBreakdown = await _context.Songs
             .Where(x => x.IsActive)
             .GroupBy(x =>
                 string.IsNullOrWhiteSpace(x.SuggestedMassPart)

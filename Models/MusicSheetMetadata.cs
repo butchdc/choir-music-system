@@ -1,6 +1,6 @@
 namespace choir_music_system.Models;
 
-public class MusicSheetMetadata
+public class SongMetadata
 {
     public string? Title { get; set; }
 

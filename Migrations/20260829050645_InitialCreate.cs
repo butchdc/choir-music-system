@@ -12,7 +12,7 @@ namespace choir_music_system.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "MusicSheets",
+                name: "Songs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -31,7 +31,7 @@ namespace choir_music_system.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MusicSheets", x => x.Id);
+                    table.PrimaryKey("PK_Songs", x => x.Id);
                 });
         }
 
@@ -39,7 +39,7 @@ namespace choir_music_system.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MusicSheets");
+                name: "Songs");
         }
     }
 }

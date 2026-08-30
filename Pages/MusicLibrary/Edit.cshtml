@@ -9,22 +9,22 @@
 
 <form method="post" enctype="multipart/form-data">
 
-    <input type="hidden" asp-for="MusicSheet.Id" />
+    <input type="hidden" asp-for="Song.Id" />
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.Title" class="form-label">
+        <label asp-for="Song.Title" class="form-label">
             Title
         </label>
 
-        <input asp-for="MusicSheet.Title" class="form-control" />
+        <input asp-for="Song.Title" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.SuggestedMassPart" class="form-label">
+        <label asp-for="Song.SuggestedMassPart" class="form-label">
             Suggested Mass Part
         </label>
 
-        <select asp-for="MusicSheet.SuggestedMassPart" class="form-select">
+        <select asp-for="Song.SuggestedMassPart" class="form-select">
             <option value="">None / Not specified</option>
             <option>Entrance</option>
             <option>Kyrie</option>
@@ -44,27 +44,27 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.Composer" class="form-label">
+        <label asp-for="Song.Composer" class="form-label">
             Composer
         </label>
 
-        <input asp-for="MusicSheet.Composer" class="form-control" />
+        <input asp-for="Song.Composer" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.Arrangement" class="form-label">
+        <label asp-for="Song.Arrangement" class="form-label">
             Arrangement
         </label>
 
-        <input asp-for="MusicSheet.Arrangement" class="form-control" />
+        <input asp-for="Song.Arrangement" class="form-control" />
     </div>
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.Key" class="form-label">
+        <label asp-for="Song.Key" class="form-label">
             Key
         </label>
 
-        <input asp-for="MusicSheet.Key" class="form-control" />
+        <input asp-for="Song.Key" class="form-control" />
     </div>
 
     <div class="mb-3">
@@ -73,7 +73,7 @@
         </label>
 
         <div>
-            @Model.MusicSheet.PdfFileName
+            @Model.Song.PdfFileName
         </div>
     </div>
 
@@ -92,11 +92,38 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="MusicSheet.Notes" class="form-label">
+        <label asp-for="Song.Notes" class="form-label">
             Notes
         </label>
 
-        <textarea asp-for="MusicSheet.Notes" class="form-control" rows="4"></textarea>
+        <textarea asp-for="Song.Notes" class="form-control" rows="4"></textarea>
+    </div>
+
+    <h5 class="mt-4 mb-3">Licensing</h5>
+
+    <div class="mb-3">
+        <label asp-for="Song.OneLicenseNumber" class="form-label">
+            OneLicense Number
+        </label>
+
+        <input asp-for="Song.OneLicenseNumber" class="form-control" placeholder="e.g. 87214" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Song.Publisher" class="form-label">
+            Publisher
+        </label>
+
+        <input asp-for="Song.Publisher" class="form-control" placeholder="e.g. OCP" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Song.CopyrightText" class="form-label">
+            Copyright / Licence Text
+        </label>
+
+        <textarea asp-for="Song.CopyrightText" class="form-control" rows="2"
+                  placeholder="Optional copyright or licence wording"></textarea>
     </div>
 
     <div class="d-flex gap-2">

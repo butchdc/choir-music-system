@@ -19,7 +19,7 @@ COPY --from=build /app/publish .
 
 RUN mkdir -p \
     /app/Data \
-    /app/Storage/MusicSheets \
+    /app/Storage/Songs \
     /app/Storage/Generated/MusicPacks
 
 ENV ASPNETCORE_ENVIRONMENT=Production

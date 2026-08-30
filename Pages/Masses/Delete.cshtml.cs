@@ -36,11 +36,11 @@ public class DeleteModel : PageModel
             return NotFound();
 
         // Remove the music selections first.
-        var selections = await _context.MassMusicSheets
+        var selections = await _context.MassSongs
             .Where(x => x.MassId == id)
             .ToListAsync();
 
-        _context.MassMusicSheets.RemoveRange(selections);
+        _context.MassSongs.RemoveRange(selections);
         _context.Masses.Remove(mass);
 
         await _context.SaveChangesAsync();

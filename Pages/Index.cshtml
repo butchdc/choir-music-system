@@ -20,7 +20,7 @@
         <a asp-page="/MusicLibrary/Index" class="metric-card">
             <div>
                 <div class="metric-label">Music Sheets</div>
-                <div class="metric-value">@Model.MusicSheetCount</div>
+                <div class="metric-value">@Model.SongCount</div>
             </div>
 
             <div class="metric-icon">
@@ -265,9 +265,9 @@
 
         @foreach (var item in Model.LibraryBreakdown)
         {
-            var percentage = Model.MusicSheetCount == 0
+            var percentage = Model.SongCount == 0
                 ? 0
-                : (item.Count * 100.0 / Model.MusicSheetCount);
+                : (item.Count * 100.0 / Model.SongCount);
 
             <a asp-page="/MusicLibrary/Index" asp-route-part="@item.Name"
                class="library-breakdown-item text-decoration-none">

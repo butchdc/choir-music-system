@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace choir_music_system.Models;
 
-public class MusicSheet
+public class Song
 {
     public int Id { get; set; }
 
@@ -22,6 +22,15 @@ public class MusicSheet
     public string PdfPath { get; set; } = string.Empty;
 
     public string? Notes { get; set; }
+
+    [StringLength(100)]
+    public string? OneLicenseNumber { get; set; }
+
+    [StringLength(200)]
+    public string? Publisher { get; set; }
+
+    [StringLength(500)]
+    public string? CopyrightText { get; set; }
 
     public bool IsActive { get; set; } = true;
 

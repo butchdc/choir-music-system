@@ -18,8 +18,8 @@ public class IndexModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? Search { get; set; }
 
-    public IList<MusicSheet> MusicSheets { get; set; }
-        = new List<MusicSheet>();
+    public IList<Song> Songs { get; set; }
+        = new List<Song>();
 
     public string? ActivePart { get; set; }
 
@@ -27,7 +27,7 @@ public class IndexModel : PageModel
     {
         ActivePart = part;
 
-        var query = _context.MusicSheets
+        var query = _context.Songs
             .Where(x => x.IsActive)
             .AsQueryable();
 
@@ -46,7 +46,7 @@ public class IndexModel : PageModel
             }
         }
 
-        MusicSheets = await query
+        Songs = await query
             .OrderBy(x => x.Title)
             .ToListAsync();
     }

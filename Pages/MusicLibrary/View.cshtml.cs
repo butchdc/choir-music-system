@@ -20,17 +20,17 @@ public class ViewModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        var musicSheet = await _context.MusicSheets
+        var Song = await _context.Songs
             .FirstOrDefaultAsync(x => x.Id == id && x.IsActive);
 
-        if (musicSheet is null)
+        if (Song is null)
         {
             return NotFound();
         }
 
         var fullPath = Path.Combine(
             _environment.ContentRootPath,
-            musicSheet.PdfPath
+            Song.PdfPath
         );
 
         if (!System.IO.File.Exists(fullPath))

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace choir_music_system.Models;
 
-public class MassMusicSheet
+public class MassSong
 {
     public int Id { get; set; }
 
@@ -10,9 +10,8 @@ public class MassMusicSheet
 
     public Mass Mass { get; set; } = null!;
 
-    public int MusicSheetId { get; set; }
-
-    public MusicSheet MusicSheet { get; set; } = null!;
+    public int SongId { get; set; }
+    public Song Song { get; set; } = null!;
 
     [Required]
     [StringLength(100)]

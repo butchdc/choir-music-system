@@ -55,9 +55,9 @@
 
                         @foreach (var selection in partSelections)
                         {
-                            var selectedMusic = selection.MusicSheetId.HasValue
-                                ? Model.MusicSheets.FirstOrDefault(
-                                    x => x.Id == selection.MusicSheetId.Value)
+                            var selectedMusic = selection.SongId.HasValue
+                                ? Model.Songs.FirstOrDefault(
+                                    x => x.Id == selection.SongId.Value)
                                 : null;
 
                             <div class="music-row d-flex gap-2 mb-2">
@@ -141,7 +141,7 @@
             const form = document.getElementById("musicPlanForm");
 
             const musicLibrary = [
-                                                                    @foreach (var music in Model.MusicSheets)
+                                                                    @foreach (var music in Model.Songs)
                 {
                     @:{
                                                                                                                             @:id: @music.Id,
@@ -489,7 +489,7 @@
                             );
 
                             addHidden(
-                                `Selections[${index}].MusicSheetId`,
+                                `Selections[${index}].SongId`,
                                 musicId
                             );
 

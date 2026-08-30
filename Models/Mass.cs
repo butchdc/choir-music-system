@@ -19,6 +19,6 @@ public class Mass
 
     public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
 
-    public ICollection<MassMusicSheet> MusicSheets { get; set; }
-    = new List<MassMusicSheet>();
+    public ICollection<MassSong> Songs { get; set; }
+        = new List<MassSong>();
 }

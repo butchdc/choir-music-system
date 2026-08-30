@@ -20,7 +20,7 @@ namespace choir_music_system.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.11");
 
-            modelBuilder.Entity("choir_music_system.Models.MusicSheet", b =>
+            modelBuilder.Entity("choir_music_system.Models.Song", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,7 +65,7 @@ namespace choir_music_system.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MusicSheets");
+                    b.ToTable("Songs");
                 });
 #pragma warning restore 612, 618
         }

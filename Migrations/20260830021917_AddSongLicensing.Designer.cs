@@ -11,8 +11,8 @@ using choir_music_system.Data;
 namespace choir_music_system.Migrations
 {
     [DbContext(typeof(ChoirDbContext))]
-    [Migration("20260829094106_AddMassMusicSheets")]
-    partial class AddMassMusicSheets
+    [Migration("20260830021917_AddSongLicensing")]
+    partial class AddSongLicensing
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,7 @@ namespace choir_music_system.Migrations
                     b.ToTable("Masses");
                 });
 
-            modelBuilder.Entity("choir_music_system.Models.MassMusicSheet", b =>
+            modelBuilder.Entity("choir_music_system.Models.MassSong", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,19 +66,20 @@ namespace choir_music_system.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("MusicSheetId")
-                        .HasColumnType("INTEGER");
+                    b.Property<int>("SongId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("MusicSheetId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MassId");
 
-                    b.HasIndex("MusicSheetId");
+                    b.HasIndex("SongId");
 
-                    b.ToTable("MassMusicSheets");
+                    b.ToTable("MassMusicSheets", (string)null);
                 });
 
-            modelBuilder.Entity("choir_music_system.Models.MusicSheet", b =>
+            modelBuilder.Entity("choir_music_system.Models.Song", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -88,6 +89,10 @@ namespace choir_music_system.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Composer")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CopyrightText")
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedDate")
@@ -102,12 +107,20 @@ namespace choir_music_system.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("OneLicenseNumber")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PdfFileName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PdfPath")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Publisher")
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SuggestedMassPart")
@@ -123,31 +136,31 @@ namespace choir_music_system.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MusicSheets");
+                    b.ToTable("MusicSheets", (string)null);
                 });
 
-            modelBuilder.Entity("choir_music_system.Models.MassMusicSheet", b =>
+            modelBuilder.Entity("choir_music_system.Models.MassSong", b =>
                 {
                     b.HasOne("choir_music_system.Models.Mass", "Mass")
-                        .WithMany("MusicSheets")
+                        .WithMany("Songs")
                         .HasForeignKey("MassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("choir_music_system.Models.MusicSheet", "MusicSheet")
+                    b.HasOne("choir_music_system.Models.Song", "Song")
                         .WithMany()
-                        .HasForeignKey("MusicSheetId")
+                        .HasForeignKey("SongId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Mass");
 
-                    b.Navigation("MusicSheet");
+                    b.Navigation("Song");
                 });
 
             modelBuilder.Entity("choir_music_system.Models.Mass", b =>
                 {
-                    b.Navigation("MusicSheets");
+                    b.Navigation("Songs");
                 });
 #pragma warning restore 612, 618
         }

@@ -47,7 +47,7 @@ public class BulkUploadModel : PageModel
         var storageFolder = Path.Combine(
             _environment.ContentRootPath,
             "Storage",
-            "MusicSheets"
+            "Songs"
         );
 
         Directory.CreateDirectory(storageFolder);
@@ -88,7 +88,7 @@ public class BulkUploadModel : PageModel
                 continue;
             }
 
-            var duplicateExists = await _context.MusicSheets
+            var duplicateExists = await _context.Songs
                 .AnyAsync(x =>
                     x.PdfFileName == pdfFile.FileName);
 
@@ -126,13 +126,13 @@ public class BulkUploadModel : PageModel
                         pdfFile.FileName
                     );
 
-            var musicSheet = new MusicSheet
+            var Song = new Song
             {
                 Title = title,
                 PdfFileName = pdfFile.FileName,
                 PdfPath = Path.Combine(
                     "Storage",
-                    "MusicSheets",
+                    "Songs",
                     storedFileName
                 ),
                 IsActive = true,
@@ -140,7 +140,7 @@ public class BulkUploadModel : PageModel
                 UpdatedDate = DateTime.UtcNow
             };
 
-            _context.MusicSheets.Add(musicSheet);
+            _context.Songs.Add(Song);
 
             Results.Add(
                 $"{pdfFile.FileName}: uploaded as \"{title}\"."

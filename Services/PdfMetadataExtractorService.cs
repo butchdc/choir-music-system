@@ -6,9 +6,9 @@ namespace choir_music_system.Services;
 
 public class PdfMetadataExtractorService
 {
-    public MusicSheetMetadata Extract(string pdfPath)
+    public SongMetadata Extract(string pdfPath)
     {
-        var result = new MusicSheetMetadata();
+        var result = new SongMetadata();
 
         using var document = PdfDocument.Open(pdfPath);
 
@@ -181,7 +181,7 @@ public class PdfMetadataExtractorService
     }
 
     private static void ApplyComposerAndArrangement(
-        MusicSheetMetadata metadata,
+        SongMetadata metadata,
         string credit)
     {
         if (string.IsNullOrWhiteSpace(credit))

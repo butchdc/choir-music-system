@@ -179,7 +179,7 @@ Application Services
    File Storage
         ↓
 Storage/
-   ├── MusicSheets/
+   ├── Songs/
    ├── Templates/       Future
    ├── Backgrounds/     Future
    └── Generated/       Future
@@ -256,7 +256,7 @@ Example:
 
 ```text
 Storage/
-└── MusicSheets/
+└── Songs/
     ├── here-i-am-lord.pdf
     ├── mass-of-creation.pdf
     └── one-bread-one-body.pdf
@@ -266,7 +266,7 @@ Future files may include:
 
 ```text
 Storage/
-├── MusicSheets/
+├── Songs/
 ├── PowerPointTemplates/
 ├── Backgrounds/
 └── Generated/
@@ -280,7 +280,7 @@ File-storage operations should eventually be accessed through a storage service 
 
 # Initial Data Model
 
-## MusicSheet
+## Song
 
 Represents a music sheet maintained in the library.
 
@@ -316,7 +316,7 @@ CreatedDate
 UpdatedDate
 ```
 
-## MassMusicSheet
+## MassSong
 
 Connects music from the library to a Mass.
 
@@ -325,7 +325,7 @@ Initial fields may include:
 ```text
 Id
 MassId
-MusicSheetId
+SongId
 MassPart
 DisplayOrder
 ```
@@ -409,12 +409,12 @@ ChoirMusicSystem/
 │   └── ChoirDbContext.cs
 │
 ├── Models/
-│   ├── MusicSheet.cs
+│   ├── Song.cs
 │   ├── Mass.cs
-│   └── MassMusicSheet.cs
+│   └── MassSong.cs
 │
 ├── Services/
-│   ├── MusicSheetService.cs
+│   ├── SongService.cs
 │   ├── FileStorageService.cs
 │   └── PdfMergeService.cs
 │
@@ -424,7 +424,7 @@ ChoirMusicSystem/
 │   └── Index.cshtml
 │
 ├── Storage/
-│   ├── MusicSheets/
+│   ├── Songs/
 │   └── Generated/
 │
 ├── wwwroot/
@@ -829,8 +829,8 @@ Data/*.db
 Data/*.db-shm
 Data/*.db-wal
 
-Storage/MusicSheets/*
-!Storage/MusicSheets/.gitkeep
+Storage/Songs/*
+!Storage/Songs/.gitkeep
 
 Storage/Generated/*
 !Storage/Generated/.gitkeep
@@ -852,7 +852,7 @@ Implemented:
 * ASP.NET Core 10 Razor Pages project
 * SQLite configuration
 * Entity Framework Core and migrations
-* Core `MusicSheet`, `Mass`, and `MassMusicSheet` models
+* Core `Song`, `Mass`, and `MassSong` models
 * Local cross-platform storage structure
 * Git/GitHub workflow
 
@@ -904,7 +904,7 @@ Implemented:
 * Search while planning by title, composer, arrangement, suggested Mass part, and key
 * Display richer song information to distinguish music with the same title
 * Open a selected music-sheet PDF in a new browser tab
-* Prioritise useful song metadata while keeping `MusicSheetId` as the saved selection identifier
+* Prioritise useful song metadata while keeping `SongId` as the saved selection identifier
 
 Current Mass parts:
 
@@ -931,7 +931,7 @@ Implemented foundation:
 * PdfSharpCore PDF merge service
 * Read selected music for a Mass
 * Sort selections by Mass/display order
-* Deduplicate selections by `MusicSheetId`
+* Deduplicate selections by `SongId`
 * Include a source PDF only once when it is used for several Mass parts
 * Merge source PDFs into one choir music pack
 * Save generated packs under `Storage/Generated/MusicPacks/`
@@ -1024,9 +1024,9 @@ The local application data is split between the SQLite database and physical fil
 
 ```text
 Data/choir.db
-Storage/MusicSheets/
+Storage/Songs/
 ```
 
-The database contains the music metadata and file paths, while `Storage/MusicSheets/` contains the actual PDF music sheets. Backing up only one of these locations is not sufficient to restore the complete Music Library.
+The database contains the music metadata and file paths, while `Storage/Songs/` contains the actual PDF music sheets. Backing up only one of these locations is not sufficient to restore the complete Music Library.
 
 Generated music packs under `Storage/Generated/` can normally be regenerated from the database and source PDFs.

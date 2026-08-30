@@ -23,7 +23,7 @@ public class CreateModel : PageModel
     }
 
     [BindProperty]
-    public MusicSheet MusicSheet { get; set; } = new();
+    public Song Song { get; set; } = new();
 
     [BindProperty]
     public IFormFile? PdfFile { get; set; }
@@ -103,7 +103,7 @@ public class CreateModel : PageModel
 
         if (!string.IsNullOrWhiteSpace(metadata.Title))
         {
-            MusicSheet.Title = metadata.Title;
+            Song.Title = metadata.Title;
         }
 
         PendingPdfFileName = tempFileName;
@@ -160,7 +160,7 @@ public class CreateModel : PageModel
         var storageFolder = Path.Combine(
             _environment.ContentRootPath,
             "Storage",
-            "MusicSheets"
+            "Songs"
         );
 
         Directory.CreateDirectory(storageFolder);
@@ -181,7 +181,7 @@ public class CreateModel : PageModel
 
             await PdfFile!.CopyToAsync(stream);
 
-            MusicSheet.PdfFileName = PdfFile.FileName;
+            Song.PdfFileName = PdfFile.FileName;
         }
         else
         {
@@ -207,21 +207,21 @@ public class CreateModel : PageModel
                 storedFilePath
             );
 
-            MusicSheet.PdfFileName =
+            Song.PdfFileName =
                 OriginalPdfFileName ?? "music-sheet.pdf";
         }
 
-        MusicSheet.PdfPath = Path.Combine(
+        Song.PdfPath = Path.Combine(
             "Storage",
-            "MusicSheets",
+            "Songs",
             storedFileName
         );
 
-        MusicSheet.CreatedDate = DateTime.UtcNow;
-        MusicSheet.UpdatedDate = DateTime.UtcNow;
-        MusicSheet.IsActive = true;
+        Song.CreatedDate = DateTime.UtcNow;
+        Song.UpdatedDate = DateTime.UtcNow;
+        Song.IsActive = true;
 
-        _context.MusicSheets.Add(MusicSheet);
+        _context.Songs.Add(Song);
         await _context.SaveChangesAsync();
 
         return RedirectToPage("Index");

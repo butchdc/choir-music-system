@@ -32,9 +32,9 @@ public class MusicPackModel : PageModel
             return NotFound();
         }
 
-        var selections = await _context.MassMusicSheets
+        var selections = await _context.MassSongs
             .Where(x => x.MassId == id)
-            .Include(x => x.MusicSheet)
+            .Include(x => x.Song)
             .OrderBy(x => x.DisplayOrder)
             .ToListAsync();
 
@@ -48,16 +48,16 @@ public class MusicPackModel : PageModel
 
         // Same PDF may be assigned to several Mass parts.
         // Only include it once in the generated pack.
-        var uniqueMusicSheets = selections
-            .GroupBy(x => x.MusicSheetId)
+        var uniqueSongs = selections
+            .GroupBy(x => x.SongId)
             .Select(x => x.First())
             .ToList();
 
-        var sourceFiles = uniqueMusicSheets
+        var sourceFiles = uniqueSongs
             .Select(x =>
                 Path.Combine(
                     _environment.ContentRootPath,
-                    x.MusicSheet.PdfPath
+                    x.Song.PdfPath
                 ))
             .Where(System.IO.File.Exists)
             .ToList();

@@ -17,8 +17,8 @@ public class PlanModel : PageModel
 
     public Mass Mass { get; set; } = null!;
 
-    public IList<MusicSheet> MusicSheets { get; set; }
-        = new List<MusicSheet>();
+    public IList<Song> Songs { get; set; }
+        = new List<Song>();
 
     [BindProperty]
     public List<MassPartSelection> Selections { get; set; }
@@ -36,12 +36,12 @@ public class PlanModel : PageModel
 
         Mass = mass;
 
-        MusicSheets = await _context.MusicSheets
+        Songs = await _context.Songs
             .Where(x => x.IsActive)
             .OrderBy(x => x.Title)
             .ToListAsync();
 
-        var existingSelections = await _context.MassMusicSheets
+        var existingSelections = await _context.MassSongs
             .Where(x => x.MassId == id)
             .OrderBy(x => x.DisplayOrder)
             .ToListAsync();
@@ -62,7 +62,7 @@ public class PlanModel : PageModel
                 Selections.Add(new MassPartSelection
                 {
                     MassPart = part,
-                    MusicSheetId = null,
+                    SongId = null,
                     DisplayOrder = displayOrder++
                 });
 
@@ -74,7 +74,7 @@ public class PlanModel : PageModel
                 Selections.Add(new MassPartSelection
                 {
                     MassPart = part,
-                    MusicSheetId = existing.MusicSheetId,
+                    SongId = existing.SongId,
                     DisplayOrder = displayOrder++
                 });
             }
@@ -93,25 +93,25 @@ public class PlanModel : PageModel
             return NotFound();
         }
 
-        var existing = await _context.MassMusicSheets
+        var existing = await _context.MassSongs
             .Where(x => x.MassId == id)
             .ToListAsync();
 
-        _context.MassMusicSheets.RemoveRange(existing);
+        _context.MassSongs.RemoveRange(existing);
 
         var displayOrder = 1;
 
         foreach (var selection in Selections)
         {
-            if (!selection.MusicSheetId.HasValue)
+            if (!selection.SongId.HasValue)
             {
                 continue;
             }
 
-            _context.MassMusicSheets.Add(new MassMusicSheet
+            _context.MassSongs.Add(new MassSong
             {
                 MassId = id,
-                MusicSheetId = selection.MusicSheetId.Value,
+                SongId = selection.SongId.Value,
                 MassPart = selection.MassPart,
                 DisplayOrder = displayOrder++
             });
@@ -148,7 +148,7 @@ public class PlanModel : PageModel
     {
         public string MassPart { get; set; } = string.Empty;
 
-        public int? MusicSheetId { get; set; }
+        public int? SongId { get; set; }
 
         public int DisplayOrder { get; set; }
     }

@@ -20,7 +20,7 @@ public class EditModel : PageModel
     }
 
     [BindProperty]
-    public MusicSheet MusicSheet { get; set; } = new();
+    public Song Song { get; set; } = new();
 
     [BindProperty]
     public IFormFile? PdfFile { get; set; }
@@ -30,25 +30,25 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        var musicSheet = await _context.MusicSheets
+        var existingSong = await _context.Songs
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        if (musicSheet is null)
+        if (existingSong is null)
         {
             return NotFound();
         }
 
-        MusicSheet = musicSheet;
+        Song = existingSong;
 
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var existingMusicSheet = await _context.MusicSheets
-            .FirstOrDefaultAsync(x => x.Id == MusicSheet.Id);
+        var existingSong = await _context.Songs
+            .FirstOrDefaultAsync(x => x.Id == Song.Id);
 
-        if (existingMusicSheet is null)
+        if (existingSong is null)
         {
             return NotFound();
         }
@@ -84,7 +84,7 @@ public class EditModel : PageModel
             var storageFolder = Path.Combine(
                 _environment.ContentRootPath,
                 "Storage",
-                "MusicSheets"
+                "Songs"
             );
 
             Directory.CreateDirectory(storageFolder);
@@ -105,7 +105,7 @@ public class EditModel : PageModel
 
             var oldFullPath = Path.Combine(
                 _environment.ContentRootPath,
-                existingMusicSheet.PdfPath
+                existingSong.PdfPath
             );
 
             if (System.IO.File.Exists(oldFullPath))
@@ -113,22 +113,25 @@ public class EditModel : PageModel
                 System.IO.File.Delete(oldFullPath);
             }
 
-            existingMusicSheet.PdfFileName = PdfFile.FileName;
+            existingSong.PdfFileName = PdfFile.FileName;
 
-            existingMusicSheet.PdfPath = Path.Combine(
+            existingSong.PdfPath = Path.Combine(
                 "Storage",
-                "MusicSheets",
+                "Songs",
                 newStoredFileName
             );
         }
 
-        existingMusicSheet.Title = MusicSheet.Title;
-        existingMusicSheet.SuggestedMassPart = MusicSheet.SuggestedMassPart;
-        existingMusicSheet.Composer = MusicSheet.Composer;
-        existingMusicSheet.Arrangement = MusicSheet.Arrangement;
-        existingMusicSheet.Key = MusicSheet.Key;
-        existingMusicSheet.Notes = MusicSheet.Notes;
-        existingMusicSheet.UpdatedDate = DateTime.UtcNow;
+        existingSong.Title = Song.Title;
+        existingSong.SuggestedMassPart = Song.SuggestedMassPart;
+        existingSong.Composer = Song.Composer;
+        existingSong.Arrangement = Song.Arrangement;
+        existingSong.Key = Song.Key;
+        existingSong.Notes = Song.Notes;
+        existingSong.OneLicenseNumber = Song.OneLicenseNumber;
+        existingSong.Publisher = Song.Publisher;
+        existingSong.CopyrightText = Song.CopyrightText;
+        existingSong.UpdatedDate = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
 

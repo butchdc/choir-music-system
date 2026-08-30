@@ -20,36 +20,36 @@ public class DeleteModel : PageModel
     }
 
     [BindProperty]
-    public MusicSheet MusicSheet { get; set; } = new();
+    public Song Song { get; set; } = new();
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
-        var musicSheet = await _context.MusicSheets
+        var existingSong = await _context.Songs
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        if (musicSheet is null)
+        if (existingSong is null)
         {
             return NotFound();
         }
 
-        MusicSheet = musicSheet;
+        Song = existingSong;
 
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var musicSheet = await _context.MusicSheets
-            .FirstOrDefaultAsync(x => x.Id == MusicSheet.Id);
+        var existingSong = await _context.Songs
+            .FirstOrDefaultAsync(x => x.Id == Song.Id);
 
-        if (musicSheet is null)
+        if (existingSong is null)
         {
             return NotFound();
         }
 
         var fullPath = Path.Combine(
             _environment.ContentRootPath,
-            musicSheet.PdfPath
+            existingSong.PdfPath
         );
 
         if (System.IO.File.Exists(fullPath))
@@ -57,7 +57,7 @@ public class DeleteModel : PageModel
             System.IO.File.Delete(fullPath);
         }
 
-        _context.MusicSheets.Remove(musicSheet);
+        _context.Songs.Remove(existingSong);
         await _context.SaveChangesAsync();
 
         return RedirectToPage("Index");

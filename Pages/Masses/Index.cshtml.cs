@@ -27,8 +27,8 @@ public class IndexModel : PageModel
         var today = DateTime.Today;
 
         var query = _context.Masses
-            .Include(x => x.MusicSheets)
-                .ThenInclude(x => x.MusicSheet)
+            .Include(x => x.Songs)
+                .ThenInclude(x => x.Song)
             .AsQueryable();
 
         switch (filter?.ToLowerInvariant())
@@ -57,7 +57,7 @@ public class IndexModel : PageModel
             return NotFound();
         }
 
-        var sourceSelections = await _context.MassMusicSheets
+        var sourceSelections = await _context.MassSongs
             .Where(x => x.MassId == id)
             .OrderBy(x => x.DisplayOrder)
             .ToListAsync();
@@ -77,11 +77,11 @@ public class IndexModel : PageModel
 
         foreach (var selection in sourceSelections)
         {
-            _context.MassMusicSheets.Add(
-                new MassMusicSheet
+            _context.MassSongs.Add(
+                new MassSong
                 {
                     MassId = newMass.Id,
-                    MusicSheetId = selection.MusicSheetId,
+                    SongId = selection.SongId,
                     MassPart = selection.MassPart,
                     DisplayOrder = selection.DisplayOrder
                 }

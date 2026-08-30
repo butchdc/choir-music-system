@@ -7,7 +7,7 @@ Data/*.db
 Data/*.db-shm
 Data/*.db-wal
 
-Storage/MusicSheets/*
+Storage/Songs/*
 Storage/Generated/*
 
 .DS_Store

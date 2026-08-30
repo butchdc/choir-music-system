@@ -19,7 +19,7 @@
     </a>
 </div>
 
-@if (Model.MusicSheets.Count == 0)
+@if (Model.Songs.Count == 0)
 {
     <div class="alert alert-info">
         No music sheets have been uploaded yet.
@@ -43,36 +43,36 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var musicSheet in Model.MusicSheets)
+            @foreach (var Song in Model.Songs)
             {
                 <tr>
-                    <td>@musicSheet.Title</td>
+                    <td>@Song.Title</td>
 
                     <td>
-                        @(string.IsNullOrWhiteSpace(musicSheet.SuggestedMassPart)
+                        @(string.IsNullOrWhiteSpace(Song.SuggestedMassPart)
                             ? "-"
-                            : musicSheet.SuggestedMassPart)
+                            : Song.SuggestedMassPart)
                     </td>
 
-                    <td>@musicSheet.Composer</td>
+                    <td>@Song.Composer</td>
 
-                    <td>@musicSheet.Arrangement</td>
+                    <td>@Song.Arrangement</td>
 
-                    <td>@musicSheet.Key</td>
+                    <td>@Song.Key</td>
 
                     <td class="text-end">
-                        <a asp-page="View" asp-route-id="@musicSheet.Id" target="_blank" rel="noopener noreferrer"
+                        <a asp-page="View" asp-route-id="@Song.Id" target="_blank" rel="noopener noreferrer"
                            class="btn btn-sm btn-outline-primary table-action" title="View PDF" data-bs-toggle="tooltip">
                             <i class="bi bi-file-earmark-pdf"></i>
                         </a>
 
-                        <a asp-page="Edit" asp-route-id="@musicSheet.Id"
+                        <a asp-page="Edit" asp-route-id="@Song.Id"
                            asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
                            class="btn btn-sm btn-outline-secondary table-action" title="Edit" data-bs-toggle="tooltip">
                             <i class="bi bi-pencil"></i>
                         </a>
 
-                        <a asp-page="Delete" asp-route-id="@musicSheet.Id" class="btn btn-sm btn-outline-danger table-action"
+                        <a asp-page="Delete" asp-route-id="@Song.Id" class="btn btn-sm btn-outline-danger table-action"
                            title="Delete" data-bs-toggle="tooltip">
                             <i class="bi bi-trash"></i>
                         </a>

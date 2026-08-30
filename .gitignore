@@ -79,8 +79,8 @@ Desktop.ini
 
 # --------------------------------------------
 
-Storage/MusicSheets/*
-!Storage/MusicSheets/.gitkeep
+Storage/Songs/*
+!Storage/Songs/.gitkeep
 
 # --------------------------------------------
 
