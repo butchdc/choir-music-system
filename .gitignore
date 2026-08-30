@@ -1,69 +1,51 @@
 # ============================================
-
-# Choir Music System - Git Ignore
-
+# Choir Music System
 # ============================================
 
+
 # --------------------------------------------
-
-# .NET build output
-
+# .NET
 # --------------------------------------------
 
 bin/
 obj/
+publish/
+artifacts/
+
 
 # --------------------------------------------
-
-# Visual Studio / VS Code
-
+# IDEs / Editors
 # --------------------------------------------
 
 .vs/
 .vscode/
+.idea/
 
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
-
-# --------------------------------------------
-
-# JetBrains Rider
-
-# --------------------------------------------
-
-.idea/
 *.sln.iml
 
+
 # --------------------------------------------
-
-# macOS
-
+# Operating System
 # --------------------------------------------
 
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# --------------------------------------------
-
-# Windows
-
-# --------------------------------------------
-
 Thumbs.db
 Desktop.ini
 
-# --------------------------------------------
-
-# SQLite local databases
-
-# Database schema is maintained using
-
-# Entity Framework Core migrations.
 
 # --------------------------------------------
+# Database
+# EF Core migrations remain in Git.
+# Runtime database files do not.
+# --------------------------------------------
+
+Data/
 
 *.db
 *.db-shm
@@ -71,30 +53,33 @@ Desktop.ini
 *.sqlite
 *.sqlite3
 
-# --------------------------------------------
-
-# Local music-sheet storage
-
-# Do not commit uploaded choir PDFs.
 
 # --------------------------------------------
+# Application Storage
+# User-uploaded PDFs must not be committed.
+#
+# MusicSheets = existing storage location
+# Songs       = future storage location
+# --------------------------------------------
+
+Storage/MusicSheets/*
+!Storage/MusicSheets/.gitkeep
 
 Storage/Songs/*
 !Storage/Songs/.gitkeep
 
+
 # --------------------------------------------
-
-# Generated files
-
+# Generated Files
 # --------------------------------------------
 
 Storage/Generated/*
 !Storage/Generated/.gitkeep
 
+
 # --------------------------------------------
-
-# Future PowerPoint storage
-
+# PowerPoint
+# Keep folders, not local/user content.
 # --------------------------------------------
 
 Storage/PowerPointTemplates/*
@@ -103,28 +88,13 @@ Storage/PowerPointTemplates/*
 Storage/Backgrounds/*
 !Storage/Backgrounds/.gitkeep
 
-# --------------------------------------------
-
-# User-uploaded files
 
 # --------------------------------------------
-
-uploads/
-
+# Temporary Storage
 # --------------------------------------------
 
-# Logs
-
-# --------------------------------------------
-
-logs/
-*.log
-
-# --------------------------------------------
-
-# Temporary files
-
-# --------------------------------------------
+Storage/Temp/*
+!Storage/Temp/.gitkeep
 
 *.tmp
 *.temp
@@ -132,10 +102,24 @@ logs/
 *.swp
 *~
 
+
+# --------------------------------------------
+# Other User Uploads
 # --------------------------------------------
 
-# Local environment configuration / secrets
+uploads/
 
+
+# --------------------------------------------
+# Logs
+# --------------------------------------------
+
+logs/
+*.log
+
+
+# --------------------------------------------
+# Environment / Secrets
 # --------------------------------------------
 
 .env
@@ -145,24 +129,9 @@ logs/
 appsettings.Local.json
 appsettings.*.Local.json
 
-# --------------------------------------------
-
-# ASP.NET Core development secrets should use:
-
-#
-
-# dotnet user-secrets
-
-#
-
-# Never commit passwords, API keys or secrets.
 
 # --------------------------------------------
-
-# --------------------------------------------
-
-# Test / coverage output
-
+# Tests / Coverage
 # --------------------------------------------
 
 TestResults/
@@ -172,28 +141,13 @@ coverage.json
 *.coverage
 *.coveragexml
 
+
 # --------------------------------------------
-
 # NuGet
-
 # --------------------------------------------
 
 *.nupkg
 *.snupkg
 packages/
 
-# Keep NuGet package lock files if we use them.
-
 !packages.lock.json
-
-# --------------------------------------------
-
-# Publish output
-
-# --------------------------------------------
-
-publish/
-artifacts/
-
-Storage/Temp/*
-!Storage/Temp/.gitkeep
