@@ -1,0 +1,93 @@
+@page
+@model choir_music_system.Pages.PresentationLibrary.CreateModel
+
+@{
+    ViewData["Title"] = "Add Presentation Item";
+}
+
+<h1>Add Presentation Item</h1>
+
+<p class="text-muted">
+    Add reusable presentation content that can be selected for different Masses.
+</p>
+
+<form method="post">
+
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="Item.Title"
+               class="form-label">
+            Title
+        </label>
+
+        <input asp-for="Item.Title"
+               class="form-control" />
+
+        <span asp-validation-for="Item.Title"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Item.Type"
+               class="form-label">
+            Type
+        </label>
+
+        <select asp-for="Item.Type"
+                class="form-select">
+            <option value="Psalm Response">Psalm Response</option>
+            <option value="Creed">Creed</option>
+            <option value="Prayer">Prayer</option>
+            <option value="Response">Response</option>
+            <option value="Notice">Notice</option>
+            <option value="Custom">Custom</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Item.LayoutType"
+               class="form-label">
+            Layout
+        </label>
+
+        <select asp-for="Item.LayoutType"
+                class="form-select">
+            <option value="Title + Text">Title + Text</option>
+            <option value="Text Only">Text Only</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Item.PresentationText"
+               class="form-label">
+            Presentation Text
+        </label>
+
+        <textarea asp-for="Item.PresentationText"
+                  class="form-control font-monospace"
+                  rows="12"
+                  placeholder="[SLIDE:TITLED]
+First slide...
+
+[SLIDE]
+Next slide..."></textarea>
+
+        <div class="form-text">
+            Use <code>[SLIDE:TITLED]</code> and <code>[SLIDE]</code>
+            the same way as song presentation lyrics.
+        </div>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        Save
+    </button>
+
+    <a asp-page="./Index"
+       class="btn btn-outline-secondary">
+        Cancel
+    </a>
+
+</form>

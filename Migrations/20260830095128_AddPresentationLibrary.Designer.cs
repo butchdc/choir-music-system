@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using choir_music_system.Data;
 
@@ -10,9 +11,11 @@ using choir_music_system.Data;
 namespace choir_music_system.Migrations
 {
     [DbContext(typeof(ChoirDbContext))]
-    partial class ChoirDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260830095128_AddPresentationLibrary")]
+    partial class AddPresentationLibrary
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.11");
@@ -48,42 +51,6 @@ namespace choir_music_system.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Masses");
-                });
-
-            modelBuilder.Entity("choir_music_system.Models.MassPlanItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ItemType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("MassId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("MassPart")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("PresentationItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SongId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MassId");
-
-                    b.HasIndex("PresentationItemId");
-
-                    b.HasIndex("SongId");
-
-                    b.ToTable("MassPlanItems");
                 });
 
             modelBuilder.Entity("choir_music_system.Models.MassSong", b =>
@@ -219,31 +186,6 @@ namespace choir_music_system.Migrations
                     b.ToTable("MusicSheets", (string)null);
                 });
 
-            modelBuilder.Entity("choir_music_system.Models.MassPlanItem", b =>
-                {
-                    b.HasOne("choir_music_system.Models.Mass", "Mass")
-                        .WithMany("PlanItems")
-                        .HasForeignKey("MassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("choir_music_system.Models.PresentationItem", "PresentationItem")
-                        .WithMany()
-                        .HasForeignKey("PresentationItemId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("choir_music_system.Models.Song", "Song")
-                        .WithMany()
-                        .HasForeignKey("SongId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Mass");
-
-                    b.Navigation("PresentationItem");
-
-                    b.Navigation("Song");
-                });
-
             modelBuilder.Entity("choir_music_system.Models.MassSong", b =>
                 {
                     b.HasOne("choir_music_system.Models.Mass", "Mass")
@@ -265,8 +207,6 @@ namespace choir_music_system.Migrations
 
             modelBuilder.Entity("choir_music_system.Models.Mass", b =>
                 {
-                    b.Navigation("PlanItems");
-
                     b.Navigation("Songs");
                 });
 #pragma warning restore 612, 618

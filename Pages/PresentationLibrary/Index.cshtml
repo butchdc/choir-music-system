@@ -1,0 +1,75 @@
+@page
+@model choir_music_system.Pages.PresentationLibrary.IndexModel
+
+@{
+    ViewData["Title"] = "Presentation Library";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Presentation Library</h1>
+        <p class="text-muted mb-0">
+            Reusable responses, prayers, creeds and other presentation content.
+        </p>
+    </div>
+
+    <a asp-page="./Create"
+       class="btn btn-primary">
+        Add Presentation Item
+    </a>
+</div>
+
+@if (Model.Items.Count == 0)
+{
+    <div class="alert alert-light border">
+        No presentation items have been added yet.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Layout</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td class="fw-semibold">
+                            @item.Title
+                        </td>
+
+                        <td>
+                            @item.Type
+                        </td>
+
+                        <td>
+                            @item.LayoutType
+                        </td>
+
+                        <td class="text-end">
+                            <a asp-page="./Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Edit
+                            </a>
+
+                            <a asp-page="./Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-outline-danger">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

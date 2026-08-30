@@ -5,10 +5,14 @@ namespace choir_music_system.Data;
 
 public class ChoirDbContext : DbContext
 {
+
+    public DbSet<PresentationItem> PresentationItems { get; set; }
     public ChoirDbContext(DbContextOptions<ChoirDbContext> options)
         : base(options)
     {
     }
+
+    public DbSet<MassPlanItem> MassPlanItems { get; set; }
 
     public DbSet<Song> Songs { get; set; }
     public DbSet<Mass> Masses => Set<Mass>();
@@ -34,5 +38,22 @@ public class ChoirDbContext : DbContext
             .HasOne(x => x.Song)
             .WithMany()
             .HasForeignKey(x => x.SongId);
+
+        modelBuilder.Entity<MassPlanItem>()
+            .HasOne(x => x.Mass)
+            .WithMany(x => x.PlanItems)
+            .HasForeignKey(x => x.MassId);
+
+        modelBuilder.Entity<MassPlanItem>()
+            .HasOne(x => x.Song)
+            .WithMany()
+            .HasForeignKey(x => x.SongId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<MassPlanItem>()
+            .HasOne(x => x.PresentationItem)
+            .WithMany()
+            .HasForeignKey(x => x.PresentationItemId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

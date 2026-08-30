@@ -24,4 +24,6 @@ public class Mass
 
     [StringLength(500)]
     public string? PresentationBackgroundPath { get; set; }
+    public ICollection<MassPlanItem> PlanItems { get; set; }
+    = new List<MassPlanItem>();
 }

@@ -605,20 +605,19 @@ public class PowerPointService
             });
         string? currentMassPart = null;
 
-        foreach (var massSong in mass.Songs
+        foreach (var planItem in mass.PlanItems
                      .OrderBy(x => x.DisplayOrder))
         {
-            var song = massSong.Song;
-
-            if (song == null)
-                continue;
+            // -------------------------------------------------
+            // Divider when Mass Part changes
+            // -------------------------------------------------
 
             if (!string.Equals(
-currentMassPart,
-massSong.MassPart,
-StringComparison.OrdinalIgnoreCase))
+                currentMassPart,
+                planItem.MassPart,
+                StringComparison.OrdinalIgnoreCase))
             {
-                currentMassPart = massSong.MassPart;
+                currentMassPart = planItem.MassPart;
 
                 var dividerLayout =
                     FindLayout(presentationPart, "Divider")
@@ -640,127 +639,203 @@ StringComparison.OrdinalIgnoreCase))
                     {
                         Id = nextSlideId++,
                         RelationshipId =
-                            presentationPart.GetIdOfPart(dividerSlidePart)
-                    });
-            }
-
-            var blocks = ParseLyrics(song.PresentationLyrics);
-
-            // Songs without lyrics still get a titled slide.
-            if (blocks.Count == 0)
-            {
-                blocks.Add((
-                    Titled: true,
-                    Text: string.Empty
-                ));
-            }
-
-            foreach (var block in blocks)
-            {
-                var layoutName = block.Titled
-                    ? "Song - Title + Lyrics"
-                    : "Song - Lyrics";
-
-                var layoutPart =
-                    FindLayout(
-                        presentationPart,
-                        layoutName)
-                    ?? throw new InvalidOperationException(
-                        $"Layout '{layoutName}' was not found.");
-
-                var slidePart =
-                    presentationPart.AddNewPart<SlidePart>();
-
-                slidePart.Slide =
-                    new P.Slide(
-                        new P.CommonSlideData(
-                            new P.ShapeTree(
-                                new P.NonVisualGroupShapeProperties(
-                                    new P.NonVisualDrawingProperties
-                                    {
-                                        Id = 1U,
-                                        Name = string.Empty
-                                    },
-                                    new P.NonVisualGroupShapeDrawingProperties(),
-                                    new P.ApplicationNonVisualDrawingProperties()
-                                ),
-                                new P.GroupShapeProperties()
-                            )
-                        ),
-                        new P.ColorMapOverride(
-                            new A.MasterColorMapping()
-                        )
-                    );
-
-                slidePart.AddPart(layoutPart);
-
-                foreach (var shape in
-                         layoutPart.SlideLayout.CommonSlideData
-                             .ShapeTree.Elements<P.Shape>())
-                {
-                    slidePart.Slide.CommonSlideData.ShapeTree
-                        .Append(shape.CloneNode(true));
-                }
-
-                if (block.Titled)
-                {
-                    SetShapeText(
-                        slidePart.Slide,
-                        "Song Title",
-                        song.Title);
-
-                    SetShapeText(
-                        slidePart.Slide,
-                        "Lyrics",
-                        block.Text);
-
-                    var footerParts = new List<string>();
-
-                    if (!string.IsNullOrWhiteSpace(song.Composer))
-                        footerParts.Add(song.Composer);
-
-                    if (!string.IsNullOrWhiteSpace(
-                        song.OneLicenseNumber))
-                    {
-                        footerParts.Add(
-                            $"OneLicense #{song.OneLicenseNumber}");
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(song.Publisher))
-                        footerParts.Add(song.Publisher);
-
-                    if (!string.IsNullOrWhiteSpace(
-                        song.CopyrightText))
-                    {
-                        footerParts.Add(song.CopyrightText);
-                    }
-
-                    SetShapeText(
-                        slidePart.Slide,
-                        "Footer",
-                        string.Join(" • ", footerParts));
-                }
-                else
-                {
-                    SetShapeText(
-                        slidePart.Slide,
-                        "Lyrics",
-                        block.Text);
-                }
-
-                slidePart.Slide.Save();
-
-                slideIdList.Append(
-                    new P.SlideId
-                    {
-                        Id = nextSlideId++,
-                        RelationshipId =
                             presentationPart.GetIdOfPart(
-                                slidePart)
+                                dividerSlidePart)
                     });
             }
-        }
 
+            // -------------------------------------------------
+            // SONG
+            // -------------------------------------------------
+
+            if (planItem.ItemType == "Song" &&
+                planItem.Song is not null)
+            {
+                var song = planItem.Song;
+
+                var blocks =
+                    ParseLyrics(song.PresentationLyrics);
+
+                // Song without lyrics still gets a title slide.
+                if (blocks.Count == 0)
+                {
+                    blocks.Add((
+                        Titled: true,
+                        Text: string.Empty
+                    ));
+                }
+
+                foreach (var block in blocks)
+                {
+                    var layoutName = block.Titled
+                        ? "Song - Title + Lyrics"
+                        : "Song - Lyrics";
+
+                    var layoutPart =
+                        FindLayout(
+                            presentationPart,
+                            layoutName)
+                        ?? throw new InvalidOperationException(
+                            $"Layout '{layoutName}' was not found.");
+
+                    var slidePart =
+                        presentationPart.AddNewPart<SlidePart>();
+
+                    slidePart.Slide =
+                        CreateSlideFromLayout(layoutPart);
+
+                    slidePart.AddPart(layoutPart);
+
+                    if (block.Titled)
+                    {
+                        SetShapeText(
+                            slidePart.Slide,
+                            "Song Title",
+                            song.Title);
+
+                        SetShapeText(
+                            slidePart.Slide,
+                            "Lyrics",
+                            block.Text);
+
+                        var footerParts =
+                            new List<string>();
+
+                        if (!string.IsNullOrWhiteSpace(
+                            song.Composer))
+                        {
+                            footerParts.Add(song.Composer);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(
+                            song.OneLicenseNumber))
+                        {
+                            footerParts.Add(
+                                $"OneLicense #{song.OneLicenseNumber}");
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(
+                            song.Publisher))
+                        {
+                            footerParts.Add(song.Publisher);
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(
+                            song.CopyrightText))
+                        {
+                            footerParts.Add(
+                                song.CopyrightText);
+                        }
+
+                        SetShapeText(
+                            slidePart.Slide,
+                            "Footer",
+                            string.Join(
+                                " • ",
+                                footerParts));
+                    }
+                    else
+                    {
+                        SetShapeText(
+                            slidePart.Slide,
+                            "Lyrics",
+                            block.Text);
+                    }
+
+                    slidePart.Slide.Save();
+
+                    slideIdList.Append(
+                        new P.SlideId
+                        {
+                            Id = nextSlideId++,
+                            RelationshipId =
+                                presentationPart.GetIdOfPart(
+                                    slidePart)
+                        });
+                }
+
+                continue;
+            }
+
+            // -------------------------------------------------
+            // PRESENTATION LIBRARY ITEM
+            // -------------------------------------------------
+            if (planItem.ItemType == "Presentation" &&
+                planItem.PresentationItem is not null)
+            {
+                var item = planItem.PresentationItem;
+
+                var blocks = ParseLyrics(item.PresentationText);
+
+                if (blocks.Count == 0)
+                {
+                    var useTitle =
+                        !string.Equals(
+                            item.LayoutType,
+                            "Text Only",
+                            StringComparison.OrdinalIgnoreCase);
+
+                    blocks.Add((
+                        Titled: useTitle,
+                        Text: item.PresentationText ?? string.Empty
+                    ));
+                }
+
+                foreach (var block in blocks)
+                {
+                    var layoutName = block.Titled
+                        ? "Presentation - Title + Text"
+                        : "Presentation - Text";
+
+                    var layoutPart =
+                        FindLayout(
+                            presentationPart,
+                            layoutName)
+                        ?? throw new InvalidOperationException(
+                            $"Layout '{layoutName}' was not found.");
+
+                    var slidePart =
+                        presentationPart.AddNewPart<SlidePart>();
+
+                    slidePart.Slide =
+                        CreateSlideFromLayout(layoutPart);
+
+                    slidePart.AddPart(layoutPart);
+
+                    if (block.Titled)
+                    {
+                        SetShapeText(
+                            slidePart.Slide,
+                            "Title",
+                            item.Title);
+
+                        SetShapeText(
+                            slidePart.Slide,
+                            "Text",
+                            block.Text);
+                    }
+                    else
+                    {
+                        SetShapeText(
+                            slidePart.Slide,
+                            "Text",
+                            block.Text);
+                    }
+
+                    slidePart.Slide.Save();
+
+                    slideIdList.Append(
+                        new P.SlideId
+                        {
+                            Id = nextSlideId++,
+                            RelationshipId =
+                                presentationPart.GetIdOfPart(
+                                    slidePart)
+                        });
+                }
+            }
+
+        }
         presentation.Save();
 
         return outputPath;
@@ -800,7 +875,7 @@ StringComparison.OrdinalIgnoreCase))
 
         return slide;
     }
-    
+
     private static void AddBackgroundToLayout(
     SlideLayoutPart layoutPart,
     string imagePath,
@@ -927,6 +1002,17 @@ StringComparison.OrdinalIgnoreCase))
                 presentationPart,
                 "Song - Lyrics");
 
+        var presentationTitleLayout =
+            FindLayout(
+                presentationPart,
+                "Presentation - Title + Text");
+
+        var presentationTextLayout =
+            FindLayout(
+                presentationPart,
+                "Presentation - Text");
+
+
         if (titleLayout != null)
         {
             AddBackgroundToLayout(
@@ -955,6 +1041,22 @@ StringComparison.OrdinalIgnoreCase))
         {
             AddBackgroundToLayout(
                 lyricsLayout,
+                backgroundPath,
+                85);
+        }
+
+        if (presentationTitleLayout != null)
+        {
+            AddBackgroundToLayout(
+                presentationTitleLayout,
+                backgroundPath,
+                85);
+        }
+
+        if (presentationTextLayout != null)
+        {
+            AddBackgroundToLayout(
+                presentationTextLayout,
                 backgroundPath,
                 85);
         }

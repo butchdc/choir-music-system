@@ -28,8 +28,10 @@ public class IndexModel : PageModel
     public async Task<IActionResult> OnGetGeneratePptAsync(int id)
     {
         var mass = await _context.Masses
-            .Include(x => x.Songs)
+            .Include(x => x.PlanItems)
                 .ThenInclude(x => x.Song)
+            .Include(x => x.PlanItems)
+                .ThenInclude(x => x.PresentationItem)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (mass is null)

@@ -1,0 +1,26 @@
+@page
+@model choir_music_system.Pages.PresentationLibrary.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete Presentation Item";
+}
+
+<h1>Delete Presentation Item</h1>
+
+<p>
+    Are you sure you want to remove
+    <strong>@Model.Item.Title</strong>
+    from the Presentation Library?
+</p>
+
+<form method="post">
+    <input type="hidden" asp-for="Item.Id" />
+
+    <button type="submit" class="btn btn-danger">
+        Delete
+    </button>
+
+    <a asp-page="./Index" class="btn btn-outline-secondary">
+        Cancel
+    </a>
+</form>
