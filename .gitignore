@@ -84,6 +84,7 @@ Storage/Generated/*
 
 Storage/PowerPointTemplates/*
 !Storage/PowerPointTemplates/.gitkeep
+!Storage/PowerPointTemplates/Template.pptx
 
 Storage/Backgrounds/*
 !Storage/Backgrounds/.gitkeep
