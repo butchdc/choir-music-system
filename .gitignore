@@ -151,3 +151,6 @@ coverage.json
 packages/
 
 !packages.lock.json
+
+# Production database backups
+backups/
