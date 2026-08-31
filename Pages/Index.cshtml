@@ -5,14 +5,100 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="page-header">
-    <div>
-        <h1>Choir Music System</h1>
+<!-- DASHBOARD HERO -->
 
-        <p class="text-muted">
-            Plan Masses, manage music, and prepare choir presentations.
-        </p>
+<div class="dashboard-hero mb-4">
+
+    <div class="dashboard-hero-decoration dashboard-hero-decoration-one">
+        <i class="bi bi-music-note-beamed"></i>
     </div>
+
+    <div class="dashboard-hero-decoration dashboard-hero-decoration-two">
+        <i class="bi bi-music-note"></i>
+    </div>
+
+    <div class="dashboard-hero-content">
+
+        <div class="dashboard-hero-kicker">
+            <i class="bi bi-music-note-beamed"></i>
+            Choir Workspace
+        </div>
+
+        <h1>
+            Welcome to your
+            <span>Choir Music System</span>
+        </h1>
+
+        <p>
+            Plan Masses, organise your music library, and prepare
+            everything your choir needs for worship.
+        </p>
+
+        <div class="dashboard-hero-actions">
+
+            <a asp-page="/Masses/Create" class="btn dashboard-hero-primary">
+
+                <i class="bi bi-calendar-plus"></i>
+                Create Mass
+
+            </a>
+
+            <a asp-page="/MusicLibrary/Index" class="btn dashboard-hero-secondary">
+
+                <i class="bi bi-music-note-list"></i>
+                Browse Music
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-hero-graphic" aria-hidden="true">
+
+        <div class="hero-music-circle">
+
+            <svg viewBox="0 0 240 240">
+
+                <circle cx="120" cy="120" r="94" class="hero-circle-ring" />
+
+                <circle cx="120" cy="120" r="75" class="hero-circle-inner" />
+
+                <!-- music staff -->
+
+                <path class="hero-staff" d="M55 105h130
+                M55 119h130
+                M55 133h130
+                M55 147h130" />
+
+                <!-- main musical note -->
+
+                <path class="hero-note" d="M119 61v73
+                c-8-5-20-4-28 2
+                c-10 7-12 18-5 24
+                c7 7 21 6 31-1
+                c8-6 11-13 11-22
+                V86
+                l45-12
+                v47
+                c-8-5-20-4-28 2
+                c-10 7-12 18-5 24
+                c7 7 21 6 31-1
+                c8-6 11-13 11-22
+                V57
+                z" />
+
+                <!-- small cross -->
+
+                <path class="hero-cross" d="M75 64v27M64 75h22" />
+
+            </svg>
+
+        </div>
+
+    </div>
+
 </div>
 
 
@@ -21,9 +107,7 @@
 <div class="row g-3 mb-4">
 
     <div class="col-6 col-lg-3">
-
-        <a asp-page="/MusicLibrary/Index"
-           class="metric-card">
+        <a asp-page="/MusicLibrary/Index" class="metric-card metric-card-music">
 
             <div>
                 <div class="metric-label">
@@ -50,9 +134,7 @@
 
     <div class="col-6 col-lg-3">
 
-        <a asp-page="/Masses/Index"
-           asp-route-filter="upcoming"
-           class="metric-card">
+        <a asp-page="/Masses/Index" asp-route-filter="upcoming" class="metric-card metric-card-mass">
 
             <div>
 
@@ -94,8 +176,7 @@
 
     <div class="col-6 col-lg-3">
 
-        <a asp-page="/MassTemplates/Index"
-           class="metric-card">
+        <a asp-page="/MassTemplates/Index" class="metric-card metric-card-template">
 
             <div>
 
@@ -124,9 +205,7 @@
 
     <div class="col-6 col-lg-3">
 
-        <a asp-page="/MusicLibrary/Index"
-           asp-route-filter="needs-attention"
-           class="metric-card">
+        <a asp-page="/MusicLibrary/Index" asp-route-filter="needs-attention" class="metric-card metric-card-attention">
 
             <div>
 
@@ -157,16 +236,39 @@
 
 <!-- QUICK START -->
 
-<div class="row g-2 mb-4">
+<div class="dashboard-section-heading">
+
+    <div>
+        <h2>Quick Start</h2>
+        <p>Jump straight into your most common tasks.</p>
+    </div>
+
+</div>
+
+
+<div class="row g-3 mb-4">
 
     <div class="col-md-4">
 
-        <a asp-page="/Masses/Create"
-           class="quick-action">
+        <a asp-page="/Masses/Create" class="quick-action quick-action-mass">
 
-            <i class="bi bi-plus-circle"></i>
+            <span class="quick-action-icon">
+                <i class="bi bi-calendar-plus"></i>
+            </span>
 
-            Create Mass
+            <span class="quick-action-content">
+
+                <strong>
+                    Create Mass
+                </strong>
+
+                <small>
+                    Start planning a new Mass
+                </small>
+
+            </span>
+
+            <i class="bi bi-arrow-right quick-action-arrow"></i>
 
         </a>
 
@@ -175,12 +277,25 @@
 
     <div class="col-md-4">
 
-        <a asp-page="/MusicLibrary/Create"
-           class="quick-action">
+        <a asp-page="/MusicLibrary/Create" class="quick-action quick-action-song">
 
-            <i class="bi bi-music-note-beamed"></i>
+            <span class="quick-action-icon">
+                <i class="bi bi-music-note-beamed"></i>
+            </span>
 
-            Add Song
+            <span class="quick-action-content">
+
+                <strong>
+                    Add Song
+                </strong>
+
+                <small>
+                    Add music to your library
+                </small>
+
+            </span>
+
+            <i class="bi bi-arrow-right quick-action-arrow"></i>
 
         </a>
 
@@ -189,12 +304,25 @@
 
     <div class="col-md-4">
 
-        <a asp-page="/MassTemplates/Create"
-           class="quick-action">
+        <a asp-page="/MassTemplates/Create" class="quick-action quick-action-template">
 
-            <i class="bi bi-layers"></i>
+            <span class="quick-action-icon">
+                <i class="bi bi-layers"></i>
+            </span>
 
-            Create Template
+            <span class="quick-action-content">
+
+                <strong>
+                    Create Template
+                </strong>
+
+                <small>
+                    Build a reusable Mass plan
+                </small>
+
+            </span>
+
+            <i class="bi bi-arrow-right quick-action-arrow"></i>
 
         </a>
 
@@ -207,130 +335,137 @@
 
 @if (Model.NextMass is not null)
 {
-    <div class="dashboard-panel mb-4">
+    <div class="next-mass-card mb-4">
 
-        <div class="dashboard-panel-header">
+        <div class="next-mass-accent"></div>
 
-            <div>
 
-                <h5>
-                    Next Mass
-                </h5>
+        <div class="next-mass-date">
 
-                <span>
-                    Your next scheduled Mass
-                </span>
+            <span class="next-mass-date-month">
+                @Model.NextMass.MassDate.ToString("MMM")
+            </span>
+
+            <span class="next-mass-date-day">
+                @Model.NextMass.MassDate.ToString("dd")
+            </span>
+
+            <span class="next-mass-date-year">
+                @Model.NextMass.MassDate.ToString("yyyy")
+            </span>
+
+        </div>
+
+
+        <div class="next-mass-main">
+
+            <div class="next-mass-eyebrow">
+
+                <i class="bi bi-calendar-check"></i>
+
+                Next Mass
 
             </div>
 
-            <div class="text-end">
 
-                <strong>
-                    @Model.NextMass.MassDate.ToString("dddd, dd MMMM yyyy")
-                </strong>
+            <h2>
+                @Model.NextMass.Name
+            </h2>
+
+
+            <div class="next-mass-full-date">
+
+                @Model.NextMass.MassDate.ToString("dddd, d MMMM yyyy")
+
+            </div>
+
+
+            <div class="next-mass-status">
+
+                <span>
+
+                    <i class="bi bi-music-note-list"></i>
+
+                    <strong>
+                        @Model.NextMass.MusicCount
+                    </strong>
+
+                    song@(Model.NextMass.MusicCount == 1 ? "" : "s")
+
+                </span>
+
+
+                <span>
+
+                    <i class="bi bi-easel2"></i>
+
+                    <strong>
+                        @Model.NextMass.PresentationItemCount
+                    </strong>
+
+                    presentation item@(Model.NextMass.PresentationItemCount == 1 ? "" : "s")
+
+                </span>
+
+
+                <span class="@(Model.NextMass.HasBackground ? "is-ready" : "is-missing")">
+
+                    <i class="bi @(Model.NextMass.HasBackground ? "bi-check-circle" : "bi-image")"></i>
+
+                    @(Model.NextMass.HasBackground
+                        ? "Background ready"
+                        : "No background")
+
+                </span>
 
             </div>
 
         </div>
 
 
-        <div class="p-4">
+        <div class="next-mass-actions">
 
-            <div class="row align-items-center g-4">
+            <a asp-page="/Masses/Plan" asp-route-id="@Model.NextMass.Id" class="btn btn-primary">
 
-                <div class="col-lg-6">
+                <i class="bi bi-music-note-list"></i>
 
-                    <div class="text-muted small mb-1">
-                        UPCOMING
-                    </div>
+                Plan Mass
 
-                    <h3 class="mb-3">
-                        @Model.NextMass.Name
-                    </h3>
+            </a>
 
 
-                    <div class="d-flex flex-wrap gap-3 text-muted">
+            @if (Model.NextMass.MusicCount > 0)
+            {
+                <a asp-page="/Masses/MusicPack" asp-route-id="@Model.NextMass.Id" class="btn btn-outline-secondary"
+                   title="Generate Music Pack" data-bs-toggle="tooltip">
 
-                        <span>
+                    <i class="bi bi-file-earmark-pdf"></i>
 
-                            <i class="bi bi-music-note-list me-1"></i>
+                    <span class="next-mass-action-label">
+                        Music Pack
+                    </span>
 
-                            @Model.NextMass.MusicCount
-                            song@(Model.NextMass.MusicCount == 1 ? "" : "s")
-
-                        </span>
-
-
-                        <span>
-
-                            <i class="bi bi-easel me-1"></i>
-
-                            @Model.NextMass.PresentationItemCount
-                            presentation item@(Model.NextMass.PresentationItemCount == 1 ? "" : "s")
-
-                        </span>
+                </a>
 
 
-                        <span>
+                <a asp-page="/Masses/Index" asp-page-handler="GeneratePpt" asp-route-id="@Model.NextMass.Id"
+                   class="btn btn-outline-secondary" title="Generate PowerPoint" data-bs-toggle="tooltip">
 
-                            <i class="bi bi-image me-1"></i>
+                    <i class="bi bi-file-earmark-slides"></i>
 
-                            @(Model.NextMass.HasBackground
-                                ? "Background selected"
-                                : "No background")
+                    <span class="next-mass-action-label">
+                        PowerPoint
+                    </span>
 
-                        </span>
+                </a>
+            }
 
-                    </div>
-
-                </div>
-
-
-                <div class="col-lg-6">
-
-                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
-
-                        <a asp-page="/Masses/Plan"
-                           asp-route-id="@Model.NextMass.Id"
-                           class="btn btn-primary">
-
-                            <i class="bi bi-music-note-list me-1"></i>
-
-                            Plan Mass
-
-                        </a>
+        </div>
 
 
-                        @if (Model.NextMass.MusicCount > 0)
-                        {
-                            <a asp-page="/Masses/MusicPack"
-                               asp-route-id="@Model.NextMass.Id"
-                               class="btn btn-outline-secondary">
+        <div class="next-mass-watermark" aria-hidden="true">
 
-                                <i class="bi bi-file-earmark-pdf me-1"></i>
-
-                                Music Pack
-
-                            </a>
-
-
-                            <a asp-page="/Masses/Index"
-                               asp-page-handler="GeneratePpt"
-                               asp-route-id="@Model.NextMass.Id"
-                               class="btn btn-outline-secondary">
-
-                                <i class="bi bi-file-earmark-slides me-1"></i>
-
-                                PowerPoint
-
-                            </a>
-                        }
-
-                    </div>
-
-                </div>
-
-            </div>
+            <i class="bi bi-music-note-beamed"></i>
 
         </div>
 
@@ -338,35 +473,35 @@
 }
 else
 {
-    <div class="dashboard-panel mb-4">
+    <div class="next-mass-empty mb-4">
 
-        <div class="dashboard-empty">
-
+        <div class="next-mass-empty-icon">
             <i class="bi bi-calendar-plus"></i>
+        </div>
 
-            <div>
+        <div>
 
-                <strong>
-                    No upcoming Masses
-                </strong>
+            <h3>
+                No upcoming Masses
+            </h3>
 
-                <p>
-                    Create your next Mass to start planning.
-                </p>
-
-                <a asp-page="/Masses/Create"
-                   class="btn btn-sm btn-primary">
-
-                    Create Mass
-
-                </a>
-
-            </div>
+            <p>
+                Create your next Mass and start building the music plan.
+            </p>
 
         </div>
 
+        <a asp-page="/Masses/Create" class="btn btn-primary ms-lg-auto">
+
+            <i class="bi bi-plus-lg me-1"></i>
+
+            Create Mass
+
+        </a>
+
     </div>
 }
+
 
 
 <!-- CHARTS -->
@@ -394,8 +529,7 @@ else
                 </div>
 
 
-                <a asp-page="/MusicLibrary/Index"
-                   class="dashboard-panel-link">
+                <a asp-page="/MusicLibrary/Index" class="dashboard-panel-link">
 
                     Review
 
@@ -440,8 +574,7 @@ else
                 </div>
 
 
-                <a asp-page="/MusicLibrary/Index"
-                   class="dashboard-panel-link">
+                <a asp-page="/MusicLibrary/Index" class="dashboard-panel-link">
 
                     Library
 
@@ -469,25 +602,39 @@ else
 
 <!-- UPCOMING MASSES + RECENT MUSIC -->
 
+<div class="dashboard-section-heading">
+
+    <div>
+        <h2>Coming Up</h2>
+        <p>Your upcoming Masses and latest library activity.</p>
+    </div>
+
+</div>
+
+
 <div class="row g-3 mb-4">
 
     <!-- UPCOMING MASSES -->
 
     <div class="col-lg-7">
 
-        <div class="dashboard-panel h-100">
+        <div class="dashboard-panel dashboard-activity-panel h-100">
 
             <div class="dashboard-panel-header">
 
-                <div>
+                <div class="dashboard-panel-title">
 
-                    <h5>
-                        Upcoming Masses
-                    </h5>
-
-                    <span>
-                        Scheduled Masses and planning progress
+                    <span class="dashboard-panel-icon panel-icon-mass">
+                        <i class="bi bi-calendar3"></i>
                     </span>
+
+                    <div>
+                        <h5>Upcoming Masses</h5>
+
+                        <span>
+                            Scheduled Masses and planning progress
+                        </span>
+                    </div>
 
                 </div>
 
@@ -528,20 +675,16 @@ else
 
                     @foreach (var mass in Model.UpcomingMasses)
                     {
-                        <div class="dashboard-list-item">
+                        <div class="dashboard-list-item dashboard-mass-item">
 
                             <div class="dashboard-date">
 
                                 <span class="dashboard-date-day">
-
                                     @mass.MassDate.ToString("dd")
-
                                 </span>
 
                                 <span class="dashboard-date-month">
-
                                     @mass.MassDate.ToString("MMM")
-
                                 </span>
 
                             </div>
@@ -549,28 +692,57 @@ else
 
                             <div class="dashboard-list-content">
 
-                                <strong>
+                                <a asp-page="/Masses/Plan"
+                                   asp-route-id="@mass.Id"
+                                   class="dashboard-item-title">
+
                                     @mass.Name
-                                </strong>
+
+                                </a>
 
 
                                 <div class="dashboard-list-meta">
 
                                     <span>
 
+                                        <i class="bi bi-music-note-beamed"></i>
+
                                         @mass.MusicCount
                                         song@(mass.MusicCount == 1 ? "" : "s")
 
                                     </span>
 
-                                    <span>•</span>
 
                                     <span>
 
+                                        <i class="bi bi-easel2"></i>
+
                                         @mass.PresentationItemCount
-                                        presentation item@(mass.PresentationItemCount == 1 ? "" : "s")
+                                        item@(mass.PresentationItemCount == 1 ? "" : "s")
 
                                     </span>
+
+
+                                    @if (mass.HasBackground)
+                                    {
+                                        <span class="dashboard-ready">
+
+                                            <i class="bi bi-check-circle-fill"></i>
+
+                                            Background
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="dashboard-warning">
+
+                                            <i class="bi bi-image"></i>
+
+                                            No background
+
+                                        </span>
+                                    }
 
                                 </div>
 
@@ -581,7 +753,7 @@ else
 
                                 <a asp-page="/Masses/Plan"
                                    asp-route-id="@mass.Id"
-                                   class="btn btn-sm btn-outline-primary"
+                                   class="btn btn-sm btn-outline-primary table-action"
                                    title="Plan Mass"
                                    data-bs-toggle="tooltip">
 
@@ -606,19 +778,27 @@ else
 
     <div class="col-lg-5">
 
-        <div class="dashboard-panel h-100">
+        <div class="dashboard-panel dashboard-activity-panel h-100">
 
             <div class="dashboard-panel-header">
 
-                <div>
+                <div class="dashboard-panel-title">
 
-                    <h5>
-                        Recently Updated Music
-                    </h5>
-
-                    <span>
-                        Latest changes in your library
+                    <span class="dashboard-panel-icon panel-icon-music">
+                        <i class="bi bi-music-note-beamed"></i>
                     </span>
+
+                    <div>
+
+                        <h5>
+                            Recently Updated Music
+                        </h5>
+
+                        <span>
+                            Latest changes in your library
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -659,7 +839,7 @@ else
 
                     @foreach (var music in Model.RecentMusic)
                     {
-                        <div class="dashboard-list-item">
+                        <div class="dashboard-list-item dashboard-music-item">
 
                             <div class="recent-music-icon">
 
@@ -670,9 +850,13 @@ else
 
                             <div class="dashboard-list-content">
 
-                                <strong>
+                                <a asp-page="/MusicLibrary/Edit"
+                                   asp-route-id="@music.Id"
+                                   class="dashboard-item-title">
+
                                     @music.Title
-                                </strong>
+
+                                </a>
 
 
                                 <div class="dashboard-list-meta">
@@ -680,17 +864,21 @@ else
                                     @if (!string.IsNullOrWhiteSpace(music.Composer))
                                     {
                                         <span>
+
+                                            <i class="bi bi-person"></i>
+
                                             @music.Composer
+
                                         </span>
                                     }
 
 
                                     @if (!string.IsNullOrWhiteSpace(music.SuggestedMassPart))
                                     {
-                                        <span>•</span>
+                                        <span class="dashboard-mass-part">
 
-                                        <span>
                                             @music.SuggestedMassPart
+
                                         </span>
                                     }
 
@@ -739,7 +927,6 @@ else
             const readinessCanvas =
                 document.getElementById("libraryReadinessChart");
 
-
             if (readinessCanvas) {
 
                 new Chart(
@@ -748,7 +935,6 @@ else
                         type: "bar",
 
                         data: {
-
                             labels: [
                                 "Presentation Lyrics",
                                 "PDF Sheet",
@@ -767,37 +953,36 @@ else
                                         @Model.SongsWithComposerCount
                                     ],
 
-                                    backgroundColor:
-                                        "rgba(13, 110, 253, 0.72)",
+                                    backgroundColor: [
+                                        "rgba(37, 99, 235, 0.82)",
+                                        "rgba(15, 138, 112, 0.82)",
+                                        "rgba(217, 162, 56, 0.86)",
+                                        "rgba(124, 92, 196, 0.82)"
+                                    ],
 
-                                    borderColor:
-                                        "rgba(13, 110, 253, 1)",
+                                    borderColor: [
+                                        "rgb(37, 99, 235)",
+                                        "rgb(15, 138, 112)",
+                                        "rgb(217, 162, 56)",
+                                        "rgb(124, 92, 196)"
+                                    ],
 
                                     borderWidth: 1,
-
-                                    borderRadius: 6,
-
+                                    borderRadius: 8,
                                     borderSkipped: false,
-
-                                    barThickness: 24
+                                    barThickness: 26
                                 }
                             ]
                         },
 
-
                         options: {
-
                             indexAxis: "y",
-
                             responsive: true,
-
                             maintainAspectRatio: false,
 
-
-                            /*
-                             * Clicking a readiness bar opens
-                             * the songs MISSING that information.
-                             */
+                            animation: {
+                                duration: 700
+                            },
 
                             onHover: function (event, elements) {
 
@@ -810,7 +995,6 @@ else
                                             : "default";
                                 }
                             },
-
 
                             onClick: function (event, elements) {
 
@@ -828,19 +1012,14 @@ else
                                     "missing-composer"
                                 ];
 
-                                const filter =
-                                    filters[index];
-
                                 window.location.href =
-                                    `/MusicLibrary?filter=${encodeURIComponent(filter)}`;
+                                    `/MusicLibrary?filter=${encodeURIComponent(filters[index])}`;
                             },
-
 
                             interaction: {
                                 intersect: false,
                                 mode: "nearest"
                             },
-
 
                             plugins: {
 
@@ -848,10 +1027,20 @@ else
                                     display: false
                                 },
 
-
                                 tooltip: {
-
                                     displayColors: false,
+
+                                    backgroundColor:
+                                        "rgba(15, 47, 102, 0.96)",
+
+                                    titleColor:
+                                        "#ffffff",
+
+                                    bodyColor:
+                                        "#e8eef8",
+
+                                    padding: 12,
+                                    cornerRadius: 8,
 
                                     callbacks: {
 
@@ -876,32 +1065,37 @@ else
                                                     );
 
                                             return [
-                                                `${value} of ${songCount} songs ready (${percentage}%)`,
+                                                `${value} of ${songCount} ready`,
+                                                `${percentage}% complete`,
                                                 `${missing} missing — click to review`
                                             ];
                                         }
-
                                     }
                                 }
                             },
 
-
                             scales: {
 
                                 x: {
-
                                     beginAtZero: true,
 
                                     suggestedMax:
                                         Math.max(songCount, 1),
 
                                     ticks: {
-                                        precision: 0
+                                        precision: 0,
+                                        color: "#8190a5",
+
+                                        font: {
+                                            size: 11
+                                        }
                                     },
 
                                     grid: {
                                         color:
-                                            "rgba(0, 0, 0, 0.05)"
+                                            "rgba(100, 116, 139, 0.10)",
+
+                                        drawTicks: false
                                     },
 
                                     border: {
@@ -909,8 +1103,15 @@ else
                                     }
                                 },
 
-
                                 y: {
+                                    ticks: {
+                                        color: "#42546d",
+
+                                        font: {
+                                            size: 11,
+                                            weight: "600"
+                                        }
+                                    },
 
                                     grid: {
                                         display: false
@@ -920,11 +1121,8 @@ else
                                         display: false
                                     }
                                 }
-
                             }
-
                         }
-
                     }
                 );
             }
@@ -936,7 +1134,6 @@ else
 
             const massPartCanvas =
                 document.getElementById("massPartChart");
-
 
             if (massPartCanvas) {
 
@@ -966,49 +1163,38 @@ else
                         type: "bar",
 
                         data: {
-
                             labels:
                                 massPartLabels,
 
                             datasets: [
                                 {
-                                    label:
-                                        "Songs",
+                                    label: "Songs",
 
                                     data:
                                         massPartValues,
 
                                     backgroundColor:
-                                        "rgba(108, 117, 125, 0.68)",
+                                        "rgba(124, 92, 196, 0.78)",
 
                                     borderColor:
-                                        "rgba(108, 117, 125, 1)",
+                                        "rgb(124, 92, 196)",
 
                                     borderWidth: 1,
-
-                                    borderRadius: 6,
-
+                                    borderRadius: 8,
                                     borderSkipped: false,
-
-                                    barThickness: 17
+                                    barThickness: 18
                                 }
                             ]
                         },
 
-
                         options: {
-
                             indexAxis: "y",
-
                             responsive: true,
-
                             maintainAspectRatio: false,
 
-
-                            /*
-                             * Clicking a Mass Part opens
-                             * Music Library filtered to that part.
-                             */
+                            animation: {
+                                duration: 700
+                            },
 
                             onHover: function (event, elements) {
 
@@ -1021,7 +1207,6 @@ else
                                             : "default";
                                 }
                             },
-
 
                             onClick: function (event, elements) {
 
@@ -1039,12 +1224,10 @@ else
                                     `/MusicLibrary?part=${encodeURIComponent(massPart)}`;
                             },
 
-
                             interaction: {
                                 intersect: false,
                                 mode: "nearest"
                             },
-
 
                             plugins: {
 
@@ -1052,10 +1235,20 @@ else
                                     display: false
                                 },
 
-
                                 tooltip: {
-
                                     displayColors: false,
+
+                                    backgroundColor:
+                                        "rgba(53, 35, 92, 0.96)",
+
+                                    titleColor:
+                                        "#ffffff",
+
+                                    bodyColor:
+                                        "#efeafd",
+
+                                    padding: 12,
+                                    cornerRadius: 8,
 
                                     callbacks: {
 
@@ -1066,40 +1259,48 @@ else
 
                                             return [
                                                 `${value} song${value === 1 ? "" : "s"}`,
-                                                "Click to view"
+                                                "Click to view in Music Library"
                                             ];
                                         }
-
                                     }
-
                                 }
-
                             },
-
 
                             scales: {
 
                                 x: {
-
                                     beginAtZero: true,
 
                                     ticks: {
-                                        precision: 0
+                                        precision: 0,
+                                        color: "#8190a5",
+
+                                        font: {
+                                            size: 11
+                                        }
                                     },
 
                                     grid: {
                                         color:
-                                            "rgba(0, 0, 0, 0.05)"
+                                            "rgba(100, 116, 139, 0.10)",
+
+                                        drawTicks: false
                                     },
 
                                     border: {
                                         display: false
                                     }
-
                                 },
 
-
                                 y: {
+                                    ticks: {
+                                        color: "#42546d",
+
+                                        font: {
+                                            size: 11,
+                                            weight: "600"
+                                        }
+                                    },
 
                                     grid: {
                                         display: false
@@ -1108,13 +1309,9 @@ else
                                     border: {
                                         display: false
                                     }
-
                                 }
-
                             }
-
                         }
-
                     }
                 );
             }
