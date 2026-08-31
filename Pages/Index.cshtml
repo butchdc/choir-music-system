@@ -8,46 +8,79 @@
 <div class="page-header">
     <div>
         <h1>Choir Music System</h1>
+
         <p class="text-muted">
-            Manage music sheets, plan Mass music, and generate choir music packs.
+            Plan Masses, manage music, and prepare choir presentations.
         </p>
     </div>
 </div>
 
+
+<!-- SUMMARY CARDS -->
+
 <div class="row g-3 mb-4">
 
     <div class="col-6 col-lg-3">
-        <a asp-page="/MusicLibrary/Index" class="metric-card">
+
+        <a asp-page="/MusicLibrary/Index"
+           class="metric-card">
+
             <div>
-                <div class="metric-label">Music Sheets</div>
-                <div class="metric-value">@Model.SongCount</div>
+                <div class="metric-label">
+                    Songs
+                </div>
+
+                <div class="metric-value">
+                    @Model.SongCount
+                </div>
+
+                <div class="small text-muted mt-1">
+                    Music Library
+                </div>
             </div>
 
             <div class="metric-icon">
                 <i class="bi bi-music-note-beamed"></i>
             </div>
+
         </a>
+
     </div>
 
-    <div class="col-6 col-lg-3">
-        <a asp-page="/Masses/Index" class="metric-card">
-            <div>
-                <div class="metric-label">Masses</div>
-                <div class="metric-value">@Model.MassCount</div>
-            </div>
-
-            <div class="metric-icon">
-                <i class="bi bi-calendar3"></i>
-            </div>
-        </a>
-    </div>
 
     <div class="col-6 col-lg-3">
-        <a asp-page="/Masses/Index" asp-route-filter="upcoming" class="metric-card">
+
+        <a asp-page="/Masses/Index"
+           asp-route-filter="upcoming"
+           class="metric-card">
 
             <div>
-                <div class="metric-label">Upcoming Masses</div>
-                <div class="metric-value">@Model.UpcomingMassCount</div>
+
+                <div class="metric-label">
+                    Upcoming Masses
+                </div>
+
+                <div class="metric-value">
+                    @Model.UpcomingMassCount
+                </div>
+
+                <div class="small text-muted mt-1">
+
+                    @if (Model.NextMass is not null)
+                    {
+                        <span>
+                            Next @Model.NextMass.MassDate.ToString("dd MMM")
+                        </span>
+                    }
+                    else
+                    {
+                        <span>
+                            Nothing scheduled
+                        </span>
+                    }
+
+                </div>
+
             </div>
 
             <div class="metric-icon">
@@ -55,76 +88,438 @@
             </div>
 
         </a>
+
     </div>
 
+
     <div class="col-6 col-lg-3">
-        <div class="metric-card">
+
+        <a asp-page="/MassTemplates/Index"
+           class="metric-card">
+
             <div>
-                <div class="metric-label">Music Packs</div>
-                <div class="metric-value">@Model.MusicPackCount</div>
+
+                <div class="metric-label">
+                    Mass Templates
+                </div>
+
+                <div class="metric-value">
+                    @Model.MassTemplateCount
+                </div>
+
+                <div class="small text-muted mt-1">
+                    Reusable Mass plans
+                </div>
+
             </div>
 
             <div class="metric-icon">
-                <i class="bi bi-file-earmark-pdf"></i>
+                <i class="bi bi-layers"></i>
             </div>
-        </div>
+
+        </a>
+
+    </div>
+
+
+    <div class="col-6 col-lg-3">
+
+        <a asp-page="/MusicLibrary/Index"
+           asp-route-filter="needs-attention"
+           class="metric-card">
+
+            <div>
+
+                <div class="metric-label">
+                    Needs Attention
+                </div>
+
+                <div class="metric-value">
+                    @Model.NeedsAttentionCount
+                </div>
+
+                <div class="small text-muted mt-1">
+                    Incomplete songs
+                </div>
+
+            </div>
+
+            <div class="metric-icon">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+
+        </a>
+
     </div>
 
 </div>
 
+
+<!-- QUICK START -->
 
 <div class="row g-2 mb-4">
 
     <div class="col-md-4">
-        <a asp-page="/MusicLibrary/Create" class="quick-action">
-            <i class="bi bi-file-earmark-arrow-up"></i>
-            Upload Music
-        </a>
-    </div>
 
-    <div class="col-md-4">
-        <a asp-page="/MusicLibrary/BulkUpload" class="quick-action">
-            <i class="bi bi-files"></i>
-            Bulk Upload
-        </a>
-    </div>
+        <a asp-page="/Masses/Create"
+           class="quick-action">
 
-    <div class="col-md-4">
-        <a asp-page="/Masses/Create" class="quick-action">
             <i class="bi bi-plus-circle"></i>
+
             Create Mass
+
         </a>
+
+    </div>
+
+
+    <div class="col-md-4">
+
+        <a asp-page="/MusicLibrary/Create"
+           class="quick-action">
+
+            <i class="bi bi-music-note-beamed"></i>
+
+            Add Song
+
+        </a>
+
+    </div>
+
+
+    <div class="col-md-4">
+
+        <a asp-page="/MassTemplates/Create"
+           class="quick-action">
+
+            <i class="bi bi-layers"></i>
+
+            Create Template
+
+        </a>
+
     </div>
 
 </div>
 
 
+<!-- NEXT MASS -->
+
+@if (Model.NextMass is not null)
+{
+    <div class="dashboard-panel mb-4">
+
+        <div class="dashboard-panel-header">
+
+            <div>
+
+                <h5>
+                    Next Mass
+                </h5>
+
+                <span>
+                    Your next scheduled Mass
+                </span>
+
+            </div>
+
+            <div class="text-end">
+
+                <strong>
+                    @Model.NextMass.MassDate.ToString("dddd, dd MMMM yyyy")
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="p-4">
+
+            <div class="row align-items-center g-4">
+
+                <div class="col-lg-6">
+
+                    <div class="text-muted small mb-1">
+                        UPCOMING
+                    </div>
+
+                    <h3 class="mb-3">
+                        @Model.NextMass.Name
+                    </h3>
+
+
+                    <div class="d-flex flex-wrap gap-3 text-muted">
+
+                        <span>
+
+                            <i class="bi bi-music-note-list me-1"></i>
+
+                            @Model.NextMass.MusicCount
+                            song@(Model.NextMass.MusicCount == 1 ? "" : "s")
+
+                        </span>
+
+
+                        <span>
+
+                            <i class="bi bi-easel me-1"></i>
+
+                            @Model.NextMass.PresentationItemCount
+                            presentation item@(Model.NextMass.PresentationItemCount == 1 ? "" : "s")
+
+                        </span>
+
+
+                        <span>
+
+                            <i class="bi bi-image me-1"></i>
+
+                            @(Model.NextMass.HasBackground
+                                ? "Background selected"
+                                : "No background")
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-lg-6">
+
+                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+
+                        <a asp-page="/Masses/Plan"
+                           asp-route-id="@Model.NextMass.Id"
+                           class="btn btn-primary">
+
+                            <i class="bi bi-music-note-list me-1"></i>
+
+                            Plan Mass
+
+                        </a>
+
+
+                        @if (Model.NextMass.MusicCount > 0)
+                        {
+                            <a asp-page="/Masses/MusicPack"
+                               asp-route-id="@Model.NextMass.Id"
+                               class="btn btn-outline-secondary">
+
+                                <i class="bi bi-file-earmark-pdf me-1"></i>
+
+                                Music Pack
+
+                            </a>
+
+
+                            <a asp-page="/Masses/Index"
+                               asp-page-handler="GeneratePpt"
+                               asp-route-id="@Model.NextMass.Id"
+                               class="btn btn-outline-secondary">
+
+                                <i class="bi bi-file-earmark-slides me-1"></i>
+
+                                PowerPoint
+
+                            </a>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="dashboard-panel mb-4">
+
+        <div class="dashboard-empty">
+
+            <i class="bi bi-calendar-plus"></i>
+
+            <div>
+
+                <strong>
+                    No upcoming Masses
+                </strong>
+
+                <p>
+                    Create your next Mass to start planning.
+                </p>
+
+                <a asp-page="/Masses/Create"
+                   class="btn btn-sm btn-primary">
+
+                    Create Mass
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+
+
+<!-- CHARTS -->
+
 <div class="row g-3 mb-4">
+
+    <!-- LIBRARY READINESS -->
+
+    <div class="col-lg-6">
+
+        <div class="dashboard-panel h-100">
+
+            <div class="dashboard-panel-header">
+
+                <div>
+
+                    <h5>
+                        Library Readiness
+                    </h5>
+
+                    <span>
+                        Click a bar to review missing information
+                    </span>
+
+                </div>
+
+
+                <a asp-page="/MusicLibrary/Index"
+                   class="dashboard-panel-link">
+
+                    Review
+
+                </a>
+
+            </div>
+
+
+            <div class="p-4">
+
+                <div style="height: 320px;">
+
+                    <canvas id="libraryReadinessChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MASS PART BREAKDOWN -->
+
+    <div class="col-lg-6">
+
+        <div class="dashboard-panel h-100">
+
+            <div class="dashboard-panel-header">
+
+                <div>
+
+                    <h5>
+                        Songs by Mass Part
+                    </h5>
+
+                    <span>
+                        Click a bar to view those songs
+                    </span>
+
+                </div>
+
+
+                <a asp-page="/MusicLibrary/Index"
+                   class="dashboard-panel-link">
+
+                    Library
+
+                </a>
+
+            </div>
+
+
+            <div class="p-4">
+
+                <div style="height: 320px;">
+
+                    <canvas id="massPartChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- UPCOMING MASSES + RECENT MUSIC -->
+
+<div class="row g-3 mb-4">
+
+    <!-- UPCOMING MASSES -->
 
     <div class="col-lg-7">
 
         <div class="dashboard-panel h-100">
 
             <div class="dashboard-panel-header">
+
                 <div>
-                    <h5>Upcoming Masses</h5>
-                    <span>Next scheduled Masses and planning status</span>
+
+                    <h5>
+                        Upcoming Masses
+                    </h5>
+
+                    <span>
+                        Scheduled Masses and planning progress
+                    </span>
+
                 </div>
 
-                <a asp-page="/Masses/Index" class="dashboard-panel-link">
+
+                <a asp-page="/Masses/Index"
+                   class="dashboard-panel-link">
+
                     View all
+
                 </a>
+
             </div>
+
 
             @if (Model.UpcomingMasses.Count == 0)
             {
                 <div class="dashboard-empty">
+
                     <i class="bi bi-calendar"></i>
 
                     <div>
-                        <strong>No upcoming Masses</strong>
-                        <p>Create a Mass when you're ready to start planning.</p>
+
+                        <strong>
+                            No upcoming Masses
+                        </strong>
+
+                        <p>
+                            Create a Mass when you're ready to start planning.
+                        </p>
+
                     </div>
+
                 </div>
             }
             else
@@ -136,39 +531,63 @@
                         <div class="dashboard-list-item">
 
                             <div class="dashboard-date">
+
                                 <span class="dashboard-date-day">
+
                                     @mass.MassDate.ToString("dd")
+
                                 </span>
 
                                 <span class="dashboard-date-month">
+
                                     @mass.MassDate.ToString("MMM")
+
                                 </span>
+
                             </div>
+
 
                             <div class="dashboard-list-content">
-                                <strong>@mass.Name</strong>
+
+                                <strong>
+                                    @mass.Name
+                                </strong>
+
 
                                 <div class="dashboard-list-meta">
-                                    @mass.MassDate.ToString("dddd, dd MMM yyyy")
+
+                                    <span>
+
+                                        @mass.MusicCount
+                                        song@(mass.MusicCount == 1 ? "" : "s")
+
+                                    </span>
+
                                     <span>•</span>
-                                    @mass.MusicCount song@(mass.MusicCount == 1 ? "" : "s") planned
+
+                                    <span>
+
+                                        @mass.PresentationItemCount
+                                        presentation item@(mass.PresentationItemCount == 1 ? "" : "s")
+
+                                    </span>
+
                                 </div>
+
                             </div>
+
 
                             <div class="dashboard-list-actions">
 
-                                <a asp-page="/Masses/Plan" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-primary"
-                                   title="Plan Music" data-bs-toggle="tooltip">
-                                    <i class="bi bi-music-note-list"></i>
-                                </a>
+                                <a asp-page="/Masses/Plan"
+                                   asp-route-id="@mass.Id"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Plan Mass"
+                                   data-bs-toggle="tooltip">
 
-                                @if (mass.MusicCount > 0)
-                                {
-                                    <a asp-page="/Masses/MusicPack" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-secondary"
-                                       title="Generate Music Pack" data-bs-toggle="tooltip">
-                                        <i class="bi bi-file-earmark-pdf"></i>
-                                    </a>
-                                }
+                                    <i class="bi bi-music-note-list"></i>
+
+                                </a>
 
                             </div>
 
@@ -183,67 +602,118 @@
     </div>
 
 
+    <!-- RECENT MUSIC -->
+
     <div class="col-lg-5">
 
         <div class="dashboard-panel h-100">
 
             <div class="dashboard-panel-header">
+
                 <div>
-                    <h5>Recently Updated Music</h5>
-                    <span>Latest changes in the library</span>
+
+                    <h5>
+                        Recently Updated Music
+                    </h5>
+
+                    <span>
+                        Latest changes in your library
+                    </span>
+
                 </div>
 
-                <a asp-page="/MusicLibrary/Index" class="dashboard-panel-link">
+
+                <a asp-page="/MusicLibrary/Index"
+                   class="dashboard-panel-link">
+
                     Library
+
                 </a>
+
             </div>
 
-            <div class="dashboard-list">
 
-                @foreach (var music in Model.RecentMusic)
-                {
-                    <div class="dashboard-list-item">
+            @if (Model.RecentMusic.Count == 0)
+            {
+                <div class="dashboard-empty">
 
-                        <div class="recent-music-icon">
-                            <i class="bi bi-file-earmark-music"></i>
-                        </div>
+                    <i class="bi bi-music-note"></i>
 
-                        <div class="dashboard-list-content">
+                    <div>
 
-                            <strong>@music.Title</strong>
+                        <strong>
+                            No music yet
+                        </strong>
 
-                            <div class="dashboard-list-meta">
+                        <p>
+                            Add your first song to the Music Library.
+                        </p>
 
-                                @if (!string.IsNullOrWhiteSpace(music.Composer))
-                                {
-                                    <span>@music.Composer</span>
-                                }
+                    </div>
 
-                                @if (!string.IsNullOrWhiteSpace(music.SuggestedMassPart))
-                                {
-                                    <span>•</span>
-                                    <span>@music.SuggestedMassPart</span>
-                                }
+                </div>
+            }
+            else
+            {
+                <div class="dashboard-list">
 
-                                @if (!string.IsNullOrWhiteSpace(music.Key))
-                                {
-                                    <span>•</span>
-                                    <span>Key: @music.Key</span>
-                                }
+                    @foreach (var music in Model.RecentMusic)
+                    {
+                        <div class="dashboard-list-item">
+
+                            <div class="recent-music-icon">
+
+                                <i class="bi bi-file-earmark-music"></i>
 
                             </div>
 
+
+                            <div class="dashboard-list-content">
+
+                                <strong>
+                                    @music.Title
+                                </strong>
+
+
+                                <div class="dashboard-list-meta">
+
+                                    @if (!string.IsNullOrWhiteSpace(music.Composer))
+                                    {
+                                        <span>
+                                            @music.Composer
+                                        </span>
+                                    }
+
+
+                                    @if (!string.IsNullOrWhiteSpace(music.SuggestedMassPart))
+                                    {
+                                        <span>•</span>
+
+                                        <span>
+                                            @music.SuggestedMassPart
+                                        </span>
+                                    }
+
+                                </div>
+
+                            </div>
+
+
+                            <a asp-page="/MusicLibrary/Edit"
+                               asp-route-id="@music.Id"
+                               class="btn btn-sm btn-outline-secondary table-action"
+                               title="Edit Song"
+                               data-bs-toggle="tooltip">
+
+                                <i class="bi bi-pencil"></i>
+
+                            </a>
+
                         </div>
+                    }
 
-                        <a asp-page="/MusicLibrary/View" asp-route-id="@music.Id" target="_blank" rel="noopener noreferrer"
-                           class="btn btn-sm btn-outline-secondary table-action" title="View PDF" data-bs-toggle="tooltip">
-                            <i class="bi bi-file-earmark-pdf"></i>
-                        </a>
-
-                    </div>
-                }
-
-            </div>
+                </div>
+            }
 
         </div>
 
@@ -252,45 +722,403 @@
 </div>
 
 
-<div class="dashboard-panel">
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
 
-    <div class="dashboard-panel-header">
-        <div>
-            <h5>Music Library Overview</h5>
-            <span>Music sheets grouped by suggested Mass part</span>
-        </div>
-    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-    <div class="library-breakdown">
+            const songCount = @Model.SongCount;
 
-        @foreach (var item in Model.LibraryBreakdown)
-        {
-            var percentage = Model.SongCount == 0
-                ? 0
-                : (item.Count * 100.0 / Model.SongCount);
 
-            <a asp-page="/MusicLibrary/Index" asp-route-part="@item.Name"
-               class="library-breakdown-item text-decoration-none">
+            /*
+             * LIBRARY READINESS
+             */
 
-                <div class="library-breakdown-heading">
+            const readinessCanvas =
+                document.getElementById("libraryReadinessChart");
 
-                    <span>@item.Name</span>
 
-                    <strong>@item.Count</strong>
+            if (readinessCanvas) {
 
-                </div>
+                new Chart(
+                    readinessCanvas,
+                    {
+                        type: "bar",
 
-                <div class="library-breakdown-bar">
+                        data: {
 
-                    <div class="library-breakdown-fill"
-                         style="width:@percentage.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%">
-                    </div>
+                            labels: [
+                                "Presentation Lyrics",
+                                "PDF Sheet",
+                                "One License",
+                                "Composer"
+                            ],
 
-                </div>
+                            datasets: [
+                                {
+                                    label: "Ready",
 
-            </a>
-        }
+                                    data: [
+                                        @Model.SongsWithLyricsCount,
+                                        @Model.SongsWithPdfCount,
+                                        @Model.SongsWithOneLicenseCount,
+                                        @Model.SongsWithComposerCount
+                                    ],
 
-    </div>
+                                    backgroundColor:
+                                        "rgba(13, 110, 253, 0.72)",
 
-</div>
+                                    borderColor:
+                                        "rgba(13, 110, 253, 1)",
+
+                                    borderWidth: 1,
+
+                                    borderRadius: 6,
+
+                                    borderSkipped: false,
+
+                                    barThickness: 24
+                                }
+                            ]
+                        },
+
+
+                        options: {
+
+                            indexAxis: "y",
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+
+                            /*
+                             * Clicking a readiness bar opens
+                             * the songs MISSING that information.
+                             */
+
+                            onHover: function (event, elements) {
+
+                                if (event.native &&
+                                    event.native.target) {
+
+                                    event.native.target.style.cursor =
+                                        elements.length > 0
+                                            ? "pointer"
+                                            : "default";
+                                }
+                            },
+
+
+                            onClick: function (event, elements) {
+
+                                if (elements.length === 0) {
+                                    return;
+                                }
+
+                                const index =
+                                    elements[0].index;
+
+                                const filters = [
+                                    "missing-lyrics",
+                                    "missing-pdf",
+                                    "missing-one-license",
+                                    "missing-composer"
+                                ];
+
+                                const filter =
+                                    filters[index];
+
+                                window.location.href =
+                                    `/MusicLibrary?filter=${encodeURIComponent(filter)}`;
+                            },
+
+
+                            interaction: {
+                                intersect: false,
+                                mode: "nearest"
+                            },
+
+
+                            plugins: {
+
+                                legend: {
+                                    display: false
+                                },
+
+
+                                tooltip: {
+
+                                    displayColors: false,
+
+                                    callbacks: {
+
+                                        label: function (context) {
+
+                                            const value =
+                                                Number(context.raw ?? 0);
+
+                                            const missing =
+                                                Math.max(
+                                                    songCount - value,
+                                                    0
+                                                );
+
+                                            const percentage =
+                                                songCount === 0
+                                                    ? 0
+                                                    : Math.round(
+                                                        value /
+                                                        songCount *
+                                                        100
+                                                    );
+
+                                            return [
+                                                `${value} of ${songCount} songs ready (${percentage}%)`,
+                                                `${missing} missing — click to review`
+                                            ];
+                                        }
+
+                                    }
+                                }
+                            },
+
+
+                            scales: {
+
+                                x: {
+
+                                    beginAtZero: true,
+
+                                    suggestedMax:
+                                        Math.max(songCount, 1),
+
+                                    ticks: {
+                                        precision: 0
+                                    },
+
+                                    grid: {
+                                        color:
+                                            "rgba(0, 0, 0, 0.05)"
+                                    },
+
+                                    border: {
+                                        display: false
+                                    }
+                                },
+
+
+                                y: {
+
+                                    grid: {
+                                        display: false
+                                    },
+
+                                    border: {
+                                        display: false
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+            }
+
+
+            /*
+             * SONGS BY MASS PART
+             */
+
+            const massPartCanvas =
+                document.getElementById("massPartChart");
+
+
+            if (massPartCanvas) {
+
+                const massPartLabels = [
+
+                    @foreach (var item in Model.LibraryBreakdown)
+                    {
+                        @: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(item.Name)),
+                    }
+
+                ];
+
+
+                const massPartValues = [
+
+                    @foreach (var item in Model.LibraryBreakdown)
+                    {
+                        @: @item.Count,
+                    }
+
+                ];
+
+
+                new Chart(
+                    massPartCanvas,
+                    {
+                        type: "bar",
+
+                        data: {
+
+                            labels:
+                                massPartLabels,
+
+                            datasets: [
+                                {
+                                    label:
+                                        "Songs",
+
+                                    data:
+                                        massPartValues,
+
+                                    backgroundColor:
+                                        "rgba(108, 117, 125, 0.68)",
+
+                                    borderColor:
+                                        "rgba(108, 117, 125, 1)",
+
+                                    borderWidth: 1,
+
+                                    borderRadius: 6,
+
+                                    borderSkipped: false,
+
+                                    barThickness: 17
+                                }
+                            ]
+                        },
+
+
+                        options: {
+
+                            indexAxis: "y",
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+
+                            /*
+                             * Clicking a Mass Part opens
+                             * Music Library filtered to that part.
+                             */
+
+                            onHover: function (event, elements) {
+
+                                if (event.native &&
+                                    event.native.target) {
+
+                                    event.native.target.style.cursor =
+                                        elements.length > 0
+                                            ? "pointer"
+                                            : "default";
+                                }
+                            },
+
+
+                            onClick: function (event, elements) {
+
+                                if (elements.length === 0) {
+                                    return;
+                                }
+
+                                const index =
+                                    elements[0].index;
+
+                                const massPart =
+                                    massPartLabels[index];
+
+                                window.location.href =
+                                    `/MusicLibrary?part=${encodeURIComponent(massPart)}`;
+                            },
+
+
+                            interaction: {
+                                intersect: false,
+                                mode: "nearest"
+                            },
+
+
+                            plugins: {
+
+                                legend: {
+                                    display: false
+                                },
+
+
+                                tooltip: {
+
+                                    displayColors: false,
+
+                                    callbacks: {
+
+                                        label: function (context) {
+
+                                            const value =
+                                                Number(context.raw ?? 0);
+
+                                            return [
+                                                `${value} song${value === 1 ? "" : "s"}`,
+                                                "Click to view"
+                                            ];
+                                        }
+
+                                    }
+
+                                }
+
+                            },
+
+
+                            scales: {
+
+                                x: {
+
+                                    beginAtZero: true,
+
+                                    ticks: {
+                                        precision: 0
+                                    },
+
+                                    grid: {
+                                        color:
+                                            "rgba(0, 0, 0, 0.05)"
+                                    },
+
+                                    border: {
+                                        display: false
+                                    }
+
+                                },
+
+
+                                y: {
+
+                                    grid: {
+                                        display: false
+                                    },
+
+                                    border: {
+                                        display: false
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+            }
+
+        });
+    </script>
+}

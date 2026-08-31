@@ -23,22 +23,35 @@ public class IndexModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? Search { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public string? Filter { get; set; }
+
+    [BindProperty(SupportsGet = true)]
+    public string? Part { get; set; }
+
     public IList<Song> Songs { get; set; }
         = new List<Song>();
 
     public string? ActivePart { get; set; }
 
-    public async Task OnGetAsync(string? part)
+    public string? ActiveFilter { get; set; }
+
+    public async Task OnGetAsync()
     {
-        ActivePart = part;
+        ActivePart = Part;
+        ActiveFilter = Filter;
 
         var query = _context.Songs
             .Where(x => x.IsActive)
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(part))
+        /*
+         * MASS PART FILTER
+         */
+
+        if (!string.IsNullOrWhiteSpace(Part))
         {
-            if (part == "Not specified")
+            if (Part == "Not specified")
             {
                 query = query.Where(x =>
                     x.SuggestedMassPart == null ||
@@ -47,8 +60,96 @@ public class IndexModel : PageModel
             else
             {
                 query = query.Where(x =>
-                    x.SuggestedMassPart == part);
+                    x.SuggestedMassPart == Part);
             }
+        }
+
+        /*
+         * DASHBOARD READINESS FILTERS
+         */
+
+        if (!string.IsNullOrWhiteSpace(Filter))
+        {
+            switch (Filter.ToLowerInvariant())
+            {
+                case "lyrics":
+                    query = query.Where(x =>
+                        x.PresentationLyrics != null &&
+                        x.PresentationLyrics != "");
+                    break;
+
+                case "missing-lyrics":
+                    query = query.Where(x =>
+                        x.PresentationLyrics == null ||
+                        x.PresentationLyrics == "");
+                    break;
+
+                case "pdf":
+                    query = query.Where(x =>
+                        x.PdfPath != null &&
+                        x.PdfPath != "");
+                    break;
+
+                case "missing-pdf":
+                    query = query.Where(x =>
+                        x.PdfPath == null ||
+                        x.PdfPath == "");
+                    break;
+
+                case "one-license":
+                    query = query.Where(x =>
+                        x.OneLicenseNumber != null &&
+                        x.OneLicenseNumber != "");
+                    break;
+
+                case "missing-one-license":
+                    query = query.Where(x =>
+                        x.OneLicenseNumber == null ||
+                        x.OneLicenseNumber == "");
+                    break;
+
+                case "composer":
+                    query = query.Where(x =>
+                        x.Composer != null &&
+                        x.Composer != "");
+                    break;
+
+                case "missing-composer":
+                    query = query.Where(x =>
+                        x.Composer == null ||
+                        x.Composer == "");
+                    break;
+
+                case "needs-attention":
+                    query = query.Where(x =>
+                        x.PresentationLyrics == null ||
+                        x.PresentationLyrics == "" ||
+                        x.PdfPath == null ||
+                        x.PdfPath == "" ||
+                        x.OneLicenseNumber == null ||
+                        x.OneLicenseNumber == "" ||
+                        x.Composer == null ||
+                        x.Composer == "");
+                    break;
+            }
+        }
+
+        /*
+         * SEARCH
+         */
+
+        if (!string.IsNullOrWhiteSpace(Search))
+        {
+            var search = Search.Trim();
+
+            query = query.Where(x =>
+                x.Title.Contains(search) ||
+                (x.Composer != null &&
+                 x.Composer.Contains(search)) ||
+                (x.OneLicenseNumber != null &&
+                 x.OneLicenseNumber.Contains(search)) ||
+                (x.SuggestedMassPart != null &&
+                 x.SuggestedMassPart.Contains(search)));
         }
 
         Songs = await query
