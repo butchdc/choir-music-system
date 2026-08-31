@@ -22,34 +22,297 @@
     };
 }
 
-<div class="mb-4">
-    <h1>Plan Music</h1>
+@{
+    var plannedSongCount = Model.Selections
+        .Count(x => x.SongId.HasValue);
 
-    <p class="text-muted mb-0">
-        @Model.Mass.Name
-        —
-        @Model.Mass.MassDate.ToString("dd MMM yyyy")
-    </p>
+    var plannedPartCount = Model.Selections
+        .Where(x => x.SongId.HasValue)
+        .Select(x => x.MassPart)
+        .Distinct()
+        .Count();
+
+    var presentationCount = Model.PlanItems
+        .Count(x => x.ItemType == "Presentation");
+
+    var totalMassParts = massParts.Length;
+}
+
+
+<!-- MASS PLAN HEADER -->
+
+<div class="mass-plan-header mb-4">
+
+    <div class="mass-plan-header-main">
+
+        <a asp-page="Index" class="mass-plan-back" title="Back to Masses" data-bs-toggle="tooltip">
+
+            <i class="bi bi-arrow-left"></i>
+
+        </a>
+
+
+        <div class="mass-plan-header-icon">
+
+            <i class="bi bi-music-note-list"></i>
+
+        </div>
+
+
+        <div>
+
+            <div class="mass-plan-header-kicker">
+                Mass Planning
+            </div>
+
+            <h1>
+                @Model.Mass.Name
+            </h1>
+
+            <div class="mass-plan-header-date">
+
+                <i class="bi bi-calendar3"></i>
+
+                @Model.Mass.MassDate.ToString("dddd, d MMMM yyyy")
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="mass-plan-header-actions">
+
+        <a asp-page="Edit" asp-route-id="@Model.Mass.Id" class="mass-plan-header-button">
+
+            <i class="bi bi-pencil"></i>
+            Mass Details
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- PLAN SUMMARY -->
+
+<div class="mass-plan-summary mb-4">
+
+    <div class="mass-plan-summary-item">
+
+        <div class="mass-plan-summary-icon songs">
+            <i class="bi bi-music-note-beamed"></i>
+        </div>
+
+        <div>
+            <strong>@plannedSongCount</strong>
+            <span>Planned Songs</span>
+        </div>
+
+    </div>
+
+
+    <div class="mass-plan-summary-divider"></div>
+
+
+    <div class="mass-plan-summary-item">
+
+        <div class="mass-plan-summary-icon parts">
+            <i class="bi bi-list-check"></i>
+        </div>
+
+        <div>
+            <strong>@plannedPartCount / @totalMassParts</strong>
+            <span>Mass Parts</span>
+        </div>
+
+    </div>
+
+
+    <div class="mass-plan-summary-divider"></div>
+
+
+    <div class="mass-plan-summary-item">
+
+        <div class="mass-plan-summary-icon presentation">
+            <i class="bi bi-file-earmark-slides"></i>
+        </div>
+
+        <div>
+            <strong>@presentationCount</strong>
+            <span>Presentation Items</span>
+        </div>
+
+    </div>
+
+
+    <div class="mass-plan-summary-progress">
+
+        <div class="mass-plan-summary-progress-label">
+
+            <span>Music Planning</span>
+
+            <strong>
+                @(totalMassParts == 0
+                    ? 0
+                    : (int)Math.Round(
+                        (double)plannedPartCount /
+                        totalMassParts * 100))%
+            </strong>
+
+        </div>
+
+        <div class="progress">
+
+            <div class="progress-bar" role="progressbar" style="width: @(totalMassParts == 0
+                                                                        ? 0
+                                                                        : (int)Math.Round(
+                                                                            (double)plannedPartCount /
+                                                                            totalMassParts * 100))%">
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 <form method="post" id="musicPlanForm">
 
-    <div id="massParts">
+    <div id="massParts" class="mass-parts-grid">
+
+        @{
+            var partNumber = 0;
+        }
 
         @foreach (var part in massParts)
         {
+            partNumber++;
+
             var partSelections = Model.Selections
                 .Where(x => x.MassPart == part)
                 .OrderBy(x => x.DisplayOrder)
                 .ToList();
 
-            <div class="card mb-3 mass-part" data-mass-part="@part">
+            var hasPlannedSong = partSelections
+                .Any(x => x.SongId.HasValue);
 
-                <div class="card-body">
 
-                    <h5 class="card-title mb-3">
-                        @part
-                    </h5>
+            <div class="mass-part @(hasPlannedSong ? "is-planned" : "is-unplanned")" data-mass-part="@part">
+
+                <!-- PART HEADER -->
+
+                <div class="mass-part-header">
+
+                    <div class="mass-part-heading">
+
+                        <div class="mass-part-number">
+                            @partNumber
+                        </div>
+
+                        <div>
+
+                            <div class="mass-part-title">
+                                @part
+                            </div>
+
+                            <div class="mass-part-status">
+
+                                @if (hasPlannedSong)
+                                {
+                                    <span class="planned">
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                        @partSelections.Count(x => x.SongId.HasValue)
+                                        song@(partSelections.Count(x => x.SongId.HasValue) == 1 ? "" : "s")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="unplanned">
+                                        <i class="bi bi-circle"></i>
+                                        Not planned
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mass-part-icon">
+
+                        @switch (part)
+                        {
+                            case "Entrance":
+                                <i class="bi bi-door-open"></i>
+                                break;
+
+                            case "Kyrie":
+                                <i class="bi bi-heart"></i>
+                                break;
+
+                            case "Gloria":
+                                <i class="bi bi-stars"></i>
+                                break;
+
+                            case "Psalm":
+                                <i class="bi bi-book"></i>
+                                break;
+
+                            case "Alleluia":
+                                <i class="bi bi-music-note-beamed"></i>
+                                break;
+
+                            case "Offertory":
+                                <i class="bi bi-gift"></i>
+                                break;
+
+                            case "Holy":
+                                <i class="bi bi-stars"></i>
+                                break;
+
+                            case "Memorial Acclamation":
+                                <i class="bi bi-cross"></i>
+                                break;
+
+                            case "Amen":
+                                <i class="bi bi-check2-circle"></i>
+                                break;
+
+                            case "Our Father":
+                                <i class="bi bi-people"></i>
+                                break;
+
+                            case "Lamb of God":
+                                <i class="bi bi-peace"></i>
+                                break;
+
+                            case "Communion":
+                                <i class="bi bi-cup-hot"></i>
+                                break;
+
+                            case "Recessional":
+                                <i class="bi bi-box-arrow-right"></i>
+                                break;
+
+                            default:
+                                <i class="bi bi-music-note"></i>
+                                break;
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <!-- SONGS -->
+
+                <div class="mass-part-body">
 
                     <div class="music-rows">
 
@@ -60,33 +323,40 @@
                                     x => x.Id == selection.SongId.Value)
                                 : null;
 
-                            <div class="music-row d-flex gap-2 mb-2">
 
-                                <div class="music-picker flex-grow-1 position-relative">
+                            <div class="music-row">
 
-                                    <input type="text" class="form-control music-search"
-                                           value="@(
-                                           selectedMusic is null
-                                               ? ""
-                                               : string.Join(
-                                                   " — ",
-                                                   new[]
-                                                   {
-                                                                                                                                                                                                          selectedMusic.Title,
-                                                                                                                                                                                                          selectedMusic.Composer,
-                                                                                                                                                                                                          string.IsNullOrWhiteSpace(selectedMusic.Arrangement)
-                                                                                                                                                                                                              ? null
-                                                                                                                                                                                                              : $"Arr: {selectedMusic.Arrangement}",
-                                                                                                                                                                                                          selectedMusic.SuggestedMassPart,
-                                                                                                                                                                                                          string.IsNullOrWhiteSpace(selectedMusic.Key)
-                                                                                                                                                                                                              ? null
-                                                                                                                                                                                                              : $"Key: {selectedMusic.Key}"
-                                                   }
-                                                   .Where(x => !string.IsNullOrWhiteSpace(x))
-                                               )
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          )"
-                                           data-music-id="@selectedMusic?.Id" placeholder="Search title, composer, part or key..."
-                                           autocomplete="off" />
+                                <div class="music-picker position-relative">
+
+                                    <div class="mass-song-search-wrap">
+
+                                        <i class="bi bi-search"></i>
+
+                                        <input type="text" class="form-control music-search"
+                                               value="@(
+                                               selectedMusic is null
+                                                   ? ""
+                                                   : string.Join(
+                                                       " — ",
+                                                       new[]
+                                                       {
+                                                                                selectedMusic.Title,
+                                                                                selectedMusic.Composer,
+                                                                                string.IsNullOrWhiteSpace(selectedMusic.Arrangement)
+                                                                                    ? null
+                                                                                    : $"Arr: {selectedMusic.Arrangement}",
+                                                                                selectedMusic.SuggestedMassPart,
+                                                                                string.IsNullOrWhiteSpace(selectedMusic.Key)
+                                                                                    ? null
+                                                                                    : $"Key: {selectedMusic.Key}"
+                                                       }
+                                                       .Where(x => !string.IsNullOrWhiteSpace(x))
+                                                   )
+                                                                                                                                                                            )" data-music-id="@selectedMusic?.Id"
+                                               placeholder="Search music..." autocomplete="off" />
+
+                                    </div>
+
 
                                     <div class="music-results list-group position-absolute w-100 shadow"
                                          style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
@@ -94,26 +364,42 @@
 
                                 </div>
 
-                                <a class="btn btn-outline-secondary view-music"
-                                   href="@(selectedMusic is null
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ? "#"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             : $"/MusicLibrary/View/{selectedMusic.Id}")"
-                                   target="_blank" rel="noopener noreferrer"
-                                   style="@(selectedMusic is null ? "display:none;" : "")">
-                                    View
-                                </a>
 
-                                <button type="button" class="btn btn-outline-danger remove-song">
-                                    Remove
-                                </button>
+                                <div class="mass-song-actions">
+
+                                    <a class="btn view-music"
+                                       href="@(selectedMusic is null
+                                                                                                                                                            ? "#"
+                                                                                                                                                            : $"/MusicLibrary/View/{selectedMusic.Id}")"
+                                       target="_blank" rel="noopener noreferrer"
+                                       style="@(selectedMusic is null ? "display:none;" : "")" title="View music sheet"
+                                       data-bs-toggle="tooltip">
+
+                                        <i class="bi bi-file-earmark-pdf"></i>
+
+                                    </a>
+
+
+                                    <button type="button" class="btn remove-song" title="Remove song" data-bs-toggle="tooltip">
+
+                                        <i class="bi bi-x-lg"></i>
+
+                                    </button>
+
+                                </div>
 
                             </div>
                         }
 
                     </div>
 
-                    <button type="button" class="btn btn-sm btn-outline-primary add-song">
-                        + Add another song
+
+                    <button type="button" class="add-song">
+
+                        <i class="bi bi-plus-lg"></i>
+
+                        Add song
+
                     </button>
 
                 </div>
@@ -122,7 +408,6 @@
         }
 
     </div>
-
     <div class="d-flex gap-2 mt-4">
         <button type="submit" class="btn btn-primary">
             Save Music Plan
@@ -135,123 +420,349 @@
 
 </form>
 
-<hr class="my-5">
+<!-- PRESENTATION ORDER -->
 
-<div class="mb-4">
-    <h3>Mass Presentation Order</h3>
-    <p class="text-muted mb-0">
-        Songs and presentation items will appear in this order in the PowerPoint.
-    </p>
-</div>
+<div class="presentation-order-section">
 
-@if (Model.PlanItems.Count > 0)
-{
-    var orderedItems = Model.PlanItems
-        .OrderBy(x => x.DisplayOrder)
-        .ToList();
+    <div class="presentation-order-heading">
 
-    <div class="card mb-4">
-        <div class="list-group" id="massPlanList">
+        <div>
 
-            @for (var i = 0; i < orderedItems.Count; i++)
+            <div class="presentation-order-kicker">
+                PowerPoint Flow
+            </div>
+
+            <h3>
+                Mass Presentation Order
+            </h3>
+
+            <p>
+                Songs and presentation items will appear in this order
+                in the generated PowerPoint.
+            </p>
+
+        </div>
+
+
+        @if (Model.PlanItems.Count > 0)
+        {
+            <div class="presentation-order-count">
+
+                <i class="bi bi-list-ol"></i>
+
+                <strong>
+                    @Model.PlanItems.Count
+                </strong>
+
+                item@(Model.PlanItems.Count == 1 ? "" : "s")
+
+            </div>
+        }
+
+    </div>
+
+
+    @if (Model.PlanItems.Count == 0)
+    {
+        <div class="presentation-order-empty">
+
+            <div class="presentation-order-empty-icon">
+                <i class="bi bi-file-earmark-slides"></i>
+            </div>
+
+            <div>
+                <strong>
+                    No presentation items yet
+                </strong>
+
+                <p>
+                    Add songs above or add a Presentation Library item below.
+                </p>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="presentation-timeline" id="massPlanList">
+
+            @{
+                var itemNumber = 0;
+            }
+
+            @foreach (var planItem in Model.PlanItems.OrderBy(x => x.DisplayOrder))
             {
-                var planItem = orderedItems[i];
+                itemNumber++;
 
-                <div class="list-group-item mass-plan-item" data-plan-item-id="@planItem.Id">
-                    <div class="d-flex align-items-center gap-3">
 
-                        <div class="text-muted text-center" style="width: 35px;">
-                            <span class="plan-item-number">
-                                @(i + 1)
-                            </span>
-                        </div>
+                <div class="mass-plan-item presentation-timeline-item @(planItem.ItemType == "Song" ? "is-song" : "is-presentation")"
+                     data-plan-item-id="@planItem.Id">
 
-                        <div class="flex-grow-1">
+                    <!-- ORDER -->
 
-                            @if (planItem.ItemType == "Song" &&
-                                planItem.Song is not null)
-                            {
-                                <div class="fw-semibold">
-                                    🎵 @planItem.Song.Title
-                                </div>
+                    <div class="presentation-order-number">
 
-                                <div class="small text-muted">
-                                    @planItem.MassPart
-
-                                    @if (!string.IsNullOrWhiteSpace(planItem.Song.Composer))
-                                    {
-                                        <span> · @planItem.Song.Composer</span>
-                                    }
-                                </div>
-                            }
-                            else if (planItem.ItemType == "Presentation")
-                            {
-                                @if (planItem.PresentationItem is not null)
-                                {
-                                    <a asp-page="/PresentationLibrary/Edit" asp-route-id="@planItem.PresentationItem.Id"
-                                       asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")" class="text-decoration-none">
-                                        @planItem.PresentationItem.Title
-                                    </a>
-
-                                    <div class="small text-muted">
-                                        @if (!string.IsNullOrWhiteSpace(planItem.MassPart))
-                                        {
-                                            <span>@planItem.MassPart · </span>
-                                        }
-
-                                        <span>@(planItem.PresentationItem.Type)</span>
-
-                                        @if (!string.IsNullOrWhiteSpace(
-                                            planItem.PresentationItem.Language))
-                                        {
-                                            <span> · @(planItem.PresentationItem.Language)</span>
-                                        }
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="fw-semibold text-danger">
-                                        📄 Presentation item unavailable
-                                    </div>
-                                }
-                            }
-
-                        </div>
-
-                        <div class="d-flex gap-1">
-
-                            <div class="d-flex gap-1">
-                                <button type="button" class="btn btn-sm btn-outline-secondary move-up" title="Move up">
-                                    ↑
-                                </button>
-
-                                <button type="button" class="btn btn-sm btn-outline-secondary move-down" title="Move down">
-                                    ↓
-                                </button>
-                            </div>
-
-                            @if (planItem.ItemType == "Presentation")
-                            {
-                                <form method="post" asp-page-handler="RemovePlanItem">
-
-                                    <input type="hidden" name="id" value="@Model.Mass.Id" />
-
-                                    <input type="hidden" name="planItemId" value="@planItem.Id" />
-
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                        Remove
-                                    </button>
-                                </form>
-                            }
-
-                        </div>
+                        <span class="plan-item-number">
+                            @itemNumber
+                        </span>
 
                     </div>
+
+
+                    <!-- ICON -->
+
+                    <div class="presentation-item-icon">
+
+                        @if (planItem.ItemType == "Song")
+                        {
+                            <i class="bi bi-music-note-beamed"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-file-earmark-slides"></i>
+                        }
+
+                    </div>
+
+
+                    <!-- DETAILS -->
+
+                    <div class="presentation-item-content">
+
+                        @if (planItem.ItemType == "Song" &&
+                             planItem.Song is not null)
+                        {
+                            <div class="presentation-item-type">
+                                Song
+                            </div>
+
+                            <div class="presentation-item-title">
+                                @planItem.Song.Title
+                            </div>
+
+                            <div class="presentation-item-meta">
+
+                                @if (!string.IsNullOrWhiteSpace(planItem.MassPart))
+                                {
+                                    <span class="presentation-item-part">
+                                        @planItem.MassPart
+                                    </span>
+                                }
+
+
+                                @if (!string.IsNullOrWhiteSpace(planItem.Song.Composer))
+                                {
+                                    <span>
+                                        <i class="bi bi-person"></i>
+                                        @planItem.Song.Composer
+                                    </span>
+                                }
+
+                            </div>
+                        }
+                        else if (planItem.ItemType == "Presentation")
+                        {
+                            @if (planItem.PresentationItem is not null)
+                            {
+                                <div class="presentation-item-type">
+                                    @planItem.PresentationItem.Type
+                                </div>
+
+                                <a asp-page="/PresentationLibrary/Edit" asp-route-id="@planItem.PresentationItem.Id"
+                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")" class="presentation-item-title">
+
+                                    @planItem.PresentationItem.Title
+
+                                </a>
+
+
+                                <div class="presentation-item-meta">
+
+                                    @if (!string.IsNullOrWhiteSpace(planItem.MassPart))
+                                    {
+                                        <span class="presentation-item-part">
+                                            @planItem.MassPart
+                                        </span>
+                                    }
+
+
+                                    @if (!string.IsNullOrWhiteSpace(
+                                        planItem.PresentationItem.Language))
+                                    {
+                                        <span>
+
+                                            <i class="bi bi-translate"></i>
+
+                                            @planItem.PresentationItem.Language
+
+                                        </span>
+                                    }
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="presentation-item-type text-danger">
+                                    Presentation
+                                </div>
+
+                                <div class="presentation-item-title text-danger">
+                                    Presentation item unavailable
+                                </div>
+                            }
+                        }
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="presentation-item-actions">
+
+                        <button type="button" class="btn move-up" title="Move up" data-bs-toggle="tooltip">
+
+                            <i class="bi bi-chevron-up"></i>
+
+                        </button>
+
+
+                        <button type="button" class="btn move-down" title="Move down" data-bs-toggle="tooltip">
+
+                            <i class="bi bi-chevron-down"></i>
+
+                        </button>
+
+
+                        @if (planItem.ItemType == "Presentation")
+                        {
+                            <form method="post" asp-page-handler="RemovePlanItem">
+
+                                <input type="hidden" name="id" value="@Model.Mass.Id" />
+
+                                <input type="hidden" name="planItemId" value="@planItem.Id" />
+
+                                <button type="submit" class="btn presentation-remove" title="Remove presentation item"
+                                        data-bs-toggle="tooltip">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </form>
+                        }
+
+                    </div>
+
                 </div>
             }
 
         </div>
+    }
+
+</div>
+
+<div class="card mb-4">
+    <div class="list-group" id="massPlanList">
+
+        @for (var i = 0; i < orderedItems.Count; i++)
+        {
+            var planItem = orderedItems[i];
+
+            <div class="list-group-item mass-plan-item" data-plan-item-id="@planItem.Id">
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="text-muted text-center" style="width: 35px;">
+                        <span class="plan-item-number">
+                            @(i + 1)
+                        </span>
+                    </div>
+
+                    <div class="flex-grow-1">
+
+                        @if (planItem.ItemType == "Song" &&
+                            planItem.Song is not null)
+                        {
+                            <div class="fw-semibold">
+                                🎵 @planItem.Song.Title
+                            </div>
+
+                            <div class="small text-muted">
+                                @planItem.MassPart
+
+                                @if (!string.IsNullOrWhiteSpace(planItem.Song.Composer))
+                                {
+                                    <span> · @planItem.Song.Composer</span>
+                                }
+                            </div>
+                        }
+                        else if (planItem.ItemType == "Presentation")
+                        {
+                            @if (planItem.PresentationItem is not null)
+                            {
+                                <a asp-page="/PresentationLibrary/Edit" asp-route-id="@planItem.PresentationItem.Id"
+                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")" class="text-decoration-none">
+                                    @planItem.PresentationItem.Title
+                                </a>
+
+                                <div class="small text-muted">
+                                    @if (!string.IsNullOrWhiteSpace(planItem.MassPart))
+                                    {
+                                        <span>@planItem.MassPart · </span>
+                                    }
+
+                                    <span>@(planItem.PresentationItem.Type)</span>
+
+                                    @if (!string.IsNullOrWhiteSpace(
+                                        planItem.PresentationItem.Language))
+                                    {
+                                        <span> · @(planItem.PresentationItem.Language)</span>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="fw-semibold text-danger">
+                                    📄 Presentation item unavailable
+                                </div>
+                            }
+                        }
+
+                    </div>
+
+                    <div class="d-flex gap-1">
+
+                        <div class="d-flex gap-1">
+                            <button type="button" class="btn btn-sm btn-outline-secondary move-up" title="Move up">
+                                ↑
+                            </button>
+
+                            <button type="button" class="btn btn-sm btn-outline-secondary move-down" title="Move down">
+                                ↓
+                            </button>
+                        </div>
+
+                        @if (planItem.ItemType == "Presentation")
+                        {
+                            <form method="post" asp-page-handler="RemovePlanItem">
+
+                                <input type="hidden" name="id" value="@Model.Mass.Id" />
+
+                                <input type="hidden" name="planItemId" value="@planItem.Id" />
+
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Remove
+                                </button>
+                            </form>
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+        }
+
     </div>
+</div>
 }
 
 <div class="card mb-4">
@@ -326,57 +837,72 @@
 
             const form = document.getElementById("musicPlanForm");
 
-            const musicLibrary = [
-                                                                                                                                    @foreach (var music in Model.Songs)
+            const musicLibrary = [                                                                                                                                        @foreach (var music in Model.Songs)
                 {
                     @:{
-                                                                                                                                                                                                                                                            @:id: @music.Id,
-                    @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
-                    @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
-                    @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
-                    @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
-                    @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
-                                                                                                                                                                                                                                                            @:},
+                                                                                                                                                                                                                                                  @:id: @music.Id,
+                @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
+                @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
+                @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
+                @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
+                @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
+                                                                                                                                                                                                                                                                                    @:},
             }
-                                                                                                                                ];
+                                                                                                                                            ];
 
         function createMusicRow() {
 
             const row = document.createElement("div");
 
-            row.className = "music-row d-flex gap-2 mb-2";
+            row.className = "music-row";
 
             row.innerHTML = `
-                                                                                                            <div class="music-picker flex-grow-1 position-relative">
+                <div class="music-picker position-relative">
 
-                                                                                                                <input type="text"
-                                                                                                                       class="form-control music-search"
-                                                                                                                       data-music-id=""
-                                                                                                                       placeholder="Search title, composer, part or key..."
-                                                                                                                       autocomplete="off" />
+                    <div class="mass-song-search-wrap">
 
-                                                                                                                <div class="music-results list-group position-absolute w-100 shadow"
-                                                                                                                     style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
-                                                                                                                </div>
+                        <i class="bi bi-search"></i>
 
-                                                                                                            </div>
+                        <input type="text"
+                               class="form-control music-search"
+                               data-music-id=""
+                               placeholder="Search music..."
+                               autocomplete="off" />
 
-                                                                                                            <a class="btn btn-outline-secondary view-music"
-                                                                                                               href="#"
-                                                                                                               target="_blank"
-                                                                                                               style="display:none;">
-                                                                                                                View
-                                                                                                            </a>
+                    </div>
 
-                                                                                                            <button type="button"
-                                                                                                                    class="btn btn-outline-danger remove-song">
-                                                                                                                Remove
-                                                                                                            </button>
-                                                                                                        `;
+                    <div class="music-results list-group position-absolute w-100 shadow"
+                         style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
+                    </div>
+
+                </div>
+
+                <div class="mass-song-actions">
+
+                    <a class="btn view-music"
+                       href="#"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       style="display:none;"
+                       title="View music sheet">
+
+                        <i class="bi bi-file-earmark-pdf"></i>
+
+                    </a>
+
+                    <button type="button"
+                            class="btn remove-song"
+                            title="Remove song">
+
+                        <i class="bi bi-x-lg"></i>
+
+                    </button>
+
+                </div>
+            `;
 
             return row;
         }
-
 
         document.addEventListener("input", function (event) {
 
@@ -841,6 +1367,6 @@
             }
         }
 
-                                                                                                                            });
+                                                                                                                                        });
     </script>
 }

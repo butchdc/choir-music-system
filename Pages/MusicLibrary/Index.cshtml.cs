@@ -11,6 +11,11 @@ public class IndexModel : PageModel
 {
     private readonly ChoirDbContext _context;
     private readonly PowerPointService _powerPointService;
+    public int NeedsAttentionCount { get; set; }
+    public int MissingLyricsCount { get; set; }
+    public int MissingPdfCount { get; set; }
+    public int MissingOneLicenseCount { get; set; }
+    public int MissingComposerCount { get; set; }
 
     public IndexModel(
         ChoirDbContext context,
@@ -48,6 +53,27 @@ public class IndexModel : PageModel
         /*
          * MASS PART FILTER
          */
+
+        var activeSongs = _context.Songs
+   .Where(x => x.IsActive);
+
+        NeedsAttentionCount = await activeSongs.CountAsync(x =>
+            string.IsNullOrWhiteSpace(x.PresentationLyrics) ||
+            string.IsNullOrWhiteSpace(x.PdfPath) ||
+            string.IsNullOrWhiteSpace(x.OneLicenseNumber) ||
+            string.IsNullOrWhiteSpace(x.Composer));
+
+        MissingLyricsCount = await activeSongs.CountAsync(x =>
+            string.IsNullOrWhiteSpace(x.PresentationLyrics));
+
+        MissingPdfCount = await activeSongs.CountAsync(x =>
+            string.IsNullOrWhiteSpace(x.PdfPath));
+
+        MissingOneLicenseCount = await activeSongs.CountAsync(x =>
+            string.IsNullOrWhiteSpace(x.OneLicenseNumber));
+
+        MissingComposerCount = await activeSongs.CountAsync(x =>
+            string.IsNullOrWhiteSpace(x.Composer));
 
         if (!string.IsNullOrWhiteSpace(Part))
         {
