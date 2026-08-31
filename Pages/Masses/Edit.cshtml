@@ -5,56 +5,321 @@
     ViewData["Title"] = "Edit Mass";
 }
 
-<h1>Edit Mass</h1>
+<div class="create-mass-page">
 
-<form method="post" enctype="multipart/form-data">
+    <div class="create-mass-header">
 
-    <input type="hidden" asp-for="Mass.Id" />
+        <div class="create-mass-header-main">
 
-    <div class="mb-3">
-        <label asp-for="Mass.Name" class="form-label"></label>
-        <input asp-for="Mass.Name" class="form-control" />
-        <span asp-validation-for="Mass.Name" class="text-danger"></span>
-    </div>
+            <a asp-page="Index"
+               class="btn btn-sm create-mass-back">
+                <i class="bi bi-arrow-left"></i>
+                Masses
+            </a>
 
-    <div class="mb-3">
-        <label asp-for="Mass.MassDate" class="form-label">Mass Date</label>
-        <input asp-for="Mass.MassDate" type="date" class="form-control" />
-    </div>
+            <div class="create-mass-heading">
 
-    <div class="mb-3">
-        <label asp-for="Mass.Notes" class="form-label"></label>
-        <textarea asp-for="Mass.Notes" class="form-control" rows="4"></textarea>
-    </div>
-    <div class="mb-3">
-        <label asp-for="BackgroundImage" class="form-label">
-            Presentation Background
-        </label>
+                <div class="create-mass-icon">
+                    <i class="bi bi-calendar2-check"></i>
+                </div>
 
-        @if (!string.IsNullOrWhiteSpace(Model.Mass.PresentationBackgroundPath))
-        {
-            <div class="mb-2 text-muted small">
-                A presentation background is currently set.
-                Upload a new image to replace it.
+                <div>
+                    <div class="create-mass-kicker">
+                        Mass Planning
+                    </div>
+
+                    <h1>Edit Mass</h1>
+
+                    <p>
+                        Update the Mass details and
+                        presentation settings.
+                    </p>
+                </div>
+
             </div>
-        }
 
-        <input asp-for="BackgroundImage" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-               class="form-control" />
-
-        <div class="form-text">
-            Optional. Leave blank to keep the existing background.
         </div>
 
-        <span asp-validation-for="BackgroundImage" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">
-        Save Changes
-    </button>
 
-    <a asp-page="Index" class="btn btn-secondary">
-        Cancel
-    </a>
+    <form method="post"
+          enctype="multipart/form-data"
+          class="create-mass-form">
 
-</form>
+        <input type="hidden"
+               asp-for="Mass.Id" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger">
+        </div>
+
+
+        <div class="create-mass-grid">
+
+            <div class="create-mass-main">
+
+
+                <section class="create-mass-card">
+
+                    <div class="create-mass-card-header">
+
+                        <div class="create-mass-card-icon">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+
+                        <div>
+                            <h2>Mass Details</h2>
+                            <p>
+                                Update the name and date
+                                for this Mass.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="create-mass-fields">
+
+                        <div class="create-mass-field create-mass-field-wide">
+
+                            <label asp-for="Mass.Name"
+                                   class="form-label">
+                                Mass Name
+                            </label>
+
+                            <input asp-for="Mass.Name"
+                                   class="form-control form-control-lg" />
+
+                            <span asp-validation-for="Mass.Name"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="create-mass-field">
+
+                            <label asp-for="Mass.MassDate"
+                                   class="form-label">
+                                Mass Date
+                            </label>
+
+                            <div class="create-mass-input-icon">
+
+                                <i class="bi bi-calendar3"></i>
+
+                                <input asp-for="Mass.MassDate"
+                                       type="date"
+                                       class="form-control" />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="create-mass-card">
+
+                    <div class="create-mass-card-header">
+
+                        <div class="create-mass-card-icon">
+                            <i class="bi bi-card-text"></i>
+                        </div>
+
+                        <div>
+                            <h2>Notes</h2>
+                            <p>
+                                Update any notes used while
+                                preparing this Mass.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="create-mass-field">
+
+                        <textarea asp-for="Mass.Notes"
+                                  class="form-control"
+                                  rows="6"
+                                  placeholder="Optional notes for this Mass..."></textarea>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <aside class="create-mass-sidebar">
+
+                <section class="create-mass-card create-background-card">
+
+                    <div class="create-mass-card-header">
+
+                        <div class="create-mass-card-icon">
+                            <i class="bi bi-image"></i>
+                        </div>
+
+                        <div>
+                            <h2>Presentation</h2>
+                            <p>
+                                PowerPoint background image.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    @if (!string.IsNullOrWhiteSpace(
+                        Model.Mass.PresentationBackgroundPath))
+                    {
+                        <div class="edit-background-status">
+
+                            <div class="edit-background-status-icon">
+                                <i class="bi bi-check2"></i>
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Background configured
+                                </strong>
+
+                                <span>
+                                    Upload another image below
+                                    to replace it.
+                                </span>
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="create-background-placeholder">
+
+                            <i class="bi bi-image"></i>
+
+                            <strong>
+                                No background selected
+                            </strong>
+
+                            <span>
+                                Add one for generated
+                                PowerPoint presentations.
+                            </span>
+
+                        </div>
+                    }
+
+
+                    <div class="create-background-upload">
+
+                        <label asp-for="BackgroundImage"
+                               class="form-label">
+                            @if (!string.IsNullOrWhiteSpace(
+                                Model.Mass.PresentationBackgroundPath))
+                            {
+                                <text>Replace Background</text>
+                            }
+                            else
+                            {
+                                <text>Choose Background</text>
+                            }
+                        </label>
+
+                        <input asp-for="BackgroundImage"
+                               type="file"
+                               accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                               class="form-control" />
+
+                        <div class="form-text">
+                            JPG or PNG · Maximum 10 MB.
+                            Leave blank to keep the existing background.
+                        </div>
+
+                        <span asp-validation-for="BackgroundImage"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <div class="create-mass-next">
+
+                    <div class="create-mass-next-icon">
+                        <i class="bi bi-music-note-list"></i>
+                    </div>
+
+                    <div>
+                        <strong>
+                            Music &amp; Presentation Plan
+                        </strong>
+
+                        <p>
+                            Songs and presentation items are
+                            managed separately in the Mass Plan.
+                        </p>
+
+                        <a asp-page="Plan"
+                           asp-route-id="@Model.Mass.Id"
+                           class="edit-mass-plan-link">
+                            Open Mass Plan
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <div class="create-mass-actions">
+
+            <div class="create-mass-actions-info">
+
+                <i class="bi bi-check2-circle"></i>
+
+                <span>
+                    Changes apply to this Mass only.
+                </span>
+
+            </div>
+
+
+            <div class="create-mass-actions-buttons">
+
+                <a asp-page="Index"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="btn btn-warning create-mass-submit">
+
+                    <i class="bi bi-check2-circle me-1"></i>
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

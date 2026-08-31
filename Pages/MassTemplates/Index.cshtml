@@ -5,78 +5,391 @@
     ViewData["Title"] = "Mass Templates";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1>Mass Templates</h1>
-        <p class="text-muted mb-0">
-            Reusable Mass plans with default songs and presentation items.
-        </p>
+<div class="mass-templates-page">
+
+    <div class="presentation-library-header">
+
+        <div class="presentation-library-heading">
+
+            <div class="presentation-library-icon">
+                <i class="bi bi-layers"></i>
+            </div>
+
+            <div>
+
+                <div class="presentation-library-kicker">
+                    Reusable Plans
+                </div>
+
+                <h1>Mass Templates</h1>
+
+                <p>
+                    Reusable Mass plans with default songs
+                    and presentation items.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="presentation-library-header-actions">
+
+            <span class="presentation-library-count">
+                @Model.Templates.Count
+                @(Model.Templates.Count == 1 ? "Template" : "Templates")
+            </span>
+
+            <a asp-page="./Create"
+               class="btn btn-warning presentation-library-add">
+
+                <i class="bi bi-plus-lg me-1"></i>
+                Add Mass Template
+
+            </a>
+
+        </div>
+
     </div>
 
-    <a asp-page="./Create" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>
-        Add Mass Template
-    </a>
+
+    @if (Model.Templates.Count == 0)
+    {
+        <div class="presentation-library-empty">
+
+            <div class="presentation-library-empty-icon">
+                <i class="bi bi-layers"></i>
+            </div>
+
+            <h3>No Mass Templates Yet</h3>
+
+            <p>
+                Create a reusable Mass structure so future
+                Mass plans can be prepared more quickly.
+            </p>
+
+            <a asp-page="./Create"
+               class="btn btn-warning">
+
+                <i class="bi bi-plus-lg me-1"></i>
+                Create First Template
+
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="presentation-library-toolbar">
+
+            <div class="presentation-library-search">
+
+                <i class="bi bi-search"></i>
+
+                <input type="text"
+                       id="massTemplateSearch"
+                       class="form-control"
+                       placeholder="Search templates..."
+                       autocomplete="off" />
+
+                <button type="button"
+                        id="massTemplateClear"
+                        class="presentation-library-clear"
+                        title="Clear search">
+
+                    <i class="bi bi-x-lg"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="presentation-library-toolbar-info">
+
+                <span id="massTemplateResultCount">
+                    @Model.Templates.Count shown
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="presentation-library-table-card">
+
+            <div class="table-responsive">
+
+                <table class="table align-middle presentation-library-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Template</th>
+
+                            <th>Notes</th>
+
+                            <th class="text-end">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="massTemplateTableBody">
+
+                        @foreach (var template in Model.Templates)
+                        {
+                            <tr class="mass-template-row"
+                                data-search="@($"{template.Name} {template.Notes}".ToLowerInvariant())">
+
+                                <td>
+
+                                    <div class="presentation-item-title">
+
+                                        <div class="presentation-item-mark mass-template-mark">
+
+                                            <i class="bi bi-layers"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <a asp-page="./Plan"
+                                               asp-route-id="@template.Id"
+                                               class="presentation-item-name">
+
+                                                @template.Name
+
+                                            </a>
+
+                                            <div class="presentation-item-subtitle">
+
+                                                <i class="bi bi-music-note-list me-1"></i>
+                                                Reusable Mass plan
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    @if (!string.IsNullOrWhiteSpace(template.Notes))
+                                    {
+                                        <span class="mass-template-notes">
+                                            @template.Notes
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            —
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <td class="text-end">
+
+                                    <div class="d-inline-flex gap-2">
+
+                                        <a asp-page="./Plan"
+                                           asp-route-id="@template.Id"
+                                           class="btn btn-sm btn-outline-primary table-action"
+                                           title="Plan Template"
+                                           data-bs-toggle="tooltip">
+
+                                            <i class="bi bi-music-note-list"></i>
+
+                                        </a>
+
+
+                                        <a asp-page="./Edit"
+                                           asp-route-id="@template.Id"
+                                           asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                           class="btn btn-sm btn-outline-secondary table-action"
+                                           title="Edit"
+                                           data-bs-toggle="tooltip">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </a>
+
+
+                                        <a asp-page="./Delete"
+                                           asp-route-id="@template.Id"
+                                           asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                           class="btn btn-sm btn-outline-danger table-action"
+                                           title="Delete"
+                                           data-bs-toggle="tooltip">
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div id="massTemplateNoResults"
+                 class="presentation-library-no-results"
+                 style="display:none;">
+
+                <i class="bi bi-search"></i>
+
+                <strong>No templates found</strong>
+
+                <span>
+                    Try a different search.
+                </span>
+
+            </div>
+
+        </div>
+    }
+
 </div>
 
-@if (Model.Templates.Count == 0)
+
+@section Scripts
 {
-    <div class="alert alert-light border">
-        No Mass templates have been created yet.
-    </div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table align-middle">
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
 
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Notes</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
+                const search =
+                    document.getElementById(
+                        "massTemplateSearch"
+                    );
 
-            <tbody>
-                @foreach (var template in Model.Templates)
-                {
-                    <tr>
-                        <td class="fw-semibold">
-                            @template.Name
-                        </td>
+                const clear =
+                    document.getElementById(
+                        "massTemplateClear"
+                    );
 
-                        <td>
-                            @template.Notes
-                        </td>
+                const resultCount =
+                    document.getElementById(
+                        "massTemplateResultCount"
+                    );
 
-                        <td class="text-end">
-                            <div class="d-inline-flex gap-2">
+                const noResults =
+                    document.getElementById(
+                        "massTemplateNoResults"
+                    );
 
-                                <a asp-page="./Plan" asp-route-id="@template.Id"
-                                   class="btn btn-sm btn-outline-primary table-action" title="Plan Template"
-                                   data-bs-toggle="tooltip">
-                                    <i class="bi bi-music-note-list"></i>
-                                </a>
+                const rows =
+                    Array.from(
+                        document.querySelectorAll(
+                            ".mass-template-row"
+                        )
+                    );
 
-                                <a asp-page="./Edit" asp-route-id="@template.Id"
-                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                   class="btn btn-sm btn-outline-secondary table-action" title="Edit" data-bs-toggle="tooltip">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
 
-                                <a asp-page="./Delete" asp-route-id="@template.Id"
-                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                   class="btn btn-sm btn-outline-danger table-action" title="Delete" data-bs-toggle="tooltip">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-
-                            </div>
-                        </td>
-                    </tr>
+                if (!search) {
+                    return;
                 }
-            </tbody>
 
-        </table>
-    </div>
+
+                function filterTemplates() {
+
+                    const query =
+                        search.value
+                            .trim()
+                            .toLowerCase();
+
+
+                    let visibleCount = 0;
+
+
+                    rows.forEach(
+                        function (row) {
+
+                            const value =
+                                row.dataset.search || "";
+
+                            const visible =
+                                !query ||
+                                value.includes(query);
+
+                            row.style.display =
+                                visible ? "" : "none";
+
+                            if (visible) {
+                                visibleCount++;
+                            }
+
+                        }
+                    );
+
+
+                    if (resultCount) {
+                        resultCount.textContent =
+                            `${visibleCount} shown`;
+                    }
+
+
+                    if (clear) {
+                        clear.style.display =
+                            query ? "inline-flex" : "none";
+                    }
+
+
+                    if (noResults) {
+                        noResults.style.display =
+                            visibleCount === 0
+                                ? "flex"
+                                : "none";
+                    }
+
+                }
+
+
+                search.addEventListener(
+                    "input",
+                    filterTemplates
+                );
+
+
+                if (clear) {
+
+                    clear.addEventListener(
+                        "click",
+                        function () {
+
+                            search.value = "";
+
+                            filterTemplates();
+
+                            search.focus();
+
+                        }
+                    );
+
+                }
+
+
+                filterTemplates();
+
+            }
+        );
+    </script>
 }

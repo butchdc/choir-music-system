@@ -5,61 +5,321 @@
     ViewData["Title"] = "Save Mass as Template";
 }
 
-<h1>Save Mass as Template</h1>
+<div class="template-from-mass-page">
 
-<p class="text-muted">
-    Create a reusable template from
-    <strong>@Model.Mass.Name</strong>.
-</p>
+    <div class="template-from-mass-header">
 
-<form method="post">
+        <a asp-page="/Masses/Index"
+           class="template-editor-back">
 
-    <input type="hidden"
-           name="massId"
-           value="@Model.Mass.Id" />
+            <i class="bi bi-arrow-left"></i>
+            Masses
 
-    <div class="mb-3">
+        </a>
 
-        <label asp-for="TemplateName"
-               class="form-label">
-            Template Name
-        </label>
 
-        <input asp-for="TemplateName"
-               class="form-control" />
+        <div class="template-editor-heading">
 
-        <span asp-validation-for="TemplateName"
-              class="text-danger">
-        </span>
+            <div class="template-editor-heading-icon">
+                <i class="bi bi-journal-plus"></i>
+            </div>
 
-    </div>
+            <div>
 
-    <div class="mb-3">
+                <div class="template-editor-kicker">
+                    Reusable Planning
+                </div>
 
-        <label asp-for="Notes"
-               class="form-label">
-            Notes
-        </label>
+                <h1>Save Mass as Template</h1>
 
-        <textarea asp-for="Notes"
-                  class="form-control"
-                  rows="4">
-        </textarea>
+                <p>
+                    Turn the current Mass plan into a reusable
+                    starting point for future Masses.
+                </p>
+
+            </div>
+
+        </div>
 
     </div>
 
-    <button type="submit"
-            class="btn btn-primary">
-        <i class="bi bi-journal-plus me-1"></i>
-        Create Template
-    </button>
 
-    <a asp-page="/Masses/Index"
-       class="btn btn-secondary">
-        Cancel
-    </a>
+    <form method="post">
 
-</form>
+        <input type="hidden"
+               name="massId"
+               value="@Model.Mass.Id" />
+
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger">
+        </div>
+
+
+        <div class="template-from-mass-grid">
+
+            <div class="template-from-mass-main">
+
+
+                <!-- SOURCE MASS -->
+
+                <section class="template-editor-card">
+
+                    <div class="template-editor-card-header">
+
+                        <div class="template-editor-card-icon">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>Source Mass</h2>
+
+                            <p>
+                                The current plan will be copied
+                                into the new template.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="template-source-mass">
+
+                        <div class="template-source-mass-icon">
+                            <i class="bi bi-music-note-list"></i>
+                        </div>
+
+
+                        <div class="template-source-mass-content">
+
+                            <div class="template-source-mass-label">
+                                Mass
+                            </div>
+
+                            <strong>
+                                @Model.Mass.Name
+                            </strong>
+
+                            <span>
+                                @Model.Mass.MassDate.ToString(
+                                    "dddd, d MMMM yyyy")
+                            </span>
+
+                        </div>
+
+
+                        <div class="template-source-copy">
+
+                            <i class="bi bi-copy"></i>
+                            Plan will be copied
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- TEMPLATE DETAILS -->
+
+                <section class="template-editor-card">
+
+                    <div class="template-editor-card-header">
+
+                        <div class="template-editor-card-icon">
+                            <i class="bi bi-layers"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>Template Details</h2>
+
+                            <p>
+                                Choose how this reusable template
+                                will appear in the Template Library.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="template-editor-field">
+
+                        <label asp-for="TemplateName"
+                               class="form-label">
+                            Template Name
+                        </label>
+
+                        <input asp-for="TemplateName"
+                               class="form-control form-control-lg"
+                               placeholder="e.g. Sunday Mass Template" />
+
+                        <span asp-validation-for="TemplateName"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="template-editor-field mt-3">
+
+                        <label asp-for="Notes"
+                               class="form-label">
+                            Notes
+                        </label>
+
+                        <textarea asp-for="Notes"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Optional notes about when or how to use this template..."></textarea>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+
+            <!-- SIDEBAR -->
+
+            <aside class="template-from-mass-sidebar">
+
+                <div class="template-from-mass-info">
+
+                    <div class="template-from-mass-info-icon">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Reuse this plan
+                        </strong>
+
+                        <p>
+                            The songs and presentation items in
+                            this Mass plan will become the starting
+                            order for the new template.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="template-from-mass-process">
+
+                    <div class="template-from-mass-process-title">
+
+                        <i class="bi bi-arrow-repeat"></i>
+                        How it works
+
+                    </div>
+
+
+                    <div class="template-process-step">
+
+                        <div class="template-process-number">
+                            1
+                        </div>
+
+                        <div>
+                            <strong>Copy the Mass plan</strong>
+                            <span>
+                                The current ordered plan becomes
+                                the template plan.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="template-process-step">
+
+                        <div class="template-process-number">
+                            2
+                        </div>
+
+                        <div>
+                            <strong>Reuse the template</strong>
+                            <span>
+                                Select it when creating a future Mass.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="template-process-step">
+
+                        <div class="template-process-number">
+                            3
+                        </div>
+
+                        <div>
+                            <strong>Adjust each Mass</strong>
+                            <span>
+                                Changes to the new Mass do not
+                                change this template.
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+
+        <!-- ACTIONS -->
+
+        <div class="template-editor-actions">
+
+            <div class="template-editor-actions-info">
+
+                <i class="bi bi-info-circle"></i>
+
+                <span>
+                    Your existing Mass will remain unchanged.
+                </span>
+
+            </div>
+
+
+            <div class="template-editor-actions-buttons">
+
+                <a asp-page="/Masses/Index"
+                   class="btn btn-outline-secondary">
+
+                    Cancel
+
+                </a>
+
+
+                <button type="submit"
+                        class="btn btn-warning template-editor-save">
+
+                    <i class="bi bi-journal-plus me-1"></i>
+                    Create Template
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
 
 @section Scripts
 {

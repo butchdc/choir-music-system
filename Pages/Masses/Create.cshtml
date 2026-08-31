@@ -5,144 +5,325 @@
     ViewData["Title"] = "Create Mass";
 }
 
-<h1>Create Mass</h1>
+<div class="create-mass-page">
 
-<p class="text-muted">
-    Create a Mass plan before selecting music.
-</p>
+    <div class="create-mass-header">
 
+        <div class="create-mass-header-main">
 
-<form method="post"
-      enctype="multipart/form-data">
+            <a asp-page="Index"
+               class="btn btn-sm create-mass-back">
+                <i class="bi bi-arrow-left"></i>
+                Masses
+            </a>
 
-    <div asp-validation-summary="ModelOnly"
-         class="text-danger mb-3">
-    </div>
+            <div class="create-mass-heading">
 
+                <div class="create-mass-icon">
+                    <i class="bi bi-calendar2-plus"></i>
+                </div>
 
-    <div class="mb-3">
+                <div>
+                    <div class="create-mass-kicker">
+                        Mass Planning
+                    </div>
 
-        <label asp-for="Mass.Name"
-               class="form-label">
-            Name
-        </label>
+                    <h1>Create Mass</h1>
 
-        <input asp-for="Mass.Name"
-               class="form-control"
-               placeholder="e.g. Sunday Mass" />
+                    <p>
+                        Set up the Mass details, then continue
+                        to music and presentation planning.
+                    </p>
+                </div>
 
-        <span asp-validation-for="Mass.Name"
-              class="text-danger">
-        </span>
+            </div>
 
-    </div>
-
-
-    <div class="mb-3">
-
-        <label asp-for="Mass.MassDate"
-               class="form-label">
-            Mass Date
-        </label>
-
-        <input asp-for="Mass.MassDate"
-               type="date"
-               class="form-control" />
-
-    </div>
-
-
-    <div class="mb-3">
-
-        <label asp-for="MassTemplateId"
-               class="form-label">
-            Mass Template
-        </label>
-
-        <select asp-for="MassTemplateId"
-                class="form-select">
-
-            <option value="">
-                No template
-            </option>
-
-            @foreach (var template in Model.MassTemplates)
-            {
-                <option value="@template.Id">
-                    @template.Name
-                </option>
-            }
-
-        </select>
-
-        <div class="form-text">
-            Optional. Songs and presentation items
-            from the template will be added to the
-            new Mass.
         </div>
 
-        <span asp-validation-for="MassTemplateId"
-              class="text-danger">
-        </span>
-
     </div>
 
 
-    <div class="mb-3">
+    <form method="post"
+          enctype="multipart/form-data"
+          class="create-mass-form">
 
-        <label asp-for="Mass.Notes"
-               class="form-label">
-            Notes
-        </label>
-
-        <textarea asp-for="Mass.Notes"
-                  class="form-control"
-                  rows="4">
-        </textarea>
-
-    </div>
-
-
-    <div class="mb-3">
-
-        <label asp-for="BackgroundImage"
-               class="form-label">
-            Presentation Background
-        </label>
-
-        <input asp-for="BackgroundImage"
-               type="file"
-               accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-               class="form-control" />
-
-        <div class="form-text">
-            Optional. Used as the background for the
-            generated PowerPoint. JPG or PNG,
-            maximum 10 MB.
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger">
         </div>
 
-        <span asp-validation-for="BackgroundImage"
-              class="text-danger">
-        </span>
 
-    </div>
+        <div class="create-mass-grid">
+
+            <div class="create-mass-main">
 
 
-    <div class="d-flex gap-2">
+                <section class="create-mass-card">
 
-        <button type="submit"
-                class="btn btn-primary">
-            Create Mass
-        </button>
+                    <div class="create-mass-card-header">
 
-        <a asp-page="Index"
-           class="btn btn-secondary">
-            Cancel
-        </a>
+                        <div class="create-mass-card-icon">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
 
-    </div>
+                        <div>
+                            <h2>Mass Details</h2>
+                            <p>
+                                Give this Mass a name and date.
+                            </p>
+                        </div>
 
-</form>
+                    </div>
+
+
+                    <div class="create-mass-fields">
+
+                        <div class="create-mass-field create-mass-field-wide">
+
+                            <label asp-for="Mass.Name"
+                                   class="form-label">
+                                Mass Name
+                            </label>
+
+                            <input asp-for="Mass.Name"
+                                   class="form-control form-control-lg"
+                                   placeholder="e.g. Sunday Mass" />
+
+                            <span asp-validation-for="Mass.Name"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="create-mass-field">
+
+                            <label asp-for="Mass.MassDate"
+                                   class="form-label">
+                                Mass Date
+                            </label>
+
+                            <div class="create-mass-input-icon">
+
+                                <i class="bi bi-calendar3"></i>
+
+                                <input asp-for="Mass.MassDate"
+                                       type="date"
+                                       class="form-control" />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="create-mass-card">
+
+                    <div class="create-mass-card-header">
+
+                        <div class="create-mass-card-icon">
+                            <i class="bi bi-layers"></i>
+                        </div>
+
+                        <div>
+                            <h2>Start Your Plan</h2>
+                            <p>
+                                Start fresh or use one of your
+                                saved Mass templates.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="create-mass-field">
+
+                        <label asp-for="MassTemplateId"
+                               class="form-label">
+                            Mass Template
+                        </label>
+
+                        <select asp-for="MassTemplateId"
+                                class="form-select form-select-lg">
+
+                            <option value="">
+                                Start from scratch
+                            </option>
+
+                            @foreach (var template in Model.MassTemplates)
+                            {
+                                <option value="@template.Id">
+                                    @template.Name
+                                </option>
+                            }
+
+                        </select>
+
+                        <div class="create-mass-help">
+
+                            <i class="bi bi-info-circle"></i>
+
+                            <span>
+                                Using a template automatically adds
+                                its saved songs and presentation items
+                                to the new Mass.
+                            </span>
+
+                        </div>
+
+                        <span asp-validation-for="MassTemplateId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <section class="create-mass-card">
+
+                    <div class="create-mass-card-header">
+
+                        <div class="create-mass-card-icon">
+                            <i class="bi bi-card-text"></i>
+                        </div>
+
+                        <div>
+                            <h2>Notes</h2>
+                            <p>
+                                Add any details you want available
+                                while preparing this Mass.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="create-mass-field">
+
+                        <textarea asp-for="Mass.Notes"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Optional notes for this Mass..."></textarea>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <aside class="create-mass-sidebar">
+
+                <section class="create-mass-card create-background-card">
+
+                    <div class="create-mass-card-header">
+
+                        <div class="create-mass-card-icon">
+                            <i class="bi bi-image"></i>
+                        </div>
+
+                        <div>
+                            <h2>Presentation</h2>
+                            <p>
+                                Optional PowerPoint background.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="create-background-upload">
+
+                        <div class="create-background-placeholder">
+
+                            <i class="bi bi-image"></i>
+
+                            <strong>
+                                Presentation Background
+                            </strong>
+
+                            <span>
+                                JPG or PNG · Maximum 10 MB
+                            </span>
+
+                        </div>
+
+
+                        <input asp-for="BackgroundImage"
+                               type="file"
+                               accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                               class="form-control" />
+
+                        <span asp-validation-for="BackgroundImage"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+                <div class="create-mass-next">
+
+                    <div class="create-mass-next-icon">
+                        <i class="bi bi-music-note-list"></i>
+                    </div>
+
+                    <div>
+                        <strong>What happens next?</strong>
+
+                        <p>
+                            After creating the Mass you'll go
+                            directly to the Mass Plan to select
+                            songs and presentation items.
+                        </p>
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <div class="create-mass-actions">
+
+            <div class="create-mass-actions-info">
+
+                <i class="bi bi-check2-circle"></i>
+
+                <span>
+                    You can change these details later.
+                </span>
+
+            </div>
+
+
+            <div class="create-mass-actions-buttons">
+
+                <a asp-page="Index"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="btn btn-warning create-mass-submit">
+
+                    <i class="bi bi-arrow-right-circle me-1"></i>
+                    Create &amp; Plan Mass
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
 
 
 @section Scripts

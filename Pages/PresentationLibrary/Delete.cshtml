@@ -5,38 +5,130 @@
     ViewData["Title"] = "Delete Presentation Item";
 }
 
-<h1>Delete Presentation Item</h1>
+<div class="presentation-delete-page">
 
-<p>
-    Are you sure you want to remove
-    <strong>@Model.Item.Title</strong>
-    from the Presentation Library?
-</p>
+    <div class="presentation-delete-card">
 
-<form method="post">
+        <div class="presentation-delete-icon">
+            <i class="bi bi-trash3"></i>
+        </div>
 
-    <input type="hidden" asp-for="Item.Id" />
-    <input type="hidden" asp-for="ReturnUrl" />
+        <div class="presentation-delete-kicker">
+            Presentation Library
+        </div>
 
-    <button type="submit"
-            class="btn btn-danger">
-        <i class="bi bi-trash me-1"></i>
-        Delete
-    </button>
+        <h1>Delete Presentation Item?</h1>
 
-    @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
-    {
-        <a href="@Model.ReturnUrl"
-           class="btn btn-outline-secondary">
-            Cancel
-        </a>
-    }
-    else
-    {
-        <a asp-page="./Index"
-           class="btn btn-outline-secondary">
-            Cancel
-        </a>
-    }
+        <p class="presentation-delete-message">
+            You are about to remove
+            <strong>@Model.Item.Title</strong>
+            from the Presentation Library.
+        </p>
 
-</form>
+
+        <div class="presentation-delete-warning">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+                <strong>
+                    This item will no longer be available for future Mass plans.
+                </strong>
+
+                <span>
+                    Review the item below before confirming deletion.
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="presentation-delete-summary">
+
+            <div class="presentation-delete-summary-icon">
+                <i class="bi bi-file-earmark-slides"></i>
+            </div>
+
+            <div class="presentation-delete-summary-content">
+
+                <div class="presentation-delete-summary-label">
+                    Presentation Item
+                </div>
+
+                <strong>
+                    @Model.Item.Title
+                </strong>
+
+                <div class="presentation-delete-meta">
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Item.Type))
+                    {
+                        <span>
+                            <i class="bi bi-tag"></i>
+                            @Model.Item.Type
+                        </span>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Item.Language))
+                    {
+                        <span>
+                            <i class="bi bi-translate"></i>
+                            @Model.Item.Language
+                        </span>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <form method="post">
+
+            <input type="hidden"
+                   asp-for="Item.Id" />
+
+            <input type="hidden"
+                   asp-for="ReturnUrl" />
+
+
+            <div class="presentation-delete-actions">
+
+                @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
+                {
+                    <a href="@Model.ReturnUrl"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Cancel
+
+                    </a>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Cancel
+
+                    </a>
+                }
+
+
+                <button type="submit"
+                        class="btn btn-danger">
+
+                    <i class="bi bi-trash3 me-1"></i>
+                    Delete Presentation Item
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

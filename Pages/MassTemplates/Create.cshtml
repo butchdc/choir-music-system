@@ -5,47 +5,211 @@
     ViewData["Title"] = "Create Mass Template";
 }
 
-<h1>Create Mass Template</h1>
+<div class="template-editor-page">
 
-<form method="post">
+    <div class="template-editor-header">
 
-    <div class="mb-3">
-        <label asp-for="Template.Name"
-               class="form-label">
-            Name
-        </label>
+        <a asp-page="./Index"
+           class="template-editor-back">
 
-        <input asp-for="Template.Name"
-               class="form-control" />
+            <i class="bi bi-arrow-left"></i>
+            Mass Templates
 
-        <span asp-validation-for="Template.Name"
-              class="text-danger"></span>
+        </a>
+
+        <div class="template-editor-heading">
+
+            <div class="template-editor-heading-icon">
+                <i class="bi bi-layers"></i>
+            </div>
+
+            <div>
+
+                <div class="template-editor-kicker">
+                    Reusable Planning
+                </div>
+
+                <h1>Create Mass Template</h1>
+
+                <p>
+                    Create a reusable Mass structure that can
+                    be used when preparing future Masses.
+                </p>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Template.Notes"
-               class="form-label">
-            Notes
-        </label>
 
-        <textarea asp-for="Template.Notes"
-                  class="form-control"
-                  rows="4"></textarea>
-    </div>
+    <form method="post"
+          class="template-editor-form">
 
-    <button type="submit"
-            class="btn btn-primary">
-        <i class="bi bi-check-lg me-1"></i>
-        Create Template
-    </button>
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger">
+        </div>
 
-    <a asp-page="./Index"
-       class="btn btn-secondary">
-        Cancel
-    </a>
 
-</form>
+        <div class="template-editor-grid">
 
-@section Scripts {
+            <div class="template-editor-main">
+
+                <section class="template-editor-card">
+
+                    <div class="template-editor-card-header">
+
+                        <div class="template-editor-card-icon">
+                            <i class="bi bi-card-heading"></i>
+                        </div>
+
+                        <div>
+                            <h2>Template Details</h2>
+
+                            <p>
+                                Give this template a clear name
+                                so it is easy to reuse later.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="template-editor-field">
+
+                        <label asp-for="Template.Name"
+                               class="form-label">
+                            Template Name
+                        </label>
+
+                        <input asp-for="Template.Name"
+                               class="form-control form-control-lg"
+                               placeholder="e.g. Sunday Mass Template" />
+
+                        <span asp-validation-for="Template.Name"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="template-editor-field mt-3">
+
+                        <label asp-for="Template.Notes"
+                               class="form-label">
+                            Notes
+                        </label>
+
+                        <textarea asp-for="Template.Notes"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Optional notes about when or how to use this template..."></textarea>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <aside class="template-editor-sidebar">
+
+                <div class="template-editor-help">
+
+                    <div class="template-editor-help-icon">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+
+                    <div>
+                        <strong>
+                            What happens next?
+                        </strong>
+
+                        <p>
+                            After creating the template, open
+                            its Plan page to add default songs
+                            and presentation items.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="template-editor-example">
+
+                    <div class="template-editor-example-heading">
+
+                        <i class="bi bi-music-note-list"></i>
+                        Example
+
+                    </div>
+
+                    <div class="template-editor-example-row">
+
+                        <span>Entrance</span>
+                        <strong>Opening Song</strong>
+
+                    </div>
+
+                    <div class="template-editor-example-row">
+
+                        <span>Psalm</span>
+                        <strong>Default Psalm</strong>
+
+                    </div>
+
+                    <div class="template-editor-example-row">
+
+                        <span>Communion</span>
+                        <strong>Communion Song</strong>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <div class="template-editor-actions">
+
+            <div class="template-editor-actions-info">
+
+                <i class="bi bi-info-circle"></i>
+
+                <span>
+                    Songs and presentation items are added after creation.
+                </span>
+
+            </div>
+
+
+            <div class="template-editor-actions-buttons">
+
+                <a asp-page="./Index"
+                   class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="btn btn-warning template-editor-save">
+
+                    <i class="bi bi-arrow-right-circle me-1"></i>
+                    Create Template
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts
+{
     <partial name="_ValidationScriptsPartial" />
 }

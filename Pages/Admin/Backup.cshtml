@@ -5,85 +5,329 @@
     ViewData["Title"] = "Backup & Restore";
 }
 
-<div class="mb-4">
-    <h1>Backup & Restore</h1>
+<div class="backup-page">
 
-    <p class="text-muted">
-        Export system data from one environment and restore it into another.
-    </p>
-</div>
+    <!-- HEADER -->
 
-@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
-{
-    <div class="alert alert-info">
-        @Model.StatusMessage
-    </div>
-}
+    <div class="backup-header">
 
-<div class="card mb-4">
-    <div class="card-body">
+        <div class="backup-heading">
 
-        <h5 class="card-title">
-            Export Backup
-        </h5>
+            <div class="backup-heading-icon">
+                <i class="bi bi-database-check"></i>
+            </div>
 
-        <p class="text-muted">
-            Downloads the database and stored system files.
-            Generated presentations are excluded.
-        </p>
+            <div>
 
-        <form method="post"
-              asp-page-handler="Export">
+                <div class="backup-kicker">
+                    System Administration
+                </div>
 
-            <button type="submit"
-                    class="btn btn-primary">
+                <h1>Backup & Restore</h1>
 
-                <i class="bi bi-download me-1"></i>
-                Export Backup
-
-            </button>
-
-        </form>
-
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-body">
-
-        <h5 class="card-title">
-            Import Backup
-        </h5>
-
-        <p class="text-muted">
-            Restore a backup exported from another environment.
-            A safety backup of the current database will be created first.
-        </p>
-
-        <form method="post"
-              asp-page-handler="Import"
-              enctype="multipart/form-data">
-
-            <div class="mb-3">
-
-                <input asp-for="BackupFile"
-                       type="file"
-                       accept=".zip,application/zip"
-                       class="form-control"
-                       required />
+                <p>
+                    Protect your Choir Music System data or move
+                    it safely between environments.
+                </p>
 
             </div>
 
-            <button type="submit"
-                    class="btn btn-danger"
-                    onclick="return confirm('This will replace the current system data. Continue?');">
-
-                <i class="bi bi-upload me-1"></i>
-                Restore Backup
-
-            </button>
-
-        </form>
+        </div>
 
     </div>
+
+
+    @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+    {
+        <div class="backup-status">
+
+            <div class="backup-status-icon">
+                <i class="bi bi-info-circle"></i>
+            </div>
+
+            <div>
+                @Model.StatusMessage
+            </div>
+
+        </div>
+    }
+
+
+    <!-- OVERVIEW -->
+
+    <div class="backup-overview">
+
+        <div class="backup-overview-item">
+
+            <div class="backup-overview-icon database">
+                <i class="bi bi-database"></i>
+            </div>
+
+            <div>
+                <strong>Database</strong>
+                <span>
+                    Masses, songs, templates and library data
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="backup-overview-item">
+
+            <div class="backup-overview-icon files">
+                <i class="bi bi-folder2-open"></i>
+            </div>
+
+            <div>
+                <strong>Stored Files</strong>
+                <span>
+                    Music sheets and system content
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="backup-overview-item">
+
+            <div class="backup-overview-icon excluded">
+                <i class="bi bi-file-earmark-slides"></i>
+            </div>
+
+            <div>
+                <strong>Generated Files</strong>
+                <span>
+                    Temporary generated outputs are excluded
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="backup-grid">
+
+
+        <!-- EXPORT -->
+
+        <section class="backup-card backup-export-card">
+
+            <div class="backup-card-header">
+
+                <div class="backup-card-icon export">
+                    <i class="bi bi-cloud-arrow-down"></i>
+                </div>
+
+                <div>
+
+                    <div class="backup-card-kicker">
+                        Create Backup
+                    </div>
+
+                    <h2>Export Backup</h2>
+
+                    <p>
+                        Download a portable copy of your current
+                        Choir Music System data.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="backup-card-body">
+
+                <div class="backup-feature">
+
+                    <i class="bi bi-check-circle-fill"></i>
+
+                    <span>
+                        Includes the application database
+                    </span>
+
+                </div>
+
+
+                <div class="backup-feature">
+
+                    <i class="bi bi-check-circle-fill"></i>
+
+                    <span>
+                        Includes stored music and system files
+                    </span>
+
+                </div>
+
+
+                <div class="backup-feature">
+
+                    <i class="bi bi-check-circle-fill"></i>
+
+                    <span>
+                        Suitable for transferring data between
+                        environments
+                    </span>
+
+                </div>
+
+
+                <div class="backup-note">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    <span>
+                        Generated presentations and other temporary
+                        output files are not included.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <form method="post"
+                  asp-page-handler="Export">
+
+                <button type="submit"
+                        class="btn backup-export-button">
+
+                    <i class="bi bi-download me-1"></i>
+                    Export Backup
+
+                </button>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- RESTORE -->
+
+        <section class="backup-card backup-restore-card">
+
+            <div class="backup-card-header">
+
+                <div class="backup-card-icon restore">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                </div>
+
+                <div>
+
+                    <div class="backup-card-kicker restore">
+                        Restore System
+                    </div>
+
+                    <h2>Import Backup</h2>
+
+                    <p>
+                        Restore system data from a previously
+                        exported backup file.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="backup-card-body">
+
+                <div class="backup-restore-warning">
+
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                    <div>
+
+                        <strong>
+                            Restore replaces the current system data.
+                        </strong>
+
+                        <span>
+                            A safety backup of the current database
+                            will be created before the restore begins.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <form method="post"
+                      asp-page-handler="Import"
+                      enctype="multipart/form-data">
+
+                    <div class="backup-upload">
+
+                        <div class="backup-upload-icon">
+                            <i class="bi bi-file-earmark-zip"></i>
+                        </div>
+
+                        <div class="backup-upload-content">
+
+                            <label asp-for="BackupFile"
+                                   class="form-label">
+                                Backup File
+                            </label>
+
+                            <input asp-for="BackupFile"
+                                   type="file"
+                                   accept=".zip,application/zip"
+                                   class="form-control"
+                                   required />
+
+                            <div class="backup-upload-help">
+                                Select a ZIP backup exported by
+                                Choir Music System.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="btn backup-restore-button"
+                            onclick="return confirm('This will replace the current system data. Continue?');">
+
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>
+                        Restore Backup
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- SAFETY INFO -->
+
+    <div class="backup-safety">
+
+        <div class="backup-safety-icon">
+            <i class="bi bi-shield-check"></i>
+        </div>
+
+        <div>
+
+            <strong>
+                Backup before major changes
+            </strong>
+
+            <p>
+                Create a fresh backup before major library updates,
+                application upgrades or moving the system to another
+                environment.
+            </p>
+
+        </div>
+
+    </div>
+
 </div>

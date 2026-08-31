@@ -19,95 +19,458 @@
     var languageDirection =
         Model.Sort == "language" &&
         Model.Direction == "asc"
-        ? "desc"
-        : "asc";
+            ? "desc"
+            : "asc";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1>Presentation Library</h1>
-        <p class="text-muted mb-0">
-            Reusable responses, prayers, creeds and other presentation content.
-        </p>
+<div class="presentation-library-page">
+
+    <div class="presentation-library-header">
+
+        <div class="presentation-library-heading">
+
+            <div class="presentation-library-icon">
+                <i class="bi bi-easel2"></i>
+            </div>
+
+            <div>
+
+                <div class="presentation-library-kicker">
+                    PowerPoint Content
+                </div>
+
+                <h1>Presentation Library</h1>
+
+                <p>
+                    Reusable responses, prayers, creeds
+                    and other presentation content.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="presentation-library-header-actions">
+
+            <div class="presentation-library-count">
+                <strong>@Model.Items.Count</strong>
+                <span>Items</span>
+            </div>
+
+            <a asp-page="./Create"
+               class="btn btn-warning presentation-library-add">
+
+                <i class="bi bi-plus-circle me-1"></i>
+                Add Presentation Item
+
+            </a>
+
+        </div>
+
     </div>
 
-    <a asp-page="./Create" class="btn btn-primary">
-        Add Presentation Item
-    </a>
+
+    @if (Model.Items.Count == 0)
+    {
+        <div class="presentation-library-empty">
+
+            <div class="presentation-library-empty-icon">
+                <i class="bi bi-easel2"></i>
+            </div>
+
+            <h2>No presentation items yet</h2>
+
+            <p>
+                Add reusable prayers, responses, creeds
+                and other content for your Mass presentations.
+            </p>
+
+            <a asp-page="./Create"
+               class="btn btn-warning">
+
+                <i class="bi bi-plus-circle me-1"></i>
+                Add First Item
+
+            </a>
+
+        </div>
+    }
+    else
+    {
+
+        <div class="presentation-library-toolbar">
+
+            <div class="presentation-library-search">
+
+                <i class="bi bi-search"></i>
+
+                <input type="text"
+                       id="presentationLibrarySearch"
+                       class="form-control"
+                       placeholder="Search title, type or language..."
+                       autocomplete="off" />
+
+                <button type="button"
+                        id="presentationLibraryClear"
+                        class="presentation-library-clear"
+                        title="Clear search">
+
+                    <i class="bi bi-x-lg"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="presentation-library-toolbar-info">
+
+                <i class="bi bi-collection"></i>
+
+                <span id="presentationLibraryResultCount">
+                    @Model.Items.Count items
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="presentation-library-table-card">
+
+            <div class="table-responsive">
+
+                <table class="table align-middle presentation-library-table">
+
+                    <thead>
+                        <tr>
+
+                            <th>
+
+                                <a asp-page="./Index"
+                                   asp-route-sort="title"
+                                   asp-route-direction="@titleDirection"
+                                   class="presentation-sort-link">
+
+                                    Title
+
+                                    @if (Model.Sort == "title")
+                                    {
+                                        <i class="bi @(Model.Direction == "asc"
+                                            ? "bi-chevron-up"
+                                            : "bi-chevron-down")"></i>
+                                    }
+
+                                </a>
+
+                            </th>
+
+
+                            <th>
+
+                                <a asp-page="./Index"
+                                   asp-route-sort="type"
+                                   asp-route-direction="@typeDirection"
+                                   class="presentation-sort-link">
+
+                                    Type
+
+                                    @if (Model.Sort == "type")
+                                    {
+                                        <i class="bi @(Model.Direction == "asc"
+                                            ? "bi-chevron-up"
+                                            : "bi-chevron-down")"></i>
+                                    }
+
+                                </a>
+
+                            </th>
+
+
+                            <th>
+
+                                <a asp-page="./Index"
+                                   asp-route-sort="language"
+                                   asp-route-direction="@languageDirection"
+                                   class="presentation-sort-link">
+
+                                    Language
+
+                                    @if (Model.Sort == "language")
+                                    {
+                                        <i class="bi @(Model.Direction == "asc"
+                                            ? "bi-chevron-up"
+                                            : "bi-chevron-down")"></i>
+                                    }
+
+                                </a>
+
+                            </th>
+
+
+                            <th class="text-end">
+                                Actions
+                            </th>
+
+                        </tr>
+                    </thead>
+
+
+                    <tbody id="presentationLibraryRows">
+
+                        @foreach (var item in Model.Items)
+                        {
+                            var typeClass =
+                                (item.Type ?? "")
+                                    .ToLowerInvariant()
+                                    .Replace(" ", "-");
+
+                            var languageClass =
+                                (item.Language ?? "")
+                                    .ToLowerInvariant()
+                                    .Replace(" ", "-");
+
+                            <tr class="presentation-library-row"
+                                data-search="@($"{item.Title} {item.Type} {item.Language}".ToLowerInvariant())">
+
+                                <td>
+
+                                    <div class="presentation-item-title">
+
+                                        <div class="presentation-item-mark">
+                                            <i class="bi bi-file-earmark-slides"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <a asp-page="Edit"
+                                               asp-route-id="@item.Id"
+                                               asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                               class="presentation-item-name">
+                                                @item.Title
+                                            </a>
+
+                                            <div class="presentation-item-subtitle">
+                                                Presentation content
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="presentation-type-badge presentation-type-@typeClass">
+                                        @item.Type
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="presentation-language-badge presentation-language-@languageClass">
+
+                                        <i class="bi bi-translate"></i>
+                                        @item.Language
+
+                                    </span>
+
+                                </td>
+
+
+                                <td class="text-end">
+
+                                    <div class="d-inline-flex gap-2">
+
+                                        <a asp-page="Edit"
+                                           asp-route-id="@item.Id"
+                                           asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                           class="btn btn-sm btn-outline-secondary table-action"
+                                           title="Edit"
+                                           data-bs-toggle="tooltip">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </a>
+
+                                        <a asp-page="Delete"
+                                           asp-route-id="@item.Id"
+                                           asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                           class="btn btn-sm btn-outline-danger table-action"
+                                           title="Delete"
+                                           data-bs-toggle="tooltip">
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div id="presentationLibraryNoResults"
+                 class="presentation-library-no-results">
+
+                <i class="bi bi-search"></i>
+
+                <strong>No matching items</strong>
+
+                <span>
+                    Try a different title, type or language.
+                </span>
+
+            </div>
+
+        </div>
+    }
+
 </div>
 
-@if (Model.Items.Count == 0)
+
+@section Scripts
 {
-    <div class="alert alert-light border">
-        No presentation items have been added yet.
-    </div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table align-middle">
-            <thead>
-                <tr>
-                    <th>
-                        <a asp-page="./Index" asp-route-sort="title" asp-route-direction="@titleDirection"
-                           class="text-white text-decoration-none">
-                            Title
-                        </a>
-                    </th>
+    <script>
 
-                    <th>
-                        <a asp-page="./Index" asp-route-sort="type" asp-route-direction="@typeDirection"
-                           class="text-white text-decoration-none">
-                            Type
-                        </a>
-                    </th>
-                    <th>
-                        <a asp-page="./Index" asp-route-sort="language" asp-route-direction="@languageDirection"
-                           class="text-white text-decoration-none">
-                            Language
-                        </a>
-                    </th>
-                    <th class="text-end text-white">
-                        Actions
-                    </th>
-                </tr>
-            </thead>
+        const presentationLibrarySearch =
+            document.getElementById(
+                "presentationLibrarySearch"
+            );
 
-            <tbody>
-                @foreach (var item in Model.Items)
-                {
-                    <tr>
-                        <td class="fw-semibold">
-                            @item.Title
-                        </td>
+        const presentationLibraryClear =
+            document.getElementById(
+                "presentationLibraryClear"
+            );
 
-                        <td>
-                            @item.Type
-                        </td>
+        const presentationLibraryRows =
+            Array.from(
+                document.querySelectorAll(
+                    ".presentation-library-row"
+                )
+            );
 
-                        <td>
-                            @item.Language
-                        </td>
-                        <td class="text-end">
-                            <div class="d-inline-flex gap-2">
+        const presentationLibraryResultCount =
+            document.getElementById(
+                "presentationLibraryResultCount"
+            );
 
-                                <a asp-page="Edit" asp-route-id="@item.Id"
-                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                   class="btn btn-sm btn-outline-secondary table-action" title="Edit" data-bs-toggle="tooltip">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
+        const presentationLibraryNoResults =
+            document.getElementById(
+                "presentationLibraryNoResults"
+            );
 
-                                <a asp-page="Delete" asp-route-id="@item.Id"
-                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                   class="btn btn-sm btn-outline-danger table-action" title="Delete" data-bs-toggle="tooltip">
-                                    <i class="bi bi-trash"></i>
-                                </a>
 
-                            </div>
-                        </td>
-                    </tr>
+        function filterPresentationLibrary() {
+
+            if (!presentationLibrarySearch) {
+                return;
+            }
+
+            const query =
+                presentationLibrarySearch.value
+                    .toLowerCase()
+                    .trim();
+
+            let visibleCount = 0;
+
+
+            presentationLibraryRows.forEach(
+                function (row) {
+
+                    const searchValue =
+                        row.dataset.search || "";
+
+                    const visible =
+                        !query ||
+                        searchValue.includes(query);
+
+                    row.style.display =
+                        visible
+                            ? ""
+                            : "none";
+
+                    if (visible) {
+                        visibleCount++;
+                    }
+
                 }
-            </tbody>
-        </table>
-    </div>
+            );
+
+
+            if (presentationLibraryResultCount) {
+
+                presentationLibraryResultCount.textContent =
+                    visibleCount === 1
+                        ? "1 item"
+                        : `${visibleCount} items`;
+
+            }
+
+
+            if (presentationLibraryNoResults) {
+
+                presentationLibraryNoResults.style.display =
+                    visibleCount === 0
+                        ? "flex"
+                        : "none";
+
+            }
+
+
+            if (presentationLibraryClear) {
+
+                presentationLibraryClear.style.display =
+                    query
+                        ? "flex"
+                        : "none";
+
+            }
+
+        }
+
+
+        if (presentationLibrarySearch) {
+
+            presentationLibrarySearch.addEventListener(
+                "input",
+                filterPresentationLibrary
+            );
+
+        }
+
+
+        if (presentationLibraryClear) {
+
+            presentationLibraryClear.addEventListener(
+                "click",
+                function () {
+
+                    presentationLibrarySearch.value = "";
+
+                    filterPresentationLibrary();
+
+                    presentationLibrarySearch.focus();
+
+                }
+            );
+
+        }
+
+
+        filterPresentationLibrary();
+
+    </script>
 }

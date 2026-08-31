@@ -5,87 +5,412 @@
     ViewData["Title"] = "Edit Presentation Item";
 }
 
-<h1>Edit Presentation Item</h1>
+<div class="presentation-editor-page">
 
-<form method="post">
+    <div class="presentation-editor-header">
 
-    <input type="hidden" asp-for="Item.Id" />
-    <input type="hidden" asp-for="ReturnUrl" />
+        @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
+        {
+            <a href="@Model.ReturnUrl"
+               class="presentation-editor-back">
 
-    <div class="mb-3">
-        <label asp-for="Item.Title" class="form-label">
-            Title
-        </label>
+                <i class="bi bi-arrow-left"></i>
+                Back
 
-        <input asp-for="Item.Title" class="form-control" />
+            </a>
+        }
+        else
+        {
+            <a asp-page="./Index"
+               class="presentation-editor-back">
 
-        <span asp-validation-for="Item.Title" class="text-danger"></span>
-    </div>
+                <i class="bi bi-arrow-left"></i>
+                Presentation Library
 
-    <div class="mb-3">
-        <label asp-for="Item.Type" class="form-label">
-            Type
-        </label>
+            </a>
+        }
 
-        <select asp-for="Item.Type" class="form-select">
-            <option value="Psalm Response">Psalm Response</option>
-            <option value="Creed">Creed</option>
-            <option value="Prayer">Prayer</option>
-            <option value="Response">Response</option>
-            <option value="Notice">Notice</option>
-            <option value="Custom">Custom</option>
-        </select>
-    </div>
 
-    <div class="mb-3">
-        <label asp-for="Item.Language" class="form-label">
-            Language
-        </label>
+        <div class="presentation-editor-heading">
 
-        <select asp-for="Item.Language" class="form-select">
-            <option value="English">English</option>
-            <option value="Tagalog">Tagalog</option>
-            <option value="Other">Other</option>
-        </select>
-    </div>
+            <div class="presentation-editor-heading-icon">
+                <i class="bi bi-pencil-square"></i>
+            </div>
 
-    <div class="mb-3">
-        <label asp-for="Item.PresentationText" class="form-label">
-            Presentation Text
-        </label>
+            <div>
 
-        <textarea asp-for="Item.PresentationText" class="form-control font-monospace" rows="12" placeholder="[SLIDE:TITLED]
-        First slide...
+                <div class="presentation-editor-kicker">
+                    Presentation Library
+                </div>
 
-        [SLIDE]
-        Next slide..."></textarea>
+                <h1>Edit Presentation Item</h1>
 
-        <div class="form-text">
-            Use <code>[SLIDE:TITLED]</code> and <code>[SLIDE]</code>
-            the same way as song presentation lyrics.
+                <p>
+                    Update this reusable presentation content
+                    and its PowerPoint slide structure.
+                </p>
+
+            </div>
+
         </div>
+
     </div>
 
-    <button type="submit" class="btn btn-primary">
-        <i class="bi bi-check-lg me-1"></i>
-        Save Changes
-    </button>
 
-    @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
-    {
-        <a href="@Model.ReturnUrl" class="btn btn-secondary">
-            Cancel
-        </a>
-    }
-    else
-    {
-        <a asp-page="./Index" class="btn btn-secondary">
-            Cancel
-        </a>
-    }
+    <form method="post"
+          class="presentation-editor-form">
 
-</form>
+        <input type="hidden"
+               asp-for="Item.Id" />
 
-@section Scripts {
+        <input type="hidden"
+               asp-for="ReturnUrl" />
+
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger">
+        </div>
+
+
+        <div class="presentation-editor-grid">
+
+            <div class="presentation-editor-main">
+
+
+                <section class="presentation-editor-card">
+
+                    <div class="presentation-editor-card-header">
+
+                        <div class="presentation-editor-card-icon">
+                            <i class="bi bi-card-heading"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>Item Details</h2>
+
+                            <p>
+                                Update the name and classification
+                                for this presentation item.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="presentation-editor-details-grid">
+
+
+                        <div class="presentation-editor-field
+                                    presentation-editor-title-field">
+
+                            <label asp-for="Item.Title"
+                                   class="form-label">
+                                Title
+                            </label>
+
+                            <input asp-for="Item.Title"
+                                   class="form-control"
+                                   placeholder="e.g. Nicene Creed" />
+
+                            <span asp-validation-for="Item.Title"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="presentation-editor-field">
+
+                            <label asp-for="Item.Type"
+                                   class="form-label">
+                                Type
+                            </label>
+
+                            <select asp-for="Item.Type"
+                                    class="form-select">
+
+                                <option value="Psalm Response">
+                                    Psalm Response
+                                </option>
+
+                                <option value="Creed">
+                                    Creed
+                                </option>
+
+                                <option value="Prayer">
+                                    Prayer
+                                </option>
+
+                                <option value="Response">
+                                    Response
+                                </option>
+
+                                <option value="Notice">
+                                    Notice
+                                </option>
+
+                                <option value="Custom">
+                                    Custom
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="presentation-editor-field">
+
+                            <label asp-for="Item.Language"
+                                   class="form-label">
+                                Language
+                            </label>
+
+                            <select asp-for="Item.Language"
+                                    class="form-select">
+
+                                <option value="English">
+                                    English
+                                </option>
+
+                                <option value="Tagalog">
+                                    Tagalog
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="presentation-editor-card
+                                presentation-text-card">
+
+                    <div class="presentation-editor-card-header">
+
+                        <div class="presentation-editor-card-icon purple">
+                            <i class="bi bi-easel2"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>Presentation Text</h2>
+
+                            <p>
+                                Edit the content and control how
+                                it is divided across PowerPoint slides.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="presentation-editor-field">
+
+                        <textarea asp-for="Item.PresentationText"
+                                  id="presentationTextEditor"
+                                  class="form-control presentation-text-editor"
+                                  rows="16"
+                                  placeholder="[SLIDE:TITLED]
+First slide...
+
+[SLIDE]
+Next slide..."></textarea>
+
+                    </div>
+
+
+                    <div class="presentation-editor-hints">
+
+                        <div class="presentation-editor-hint">
+
+                            <code>[SLIDE:TITLED]</code>
+
+                            <span>
+                                Starts a slide using the item's
+                                title as the slide heading.
+                            </span>
+
+                        </div>
+
+
+                        <div class="presentation-editor-hint">
+
+                            <code>[SLIDE]</code>
+
+                            <span>
+                                Starts a standard continuation slide.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <aside class="presentation-editor-sidebar">
+
+
+                <div class="presentation-preview-help">
+
+                    <div class="presentation-preview-help-icon">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>Writing tip</strong>
+
+                        <p>
+                            Keep each slide concise so the text
+                            remains readable when projected.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="presentation-slide-guide">
+
+                    <div class="presentation-slide-guide-heading">
+
+                        <i class="bi bi-layout-text-window"></i>
+
+                        <span>
+                            Example Structure
+                        </span>
+
+                    </div>
+
+
+                    <div class="presentation-slide-example">
+
+                        <span class="presentation-slide-tag">
+                            [SLIDE:TITLED]
+                        </span>
+
+                        <strong>
+                            Opening
+                        </strong>
+
+                        <p>
+                            First section of presentation text.
+                        </p>
+
+                    </div>
+
+
+                    <div class="presentation-slide-example">
+
+                        <span class="presentation-slide-tag">
+                            [SLIDE]
+                        </span>
+
+                        <strong>
+                            Continuation
+                        </strong>
+
+                        <p>
+                            Additional content on the next slide.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="presentation-edit-status">
+
+                    <div class="presentation-edit-status-icon">
+                        <i class="bi bi-collection"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Reusable Library Item
+                        </strong>
+
+                        <p>
+                            Changes will apply whenever this
+                            presentation item is used in a Mass.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <div class="presentation-editor-actions">
+
+            <div class="presentation-editor-actions-info">
+
+                <i class="bi bi-check2-circle"></i>
+
+                <span>
+                    Save when you're finished editing.
+                </span>
+
+            </div>
+
+
+            <div class="presentation-editor-actions-buttons">
+
+                @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
+                {
+                    <a href="@Model.ReturnUrl"
+                       class="btn btn-outline-secondary">
+
+                        Cancel
+
+                    </a>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       class="btn btn-outline-secondary">
+
+                        Cancel
+
+                    </a>
+                }
+
+
+                <button type="submit"
+                        class="btn btn-warning presentation-editor-save">
+
+                    <i class="bi bi-check2-circle me-1"></i>
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts
+{
     <partial name="_ValidationScriptsPartial" />
 }

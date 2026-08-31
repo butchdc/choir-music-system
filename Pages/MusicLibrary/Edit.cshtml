@@ -5,153 +5,615 @@
     ViewData["Title"] = "Edit Music Sheet";
 }
 
-<h1>Edit Music Sheet</h1>
+<div class="music-editor-page">
 
-<form method="post" enctype="multipart/form-data">
+    <div class="music-editor-header">
 
-    <input type="hidden" asp-for="Song.Id" />
+        <a asp-page="Index"
+           class="music-editor-back">
 
-    <div class="mb-3">
-        <label asp-for="Song.Title" class="form-label">
-            Title
-        </label>
+            <i class="bi bi-arrow-left"></i>
+            Music Library
 
-        <input asp-for="Song.Title" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Song.SuggestedMassPart" class="form-label">
-            Suggested Mass Part
-        </label>
-
-        <select asp-for="Song.SuggestedMassPart" class="form-select">
-            <option value="">None / Not specified</option>
-            <option>Entrance</option>
-            <option>Kyrie</option>
-            <option>Gloria</option>
-            <option>Psalm</option>
-            <option>Alleluia</option>
-            <option>Offertory</option>
-            <option>Holy</option>
-            <option>Memorial Acclamation</option>
-            <option>Amen</option>
-            <option>Our Father</option>
-            <option>Lamb of God</option>
-            <option>Communion</option>
-            <option>Recessional</option>
-            <option>Mass Setting</option>
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Song.Composer" class="form-label">
-            Composer
-        </label>
-
-        <input asp-for="Song.Composer" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Song.Arrangement" class="form-label">
-            Arrangement
-        </label>
-
-        <input asp-for="Song.Arrangement" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Song.Key" class="form-label">
-            Key
-        </label>
-
-        <input asp-for="Song.Key" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">
-            Current PDF
-        </label>
-
-        <div>
-            @Model.Song.PdfFileName
-        </div>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="PdfFile" class="form-label">
-            Replace PDF
-        </label>
-
-        <input asp-for="PdfFile" type="file" accept=".pdf,application/pdf" class="form-control" />
-
-        <div class="form-text">
-            Leave blank to keep the existing PDF.
-        </div>
-
-        <span asp-validation-for="PdfFile" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Song.Notes" class="form-label">
-            Notes
-        </label>
-
-        <textarea asp-for="Song.Notes" class="form-control" rows="4"></textarea>
-    </div>
-
-    <h5 class="mt-4 mb-3">Licensing</h5>
-
-    <div class="mb-3">
-        <label asp-for="Song.OneLicenseNumber" class="form-label">
-            OneLicense Number
-        </label>
-
-        <input asp-for="Song.OneLicenseNumber" class="form-control" placeholder="e.g. 87214" />
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Song.Publisher" class="form-label">
-            Publisher
-        </label>
-
-        <input asp-for="Song.Publisher" class="form-control" placeholder="e.g. OCP" />
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Song.CopyrightText" class="form-label">
-            Copyright / Licence Text
-        </label>
-
-        <textarea asp-for="Song.CopyrightText" class="form-control" rows="2"
-                  placeholder="Optional copyright or licence wording"></textarea>
-    </div>
-
-    <h5 class="mt-4 mb-3">Presentation Lyrics</h5>
-
-    <div class="mb-3">
-        <label asp-for="Song.PresentationLyrics" class="form-label">
-            Presentation Lyrics
-        </label>
-
-        <textarea asp-for="Song.PresentationLyrics" class="form-control font-monospace" rows="14" placeholder="[SLIDE:TITLED]
-        First slide lyrics here...
-
-        [SLIDE]
-        Next slide lyrics here..."></textarea>
-
-        <div class="form-text">
-            Use <code>[SLIDE:TITLED]</code> for a slide with song title, composer and licence details.
-            Use <code>[SLIDE]</code> for lyrics-only continuation slides.
-        </div>
-    </div>
-
-    <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">
-            Save Changes
-        </button>
-
-        <a asp-page="Index" class="btn btn-secondary">
-            Cancel
         </a>
+
+
+        <div class="music-editor-heading">
+
+            <div class="music-editor-heading-icon">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+
+            <div>
+
+                <div class="music-editor-kicker">
+                    Music Library
+                </div>
+
+                <h1>Edit Music Sheet</h1>
+
+                <p>
+                    Update song details, licensing,
+                    PDF and presentation lyrics.
+                </p>
+
+            </div>
+
+        </div>
+
     </div>
-</form>
+
+
+    <form method="post"
+          enctype="multipart/form-data"
+          class="music-editor-form">
+
+        <input type="hidden"
+               asp-for="Song.Id" />
+
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger">
+        </div>
+
+
+        <div class="music-editor-grid">
+
+            <div class="music-editor-main">
+
+
+                <!-- SONG DETAILS -->
+
+                <section class="music-editor-card">
+
+                    <div class="music-editor-card-header">
+
+                        <div class="music-editor-card-icon">
+                            <i class="bi bi-card-heading"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>Song Details</h2>
+
+                            <p>
+                                Core information used throughout
+                                the Music Library and Mass planning.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="music-editor-details-grid">
+
+                        <div class="music-editor-field music-editor-title">
+
+                            <label asp-for="Song.Title"
+                                   class="form-label">
+                                Title
+                            </label>
+
+                            <input asp-for="Song.Title"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Song.Title"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="music-editor-field">
+
+                            <label asp-for="Song.SuggestedMassPart"
+                                   class="form-label">
+                                Suggested Mass Part
+                            </label>
+
+                            <select asp-for="Song.SuggestedMassPart"
+                                    class="form-select">
+
+                                <option value="">
+                                    None / Not specified
+                                </option>
+
+                                <option>Entrance</option>
+                                <option>Kyrie</option>
+                                <option>Gloria</option>
+                                <option>Psalm</option>
+                                <option>Alleluia</option>
+                                <option>Offertory</option>
+                                <option>Holy</option>
+                                <option>Memorial Acclamation</option>
+                                <option>Amen</option>
+                                <option>Our Father</option>
+                                <option>Lamb of God</option>
+                                <option>Communion</option>
+                                <option>Recessional</option>
+                                <option>Mass Setting</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="music-editor-field">
+
+                            <label asp-for="Song.Composer"
+                                   class="form-label">
+                                Composer
+                            </label>
+
+                            <input asp-for="Song.Composer"
+                                   class="form-control" />
+
+                        </div>
+
+
+                        <div class="music-editor-field">
+
+                            <label asp-for="Song.Arrangement"
+                                   class="form-label">
+                                Arrangement
+                            </label>
+
+                            <input asp-for="Song.Arrangement"
+                                   class="form-control" />
+
+                        </div>
+
+
+                        <div class="music-editor-field">
+
+                            <label asp-for="Song.Key"
+                                   class="form-label">
+                                Key
+                            </label>
+
+                            <input asp-for="Song.Key"
+                                   class="form-control"
+                                   placeholder="e.g. G" />
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="music-editor-field mt-3">
+
+                        <label asp-for="Song.Notes"
+                               class="form-label">
+                            Notes
+                        </label>
+
+                        <textarea asp-for="Song.Notes"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="Optional notes about this arrangement or usage..."></textarea>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- PDF -->
+
+                <section class="music-editor-card">
+
+                    <div class="music-editor-card-header">
+
+                        <div class="music-editor-card-icon pdf">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>Music Sheet PDF</h2>
+
+                            <p>
+                                Review the current sheet or replace it
+                                with a newer PDF.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Song.PdfFileName))
+                    {
+                        <div class="music-current-pdf">
+
+                            <div class="music-current-pdf-icon">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                            </div>
+
+                            <div class="music-current-pdf-content">
+
+                                <div class="music-current-pdf-label">
+                                    Current PDF
+                                </div>
+
+                                <strong>
+                                    @Model.Song.PdfFileName
+                                </strong>
+
+                            </div>
+
+
+                            <a asp-page="View"
+                               asp-route-id="@Model.Song.Id"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="btn btn-sm btn-outline-primary">
+
+                                <i class="bi bi-box-arrow-up-right me-1"></i>
+                                View
+
+                            </a>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="music-current-pdf missing">
+
+                            <div class="music-current-pdf-icon">
+                                <i class="bi bi-exclamation-circle"></i>
+                            </div>
+
+                            <div class="music-current-pdf-content">
+
+                                <div class="music-current-pdf-label">
+                                    Current PDF
+                                </div>
+
+                                <strong>
+                                    No PDF uploaded
+                                </strong>
+
+                            </div>
+
+                        </div>
+                    }
+
+
+                    <div class="music-editor-field">
+
+                        <label asp-for="PdfFile"
+                               class="form-label">
+
+                            @if (!string.IsNullOrWhiteSpace(Model.Song.PdfFileName))
+                            {
+                                <text>Replace PDF</text>
+                            }
+                            else
+                            {
+                                <text>Upload PDF</text>
+                            }
+
+                        </label>
+
+                        <input asp-for="PdfFile"
+                               type="file"
+                               accept=".pdf,application/pdf"
+                               class="form-control" />
+
+                        <div class="form-text">
+
+                            @if (!string.IsNullOrWhiteSpace(Model.Song.PdfFileName))
+                            {
+                                <text>
+                                    Leave blank to keep the existing PDF.
+                                </text>
+                            }
+                            else
+                            {
+                                <text>
+                                    Choose the music sheet PDF for this song.
+                                </text>
+                            }
+
+                        </div>
+
+                        <span asp-validation-for="PdfFile"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- LICENSING -->
+
+                <section class="music-editor-card">
+
+                    <div class="music-editor-card-header">
+
+                        <div class="music-editor-card-icon licence">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>Licensing</h2>
+
+                            <p>
+                                Copyright and OneLicense information
+                                used in generated presentations.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="music-editor-license-grid">
+
+                        <div class="music-editor-field">
+
+                            <label asp-for="Song.OneLicenseNumber"
+                                   class="form-label">
+                                OneLicense Number
+                            </label>
+
+                            <input asp-for="Song.OneLicenseNumber"
+                                   class="form-control"
+                                   placeholder="e.g. 87214" />
+
+                        </div>
+
+
+                        <div class="music-editor-field">
+
+                            <label asp-for="Song.Publisher"
+                                   class="form-label">
+                                Publisher
+                            </label>
+
+                            <input asp-for="Song.Publisher"
+                                   class="form-control"
+                                   placeholder="e.g. OCP" />
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="music-editor-field mt-3">
+
+                        <label asp-for="Song.CopyrightText"
+                               class="form-label">
+                            Copyright / Licence Text
+                        </label>
+
+                        <textarea asp-for="Song.CopyrightText"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Optional copyright or licence wording"></textarea>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- PRESENTATION -->
+
+                <section class="music-editor-card">
+
+                    <div class="music-editor-card-header">
+
+                        <div class="music-editor-card-icon presentation">
+                            <i class="bi bi-easel2"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>Presentation Lyrics</h2>
+
+                            <p>
+                                Edit the lyrics used in generated
+                                PowerPoint presentations.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="music-editor-field">
+
+                        <textarea asp-for="Song.PresentationLyrics"
+                                  class="form-control music-presentation-editor"
+                                  rows="16"
+                                  placeholder="[SLIDE:TITLED]
+First slide lyrics here...
+
+[SLIDE]
+Next slide lyrics here..."></textarea>
+
+                    </div>
+
+
+                    <div class="music-presentation-hints">
+
+                        <div>
+
+                            <code>[SLIDE:TITLED]</code>
+
+                            <span>
+                                Title, composer and licence slide
+                            </span>
+
+                        </div>
+
+                        <div>
+
+                            <code>[SLIDE]</code>
+
+                            <span>
+                                Lyrics-only continuation slide
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+
+            <!-- SIDEBAR -->
+
+            <aside class="music-editor-sidebar">
+
+                <div class="music-editor-help">
+
+                    <div class="music-editor-help-icon">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>Library readiness</strong>
+
+                        <p>
+                            Keep the PDF, composer, licensing
+                            and presentation lyrics complete for
+                            the best Mass planning experience.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="music-editor-info-card">
+
+                    <div class="music-editor-info-heading">
+
+                        <i class="bi bi-check2-circle"></i>
+                        Current Status
+
+                    </div>
+
+
+                    <div class="music-editor-info-row">
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Song.PdfFileName))
+                        {
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <span>PDF available</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-exclamation-circle text-warning"></i>
+                            <span>PDF missing</span>
+                        }
+
+                    </div>
+
+
+                    <div class="music-editor-info-row">
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Song.Composer))
+                        {
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <span>Composer available</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-exclamation-circle text-warning"></i>
+                            <span>Composer missing</span>
+                        }
+
+                    </div>
+
+
+                    <div class="music-editor-info-row">
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Song.OneLicenseNumber))
+                        {
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <span>OneLicense available</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-exclamation-circle text-warning"></i>
+                            <span>OneLicense missing</span>
+                        }
+
+                    </div>
+
+
+                    <div class="music-editor-info-row">
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Song.PresentationLyrics))
+                        {
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <span>Presentation lyrics available</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-exclamation-circle text-warning"></i>
+                            <span>Presentation lyrics missing</span>
+                        }
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+
+        <!-- ACTIONS -->
+
+        <div class="music-editor-actions">
+
+            <div class="music-editor-actions-info">
+
+                <i class="bi bi-check2-circle"></i>
+
+                <span>
+                    Changes apply immediately after saving.
+                </span>
+
+            </div>
+
+
+            <div class="music-editor-actions-buttons">
+
+                <a asp-page="Index"
+                   class="btn btn-outline-secondary">
+
+                    Cancel
+
+                </a>
+
+
+                <button type="submit"
+                        class="btn btn-warning music-editor-save">
+
+                    <i class="bi bi-check2-circle me-1"></i>
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>

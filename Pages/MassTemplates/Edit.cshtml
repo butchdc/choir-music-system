@@ -5,64 +5,278 @@
     ViewData["Title"] = "Edit Mass Template";
 }
 
-<h1>Edit Mass Template</h1>
+<div class="template-editor-page">
 
-<form method="post">
+    <div class="template-editor-header">
 
-    <input type="hidden"
-           asp-for="Template.Id" />
+        @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
+        {
+            <a href="@Model.ReturnUrl"
+               class="template-editor-back">
 
-    <input type="hidden"
-           asp-for="ReturnUrl" />
+                <i class="bi bi-arrow-left"></i>
+                Back
 
-    <div class="mb-3">
-        <label asp-for="Template.Name"
-               class="form-label">
-            Name
-        </label>
+            </a>
+        }
+        else
+        {
+            <a asp-page="./Index"
+               class="template-editor-back">
 
-        <input asp-for="Template.Name"
-               class="form-control" />
+                <i class="bi bi-arrow-left"></i>
+                Mass Templates
 
-        <span asp-validation-for="Template.Name"
-              class="text-danger">
-        </span>
+            </a>
+        }
+
+
+        <div class="template-editor-heading">
+
+            <div class="template-editor-heading-icon">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+
+            <div>
+
+                <div class="template-editor-kicker">
+                    Reusable Planning
+                </div>
+
+                <h1>Edit Mass Template</h1>
+
+                <p>
+                    Update the template details or continue
+                    refining its default Mass plan.
+                </p>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Template.Notes"
-               class="form-label">
-            Notes
-        </label>
 
-        <textarea asp-for="Template.Notes"
-                  class="form-control"
-                  rows="4">
-        </textarea>
-    </div>
+    <form method="post"
+          class="template-editor-form">
 
-    <button type="submit"
-            class="btn btn-primary">
-        <i class="bi bi-check-lg me-1"></i>
-        Save Changes
-    </button>
+        <input type="hidden"
+               asp-for="Template.Id" />
 
-    @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
-    {
-        <a href="@Model.ReturnUrl"
-           class="btn btn-secondary">
-            Cancel
-        </a>
-    }
-    else
-    {
-        <a asp-page="./Index"
-           class="btn btn-secondary">
-            Cancel
-        </a>
-    }
+        <input type="hidden"
+               asp-for="ReturnUrl" />
 
-</form>
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger">
+        </div>
+
+
+        <div class="template-editor-grid">
+
+            <div class="template-editor-main">
+
+                <section class="template-editor-card">
+
+                    <div class="template-editor-card-header">
+
+                        <div class="template-editor-card-icon">
+                            <i class="bi bi-card-heading"></i>
+                        </div>
+
+                        <div>
+
+                            <h2>Template Details</h2>
+
+                            <p>
+                                Update the name and notes
+                                for this reusable plan.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="template-editor-field">
+
+                        <label asp-for="Template.Name"
+                               class="form-label">
+                            Template Name
+                        </label>
+
+                        <input asp-for="Template.Name"
+                               class="form-control form-control-lg" />
+
+                        <span asp-validation-for="Template.Name"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="template-editor-field mt-3">
+
+                        <label asp-for="Template.Notes"
+                               class="form-label">
+                            Notes
+                        </label>
+
+                        <textarea asp-for="Template.Notes"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Optional notes about when or how to use this template..."></textarea>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <aside class="template-editor-sidebar">
+
+                <div class="template-editor-help">
+
+                    <div class="template-editor-help-icon">
+                        <i class="bi bi-music-note-list"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Template Plan
+                        </strong>
+
+                        <p>
+                            Songs and presentation items are managed
+                            separately on the template Plan page.
+                        </p>
+
+                        <a asp-page="./Plan"
+                           asp-route-id="@Model.Template.Id"
+                           class="template-plan-link">
+
+                            Open Template Plan
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="template-editor-example">
+
+                    <div class="template-editor-example-heading">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        Template Usage
+
+                    </div>
+
+
+                    <div class="template-editor-usage">
+
+                        <i class="bi bi-calendar2-plus"></i>
+
+                        <div>
+
+                            <strong>
+                                Create a new Mass
+                            </strong>
+
+                            <span>
+                                Select this template when creating
+                                a Mass to copy its saved plan.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="template-editor-usage">
+
+                        <i class="bi bi-copy"></i>
+
+                        <div>
+
+                            <strong>
+                                Reusable starting point
+                            </strong>
+
+                            <span>
+                                The template stays unchanged when
+                                it is used for a new Mass.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <div class="template-editor-actions">
+
+            <div class="template-editor-actions-info">
+
+                <i class="bi bi-check2-circle"></i>
+
+                <span>
+                    Changes apply to this template.
+                </span>
+
+            </div>
+
+
+            <div class="template-editor-actions-buttons">
+
+                @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
+                {
+                    <a href="@Model.ReturnUrl"
+                       class="btn btn-outline-secondary">
+
+                        Cancel
+
+                    </a>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       class="btn btn-outline-secondary">
+
+                        Cancel
+
+                    </a>
+                }
+
+
+                <button type="submit"
+                        class="btn btn-warning template-editor-save">
+
+                    <i class="bi bi-check2-circle me-1"></i>
+
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
 
 @section Scripts
 {

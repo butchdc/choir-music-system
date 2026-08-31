@@ -5,33 +5,173 @@
     ViewData["Title"] = "Delete Mass";
 }
 
-<h1>Delete Mass</h1>
+<div class="mass-delete-page">
 
-<div class="alert alert-danger">
-    Are you sure you want to delete this Mass?
+    <div class="mass-delete-card">
+
+        <div class="mass-delete-icon">
+            <i class="bi bi-trash3"></i>
+        </div>
+
+        <div class="mass-delete-kicker">
+            Mass Planning
+        </div>
+
+        <h1>Delete Mass?</h1>
+
+        <p class="mass-delete-message">
+            You are about to permanently remove
+            <strong>@Model.Mass.Name</strong>.
+        </p>
+
+
+        <div class="mass-delete-warning">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+
+                <strong>
+                    This will remove the Mass and its plan.
+                </strong>
+
+                <span>
+                    Songs and presentation items assigned to this
+                    Mass will be removed from the plan, but your
+                    Music Library PDFs will remain available.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="mass-delete-summary">
+
+            <div class="mass-delete-summary-icon">
+                <i class="bi bi-calendar-event"></i>
+            </div>
+
+            <div class="mass-delete-summary-content">
+
+                <div class="mass-delete-summary-label">
+                    Mass
+                </div>
+
+                <strong>
+                    @Model.Mass.Name
+                </strong>
+
+                <span>
+                    <i class="bi bi-calendar3"></i>
+                    @Model.Mass.MassDate.ToString("dddd, d MMMM yyyy")
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="mass-delete-impact">
+
+            <div class="mass-delete-impact-title">
+                What happens
+            </div>
+
+
+            <div class="mass-delete-impact-row">
+
+                <div class="mass-delete-impact-icon danger">
+                    <i class="bi bi-calendar-x"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        Mass record removed
+                    </strong>
+
+                    <span>
+                        This Mass will no longer appear
+                        in your Mass list.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="mass-delete-impact-row">
+
+                <div class="mass-delete-impact-icon danger">
+                    <i class="bi bi-music-note-list"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        Mass plan removed
+                    </strong>
+
+                    <span>
+                        The song and presentation order
+                        for this Mass will also be removed.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="mass-delete-impact-row">
+
+                <div class="mass-delete-impact-icon safe">
+                    <i class="bi bi-file-earmark-music"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        Music Library remains unchanged
+                    </strong>
+
+                    <span>
+                        Music sheets and PDFs in the library
+                        are not deleted.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <form method="post">
+
+            <div class="mass-delete-actions">
+
+                <a asp-page="./Index"
+                   class="btn btn-outline-secondary">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Cancel
+
+                </a>
+
+
+                <button type="submit"
+                        class="btn btn-danger">
+
+                    <i class="bi bi-trash3 me-1"></i>
+                    Delete Mass
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
 </div>
-
-<dl class="row">
-    <dt class="col-sm-2">Name</dt>
-    <dd class="col-sm-10">@Model.Mass.Name</dd>
-
-    <dt class="col-sm-2">Date</dt>
-    <dd class="col-sm-10">
-        @Model.Mass.MassDate.ToString("dd MMM yyyy")
-    </dd>
-</dl>
-
-<p>
-    This will also remove the music plan for this Mass.
-    Your Music Library PDFs will not be deleted.
-</p>
-
-<form method="post">
-    <button type="submit" class="btn btn-danger">
-        Delete Mass
-    </button>
-
-    <a asp-page="Details" asp-route-id="@Model.Mass.Id" class="btn btn-secondary">
-        Cancel
-    </a>
-</form>

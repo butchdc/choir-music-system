@@ -5,40 +5,119 @@
     ViewData["Title"] = "Delete Mass Template";
 }
 
-<h1>Delete Mass Template</h1>
+<div class="template-delete-page">
 
-<p>
-    Are you sure you want to remove
-    <strong>@Model.Template.Name</strong>?
-</p>
+    <div class="template-delete-card">
 
-<form method="post">
+        <div class="template-delete-icon">
+            <i class="bi bi-trash3"></i>
+        </div>
 
-    <input type="hidden"
-           asp-for="Template.Id" />
 
-    <input type="hidden"
-           asp-for="ReturnUrl" />
+        <div class="template-delete-kicker">
+            Mass Templates
+        </div>
 
-    <button type="submit"
-            class="btn btn-danger">
-        <i class="bi bi-trash me-1"></i>
-        Delete
-    </button>
+        <h1>Delete Template?</h1>
 
-    @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
-    {
-        <a href="@Model.ReturnUrl"
-           class="btn btn-outline-secondary">
-            Cancel
-        </a>
-    }
-    else
-    {
-        <a asp-page="./Index"
-           class="btn btn-outline-secondary">
-            Cancel
-        </a>
-    }
+        <p class="template-delete-message">
+            You are about to remove
+            <strong>@Model.Template.Name</strong>.
+        </p>
 
-</form>
+
+        <div class="template-delete-warning">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+
+                <strong>
+                    This template will no longer be available
+                    when creating new Masses.
+                </strong>
+
+                <span>
+                    Existing Masses that were previously created
+                    from this template are not affected.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="template-delete-summary">
+
+            <div class="template-delete-summary-icon">
+                <i class="bi bi-layers"></i>
+            </div>
+
+            <div>
+
+                <span>Template</span>
+
+                <strong>
+                    @Model.Template.Name
+                </strong>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Template.Notes))
+                {
+                    <p>
+                        @Model.Template.Notes
+                    </p>
+                }
+
+            </div>
+
+        </div>
+
+
+        <form method="post">
+
+            <input type="hidden"
+                   asp-for="Template.Id" />
+
+            <input type="hidden"
+                   asp-for="ReturnUrl" />
+
+
+            <div class="template-delete-actions">
+
+                @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
+                {
+                    <a href="@Model.ReturnUrl"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Cancel
+
+                    </a>
+                }
+                else
+                {
+                    <a asp-page="./Index"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Cancel
+
+                    </a>
+                }
+
+
+                <button type="submit"
+                        class="btn btn-danger">
+
+                    <i class="bi bi-trash3 me-1"></i>
+                    Delete Template
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

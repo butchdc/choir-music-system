@@ -5,29 +5,186 @@
     ViewData["Title"] = "Delete Music Sheet";
 }
 
-<h1>Delete Music Sheet</h1>
+<div class="music-delete-page">
 
-<div class="alert alert-warning">
-    Are you sure you want to permanently delete this music sheet?
+    <div class="music-delete-card">
+
+        <div class="music-delete-icon">
+            <i class="bi bi-trash3"></i>
+        </div>
+
+        <div class="music-delete-kicker">
+            Music Library
+        </div>
+
+        <h1>Delete Music Sheet?</h1>
+
+        <p class="music-delete-message">
+            You are about to permanently remove
+            <strong>@Model.Song.Title</strong>.
+        </p>
+
+
+        <div class="music-delete-warning">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+
+                <strong>
+                    This action permanently deletes the song.
+                </strong>
+
+                <span>
+                    The Music Library record and its stored PDF
+                    will be removed.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="music-delete-song">
+
+            <div class="music-delete-song-mark">
+                <i class="bi bi-music-note-beamed"></i>
+            </div>
+
+
+            <div class="music-delete-song-content">
+
+                <div class="music-delete-song-label">
+                    Music Sheet
+                </div>
+
+                <strong>
+                    @Model.Song.Title
+                </strong>
+
+
+                <div class="music-delete-song-meta">
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Song.Composer))
+                    {
+                        <span>
+                            <i class="bi bi-person"></i>
+                            @Model.Song.Composer
+                        </span>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Song.SuggestedMassPart))
+                    {
+                        <span>
+                            <i class="bi bi-music-note-list"></i>
+                            @Model.Song.SuggestedMassPart
+                        </span>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Song.Key))
+                    {
+                        <span>
+                            Key @Model.Song.Key
+                        </span>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="music-delete-impact">
+
+            <div class="music-delete-impact-title">
+                What will be removed
+            </div>
+
+
+            <div class="music-delete-impact-row">
+
+                <div class="music-delete-impact-icon danger">
+                    <i class="bi bi-database-x"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        Music Library record
+                    </strong>
+
+                    <span>
+                        Song details, notes, licensing
+                        and presentation lyrics.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="music-delete-impact-row">
+
+                <div class="music-delete-impact-icon danger">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        Music Sheet PDF
+                    </strong>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Song.PdfFileName))
+                    {
+                        <span>
+                            @Model.Song.PdfFileName
+                        </span>
+                    }
+                    else
+                    {
+                        <span>
+                            No PDF is currently attached.
+                        </span>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <form method="post">
+
+            <input type="hidden"
+                   asp-for="Song.Id" />
+
+
+            <div class="music-delete-actions">
+
+                <a asp-page="Index"
+                   class="btn btn-outline-secondary">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Cancel
+
+                </a>
+
+
+                <button type="submit"
+                        class="btn btn-danger">
+
+                    <i class="bi bi-trash3 me-1"></i>
+                    Delete Permanently
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
 </div>
-
-<dl class="row">
-    <dt class="col-sm-3">Title</dt>
-    <dd class="col-sm-9">@Model.Song.Title</dd>
-
-    <dt class="col-sm-3">PDF</dt>
-    <dd class="col-sm-9">@Model.Song.PdfFileName</dd>
-</dl>
-
-<form method="post">
-    <input type="hidden" asp-for="Song.Id" />
-
-    <button type="submit" class="btn btn-danger">
-        Delete
-    </button>
-
-    <a asp-page="Index"
-       class="btn btn-secondary">
-        Cancel
-    </a>
-</form>

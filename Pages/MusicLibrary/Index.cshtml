@@ -193,11 +193,11 @@ else
     </div>
 
 </div>
-<div class="library-table-card">
+<div class="presentation-library-table-card">
 
     <div class="table-responsive">
 
-        <table class="table library-table align-middle mb-0"
+        <table class="table align-middle presentation-library-table"
                id="musicTable">
 
             <thead>
@@ -219,48 +219,49 @@ else
 
                         <!-- SONG -->
 
-                        <td class="library-song-cell">
+                        <td>
 
-                            <div class="library-song">
+                            <div class="presentation-item-title">
 
-                                <div class="library-song-icon">
+                                <div class="presentation-item-mark music-library-mark">
 
                                     <i class="bi bi-music-note-beamed"></i>
 
                                 </div>
 
-
-                                <div class="library-song-details">
+                                <div>
 
                                     <a asp-page="Edit"
                                        asp-route-id="@Song.Id"
                                        asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                       class="library-song-title">
+                                       class="presentation-item-name">
 
                                         @Song.Title
 
                                     </a>
 
 
-                                    <div class="library-song-readiness">
+                                    <div class="music-library-row-meta">
 
                                         @if (!string.IsNullOrWhiteSpace(Song.PdfPath))
                                         {
-                                            <span class="library-status is-ready"
+                                            <span class="music-library-ready"
                                                   title="PDF available"
                                                   data-bs-toggle="tooltip">
 
                                                 <i class="bi bi-file-earmark-pdf"></i>
+                                                PDF
 
                                             </span>
                                         }
                                         else
                                         {
-                                            <span class="library-status is-missing"
+                                            <span class="music-library-missing"
                                                   title="PDF missing"
                                                   data-bs-toggle="tooltip">
 
                                                 <i class="bi bi-file-earmark-pdf"></i>
+                                                No PDF
 
                                             </span>
                                         }
@@ -268,21 +269,23 @@ else
 
                                         @if (!string.IsNullOrWhiteSpace(Song.PresentationLyrics))
                                         {
-                                            <span class="library-status is-ready"
+                                            <span class="music-library-ready"
                                                   title="Presentation lyrics available"
                                                   data-bs-toggle="tooltip">
 
                                                 <i class="bi bi-file-earmark-slides"></i>
+                                                Lyrics
 
                                             </span>
                                         }
                                         else
                                         {
-                                            <span class="library-status is-missing"
+                                            <span class="music-library-missing"
                                                   title="Presentation lyrics missing"
                                                   data-bs-toggle="tooltip">
 
                                                 <i class="bi bi-file-earmark-slides"></i>
+                                                No Lyrics
 
                                             </span>
                                         }
@@ -300,16 +303,17 @@ else
 
                         <td>
 
-                            @if (!string.IsNullOrWhiteSpace(Song.SuggestedMassPart))
+                            @if (!string.IsNullOrWhiteSpace(
+                                Song.SuggestedMassPart))
                             {
-                                <span class="library-mass-part">
+                                <span class="presentation-type-badge music-mass-part-badge">
                                     @Song.SuggestedMassPart
                                 </span>
                             }
                             else
                             {
-                                <span class="library-empty-value">
-                                    Not set
+                                <span class="text-muted">
+                                    —
                                 </span>
                             }
 
@@ -322,15 +326,13 @@ else
 
                             @if (!string.IsNullOrWhiteSpace(Song.Composer))
                             {
-                                <span class="library-composer">
-
+                                <span class="music-library-composer">
                                     @Song.Composer
-
                                 </span>
                             }
                             else
                             {
-                                <span class="library-empty-value">
+                                <span class="text-muted">
                                     —
                                 </span>
                             }
@@ -342,9 +344,10 @@ else
 
                         <td>
 
-                            @if (!string.IsNullOrWhiteSpace(Song.OneLicenseNumber))
+                            @if (!string.IsNullOrWhiteSpace(
+                                Song.OneLicenseNumber))
                             {
-                                <span class="library-license">
+                                <span class="music-license-badge ready">
 
                                     <i class="bi bi-check-circle-fill"></i>
 
@@ -354,11 +357,11 @@ else
                             }
                             else
                             {
-                                <span class="library-empty-value">
+                                <span class="music-license-badge missing">
 
-                                    <i class="bi bi-dash-circle"></i>
+                                    <i class="bi bi-exclamation-circle"></i>
 
-                                    Not set
+                                    Missing
 
                                 </span>
                             }
@@ -372,13 +375,13 @@ else
 
                             @if (!string.IsNullOrWhiteSpace(Song.Key))
                             {
-                                <span class="library-key">
+                                <span class="music-key-badge">
                                     @Song.Key
                                 </span>
                             }
                             else
                             {
-                                <span class="library-empty-value">
+                                <span class="text-muted">
                                     —
                                 </span>
                             }
@@ -390,7 +393,7 @@ else
 
                         <td class="text-end">
 
-                            <div class="library-actions">
+                            <div class="d-inline-flex gap-2">
 
                                 <a asp-page="Edit"
                                    asp-route-id="@Song.Id"
@@ -417,18 +420,6 @@ else
                                         <i class="bi bi-file-earmark-pdf"></i>
 
                                     </a>
-                                }
-                                else
-                                {
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-secondary table-action"
-                                            disabled
-                                            title="No PDF available"
-                                            data-bs-toggle="tooltip">
-
-                                        <i class="bi bi-file-earmark-pdf"></i>
-
-                                    </button>
                                 }
 
 
