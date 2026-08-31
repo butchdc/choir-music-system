@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using choir_music_system.Data;
 
@@ -10,9 +11,11 @@ using choir_music_system.Data;
 namespace choir_music_system.Migrations
 {
     [DbContext(typeof(ChoirDbContext))]
-    partial class ChoirDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260831032959_RemovePresentationLayoutType")]
+    partial class RemovePresentationLayoutType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.11");
@@ -127,11 +130,6 @@ namespace choir_music_system.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("PresentationText")
                         .HasMaxLength(10000)

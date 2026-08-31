@@ -18,31 +18,46 @@ public class DeleteModel : PageModel
     [BindProperty]
     public PresentationItem Item { get; set; } = null!;
 
+    [BindProperty(SupportsGet = true)]
+    public string? ReturnUrl { get; set; }
+
     public async Task<IActionResult> OnGetAsync(int id)
     {
         var item = await _context.PresentationItems
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (item is null)
+        {
             return NotFound();
+        }
 
         Item = item;
+
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var existing = await _context.PresentationItems
+        var item = await _context.PresentationItems
             .FirstOrDefaultAsync(x => x.Id == Item.Id);
 
-        if (existing is null)
+        if (item is null)
+        {
             return NotFound();
+        }
 
-        existing.IsActive = false;
-        existing.UpdatedDate = DateTime.UtcNow;
+        // Soft delete
+        item.IsActive = false;
+        item.UpdatedDate = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
 
-        return RedirectToPage("Index");
+        if (!string.IsNullOrWhiteSpace(ReturnUrl) &&
+            Url.IsLocalUrl(ReturnUrl))
+        {
+            return LocalRedirect(ReturnUrl);
+        }
+
+        return RedirectToPage("./Index");
     }
 }

@@ -3,6 +3,24 @@
 
 @{
     ViewData["Title"] = "Presentation Library";
+
+    var titleDirection =
+        Model.Sort == "title" &&
+        Model.Direction == "asc"
+            ? "desc"
+            : "asc";
+
+    var typeDirection =
+        Model.Sort == "type" &&
+        Model.Direction == "asc"
+            ? "desc"
+            : "asc";
+
+    var languageDirection =
+        Model.Sort == "language" &&
+        Model.Direction == "asc"
+        ? "desc"
+        : "asc";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -13,8 +31,7 @@
         </p>
     </div>
 
-    <a asp-page="./Create"
-       class="btn btn-primary">
+    <a asp-page="./Create" class="btn btn-primary">
         Add Presentation Item
     </a>
 </div>
@@ -31,10 +48,28 @@ else
         <table class="table align-middle">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Layout</th>
-                    <th class="text-end">Actions</th>
+                    <th>
+                        <a asp-page="./Index" asp-route-sort="title" asp-route-direction="@titleDirection"
+                           class="text-white text-decoration-none">
+                            Title
+                        </a>
+                    </th>
+
+                    <th>
+                        <a asp-page="./Index" asp-route-sort="type" asp-route-direction="@typeDirection"
+                           class="text-white text-decoration-none">
+                            Type
+                        </a>
+                    </th>
+                    <th>
+                        <a asp-page="./Index" asp-route-sort="language" asp-route-direction="@languageDirection"
+                           class="text-white text-decoration-none">
+                            Language
+                        </a>
+                    </th>
+                    <th class="text-end text-white">
+                        Actions
+                    </th>
                 </tr>
             </thead>
 
@@ -51,21 +86,24 @@ else
                         </td>
 
                         <td>
-                            @item.LayoutType
+                            @item.Language
                         </td>
-
                         <td class="text-end">
-                            <a asp-page="./Edit"
-                               asp-route-id="@item.Id"
-                               class="btn btn-sm btn-outline-primary">
-                                Edit
-                            </a>
+                            <div class="d-inline-flex gap-2">
 
-                            <a asp-page="./Delete"
-                               asp-route-id="@item.Id"
-                               class="btn btn-sm btn-outline-danger">
-                                Delete
-                            </a>
+                                <a asp-page="./Edit" asp-route-id="@item.Id"
+                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                   class="btn btn-outline-secondary" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a asp-page="./Delete" asp-route-id="@item.Id"
+                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                   class="btn btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
+                            </div>
                         </td>
                     </tr>
                 }

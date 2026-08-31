@@ -283,13 +283,7 @@ public class PowerPointService
             ));
         }
 
-        var outputFolder = Path.Combine(
-            _environment.ContentRootPath,
-            "Storage",
-            "Generated",
-            "Presentations");
-
-        Directory.CreateDirectory(outputFolder);
+        var outputFolder = Path.GetTempPath();
 
         var safeTitle = string.Join(
             "_",
@@ -502,13 +496,7 @@ public class PowerPointService
                 templatePath);
         }
 
-        var outputFolder = Path.Combine(
-            _environment.ContentRootPath,
-            "Storage",
-            "Generated",
-            "Presentations");
-
-        Directory.CreateDirectory(outputFolder);
+        var outputFolder = Path.GetTempPath();
 
         var safeName = string.Join(
             "_",
@@ -516,7 +504,7 @@ public class PowerPointService
 
         var outputPath = Path.Combine(
             outputFolder,
-            $"{safeName}-{mass.MassDate:yyyyMMdd}.pptx");
+            $"{safeName}-{mass.MassDate:yyyyMMdd}-{Guid.NewGuid():N}.pptx");
 
         File.Copy(
             templatePath,
@@ -612,10 +600,14 @@ public class PowerPointService
             // Divider when Mass Part changes
             // -------------------------------------------------
 
-            if (!string.Equals(
-                currentMassPart,
-                planItem.MassPart,
-                StringComparison.OrdinalIgnoreCase))
+            var needsDivider =
+                planItem.ItemType == "Presentation" ||
+                !string.Equals(
+                    currentMassPart,
+                    planItem.MassPart,
+                    StringComparison.OrdinalIgnoreCase);
+
+            if (needsDivider)
             {
                 currentMassPart = planItem.MassPart;
 
@@ -769,14 +761,8 @@ public class PowerPointService
 
                 if (blocks.Count == 0)
                 {
-                    var useTitle =
-                        !string.Equals(
-                            item.LayoutType,
-                            "Text Only",
-                            StringComparison.OrdinalIgnoreCase);
-
                     blocks.Add((
-                        Titled: useTitle,
+                        Titled: true,
                         Text: item.PresentationText ?? string.Empty
                     ));
                 }

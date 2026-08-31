@@ -42,17 +42,18 @@ public class IndexModel : PageModel
         var filePath =
             _powerPointService.GenerateMassPresentation(mass);
 
-        var bytes =
+        var fileBytes =
             await System.IO.File.ReadAllBytesAsync(filePath);
 
-        var safeName = string.Join(
-            "_",
-            mass.Name.Split(Path.GetInvalidFileNameChars()));
+        var fileName =
+            Path.GetFileName(filePath);
+
+        System.IO.File.Delete(filePath);
 
         return File(
-            bytes,
+            fileBytes,
             "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-            $"{safeName}-{mass.MassDate:yyyyMMdd}.pptx");
+            fileName);
     }
 
     public async Task OnGetAsync(string? filter)

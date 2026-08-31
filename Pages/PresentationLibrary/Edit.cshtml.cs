@@ -45,7 +45,7 @@ public class EditModel : PageModel
 
         existing.Title = Item.Title;
         existing.Type = Item.Type;
-        existing.LayoutType = Item.LayoutType;
+        existing.Language = Item.Language;
         existing.PresentationText = Item.PresentationText;
         existing.UpdatedDate = DateTime.UtcNow;
 

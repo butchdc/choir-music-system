@@ -13,11 +13,11 @@ public class PresentationItem
     [StringLength(100)]
     public string Type { get; set; } = string.Empty;
 
+    [StringLength(50)]
+    public string Language { get; set; } = "English";
+
     [StringLength(10000)]
     public string? PresentationText { get; set; }
-
-    [StringLength(50)]
-    public string LayoutType { get; set; } = "Title + Text";
 
     public bool IsActive { get; set; } = true;
 

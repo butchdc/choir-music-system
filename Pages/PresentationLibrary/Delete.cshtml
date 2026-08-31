@@ -14,13 +14,29 @@
 </p>
 
 <form method="post">
-    <input type="hidden" asp-for="Item.Id" />
 
-    <button type="submit" class="btn btn-danger">
+    <input type="hidden" asp-for="Item.Id" />
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <button type="submit"
+            class="btn btn-danger">
+        <i class="bi bi-trash me-1"></i>
         Delete
     </button>
 
-    <a asp-page="./Index" class="btn btn-outline-secondary">
-        Cancel
-    </a>
+    @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
+    {
+        <a href="@Model.ReturnUrl"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+    }
+    else
+    {
+        <a asp-page="./Index"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+    }
+
 </form>

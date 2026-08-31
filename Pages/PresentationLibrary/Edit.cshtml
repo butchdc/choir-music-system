@@ -10,14 +10,22 @@
 <form method="post">
 
     <input type="hidden" asp-for="Item.Id" />
+    <input type="hidden" asp-for="ReturnUrl" />
 
     <div class="mb-3">
-        <label asp-for="Item.Title" class="form-label">Title</label>
+        <label asp-for="Item.Title" class="form-label">
+            Title
+        </label>
+
         <input asp-for="Item.Title" class="form-control" />
+
+        <span asp-validation-for="Item.Title" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Item.Type" class="form-label">Type</label>
+        <label asp-for="Item.Type" class="form-label">
+            Type
+        </label>
 
         <select asp-for="Item.Type" class="form-select">
             <option value="Psalm Response">Psalm Response</option>
@@ -30,11 +38,14 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Item.LayoutType" class="form-label">Layout</label>
+        <label asp-for="Item.Language" class="form-label">
+            Language
+        </label>
 
-        <select asp-for="Item.LayoutType" class="form-select">
-            <option value="Title + Text">Title + Text</option>
-            <option value="Text Only">Text Only</option>
+        <select asp-for="Item.Language" class="form-select">
+            <option value="English">English</option>
+            <option value="Tagalog">Tagalog</option>
+            <option value="Other">Other</option>
         </select>
     </div>
 
@@ -43,10 +54,20 @@
             Presentation Text
         </label>
 
-        <textarea asp-for="Item.PresentationText" class="form-control font-monospace" rows="12"></textarea>
+        <textarea asp-for="Item.PresentationText" class="form-control font-monospace" rows="12" placeholder="[SLIDE:TITLED]
+        First slide...
+
+        [SLIDE]
+        Next slide..."></textarea>
+
+        <div class="form-text">
+            Use <code>[SLIDE:TITLED]</code> and <code>[SLIDE]</code>
+            the same way as song presentation lyrics.
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-lg me-1"></i>
         Save Changes
     </button>
 
@@ -64,3 +85,7 @@
     }
 
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

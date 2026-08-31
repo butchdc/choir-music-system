@@ -67,14 +67,7 @@ public class MusicPackModel : PageModel
             return NotFound();
         }
 
-        var generatedFolder = Path.Combine(
-            _environment.ContentRootPath,
-            "Storage",
-            "Generated",
-            "MusicPacks"
-        );
-
-        Directory.CreateDirectory(generatedFolder);
+        var tempFolder = Path.GetTempPath();
 
         var safeName = string.Join(
             "-",
@@ -88,7 +81,7 @@ public class MusicPackModel : PageModel
             $"{safeName}-{mass.MassDate:yyyy-MM-dd}.pdf";
 
         var outputPath = Path.Combine(
-            generatedFolder,
+            tempFolder,
             $"{Guid.NewGuid():N}.pdf"
         );
 
@@ -97,15 +90,17 @@ public class MusicPackModel : PageModel
             outputPath
         );
 
-        var stream = new FileStream(
-            outputPath,
-            FileMode.Open,
-            FileAccess.Read,
-            FileShare.Read
+        var fileBytes =
+            await System.IO.File.ReadAllBytesAsync(
+                outputPath
+            );
+
+        System.IO.File.Delete(
+            outputPath
         );
 
         return File(
-            stream,
+            fileBytes,
             "application/pdf",
             downloadFileName
         );
