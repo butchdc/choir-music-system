@@ -72,19 +72,19 @@
                                                    " — ",
                                                    new[]
                                                    {
-                                                                                                                                                                                                   selectedMusic.Title,
-                                                                                                                                                                                                   selectedMusic.Composer,
-                                                                                                                                                                                                   string.IsNullOrWhiteSpace(selectedMusic.Arrangement)
-                                                                                                                                                                                                       ? null
-                                                                                                                                                                                                       : $"Arr: {selectedMusic.Arrangement}",
-                                                                                                                                                                                                   selectedMusic.SuggestedMassPart,
-                                                                                                                                                                                                   string.IsNullOrWhiteSpace(selectedMusic.Key)
-                                                                                                                                                                                                       ? null
-                                                                                                                                                                                                       : $"Key: {selectedMusic.Key}"
+                                                                                                                                                                                                          selectedMusic.Title,
+                                                                                                                                                                                                          selectedMusic.Composer,
+                                                                                                                                                                                                          string.IsNullOrWhiteSpace(selectedMusic.Arrangement)
+                                                                                                                                                                                                              ? null
+                                                                                                                                                                                                              : $"Arr: {selectedMusic.Arrangement}",
+                                                                                                                                                                                                          selectedMusic.SuggestedMassPart,
+                                                                                                                                                                                                          string.IsNullOrWhiteSpace(selectedMusic.Key)
+                                                                                                                                                                                                              ? null
+                                                                                                                                                                                                              : $"Key: {selectedMusic.Key}"
                                                    }
                                                    .Where(x => !string.IsNullOrWhiteSpace(x))
                                                )
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   )"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          )"
                                            data-music-id="@selectedMusic?.Id" placeholder="Search title, composer, part or key..."
                                            autocomplete="off" />
 
@@ -96,8 +96,8 @@
 
                                 <a class="btn btn-outline-secondary view-music"
                                    href="@(selectedMusic is null
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ? "#"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          : $"/MusicLibrary/View/{selectedMusic.Id}")"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ? "#"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             : $"/MusicLibrary/View/{selectedMusic.Id}")"
                                    target="_blank" rel="noopener noreferrer"
                                    style="@(selectedMusic is null ? "display:none;" : "")">
                                     View
@@ -199,14 +199,12 @@
                                             <span>@planItem.MassPart · </span>
                                         }
 
-                                        @@planItem.PresentationItem.Type
+                                        <span>@(planItem.PresentationItem.Type)</span>
 
                                         @if (!string.IsNullOrWhiteSpace(
                                             planItem.PresentationItem.Language))
                                         {
-                                            <span>
-                                                · @planItem.PresentationItem.Language
-                                            </span>
+                                            <span> · @(planItem.PresentationItem.Language)</span>
                                         }
                                     </div>
                                 }
@@ -329,18 +327,18 @@
             const form = document.getElementById("musicPlanForm");
 
             const musicLibrary = [
-                                                                                                                                @foreach (var music in Model.Songs)
+                                                                                                                                    @foreach (var music in Model.Songs)
                 {
                     @:{
-                                                                                                                                                                                                                                                    @:id: @music.Id,
+                                                                                                                                                                                                                                                            @:id: @music.Id,
                     @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
                     @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
                     @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
                     @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
                     @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
-                                                                                                                                                                                                                                                    @:},
+                                                                                                                                                                                                                                                            @:},
             }
-                                                                                                                            ];
+                                                                                                                                ];
 
         function createMusicRow() {
 
@@ -349,32 +347,32 @@
             row.className = "music-row d-flex gap-2 mb-2";
 
             row.innerHTML = `
-                                                                                                        <div class="music-picker flex-grow-1 position-relative">
+                                                                                                            <div class="music-picker flex-grow-1 position-relative">
 
-                                                                                                            <input type="text"
-                                                                                                                   class="form-control music-search"
-                                                                                                                   data-music-id=""
-                                                                                                                   placeholder="Search title, composer, part or key..."
-                                                                                                                   autocomplete="off" />
+                                                                                                                <input type="text"
+                                                                                                                       class="form-control music-search"
+                                                                                                                       data-music-id=""
+                                                                                                                       placeholder="Search title, composer, part or key..."
+                                                                                                                       autocomplete="off" />
 
-                                                                                                            <div class="music-results list-group position-absolute w-100 shadow"
-                                                                                                                 style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
+                                                                                                                <div class="music-results list-group position-absolute w-100 shadow"
+                                                                                                                     style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
+                                                                                                                </div>
+
                                                                                                             </div>
 
-                                                                                                        </div>
+                                                                                                            <a class="btn btn-outline-secondary view-music"
+                                                                                                               href="#"
+                                                                                                               target="_blank"
+                                                                                                               style="display:none;">
+                                                                                                                View
+                                                                                                            </a>
 
-                                                                                                        <a class="btn btn-outline-secondary view-music"
-                                                                                                           href="#"
-                                                                                                           target="_blank"
-                                                                                                           style="display:none;">
-                                                                                                            View
-                                                                                                        </a>
-
-                                                                                                        <button type="button"
-                                                                                                                class="btn btn-outline-danger remove-song">
-                                                                                                            Remove
-                                                                                                        </button>
-                                                                                                    `;
+                                                                                                            <button type="button"
+                                                                                                                    class="btn btn-outline-danger remove-song">
+                                                                                                                Remove
+                                                                                                            </button>
+                                                                                                        `;
 
             return row;
         }
@@ -843,6 +841,6 @@
             }
         }
 
-                                                                                                                        });
+                                                                                                                            });
     </script>
 }

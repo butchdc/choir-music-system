@@ -91,15 +91,15 @@ else
                         <td class="text-end">
                             <div class="d-inline-flex gap-2">
 
-                                <a asp-page="./Edit" asp-route-id="@item.Id"
+                                <a asp-page="Edit" asp-route-id="@item.Id"
                                    asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                   class="btn btn-outline-secondary" title="Edit">
+                                   class="btn btn-sm btn-outline-secondary table-action" title="Edit" data-bs-toggle="tooltip">
                                     <i class="bi bi-pencil"></i>
                                 </a>
 
-                                <a asp-page="./Delete" asp-route-id="@item.Id"
+                                <a asp-page="Delete" asp-route-id="@item.Id"
                                    asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                   class="btn btn-outline-danger" title="Delete">
+                                   class="btn btn-sm btn-outline-danger table-action" title="Delete" data-bs-toggle="tooltip">
                                     <i class="bi bi-trash"></i>
                                 </a>
 

@@ -39,7 +39,7 @@ else
                 <th>Composer</th>
                 <th>One License</th>
                 <th>Key</th>
-                <th></th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -70,14 +70,14 @@ else
                     <td>@Song.Key</td>
 
                     <td class="text-end">
-                        <a asp-page="View" asp-route-id="@Song.Id" target="_blank" rel="noopener noreferrer"
-                           class="btn btn-sm btn-outline-primary table-action" title="View PDF" data-bs-toggle="tooltip">
-                            <i class="bi bi-file-earmark-pdf"></i>
-                        </a>
                         <a asp-page="Edit" asp-route-id="@Song.Id"
                            asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
                            class="btn btn-sm btn-outline-secondary table-action" title="Edit" data-bs-toggle="tooltip">
                             <i class="bi bi-pencil"></i>
+                        </a>
+                        <a asp-page="View" asp-route-id="@Song.Id" target="_blank" rel="noopener noreferrer"
+                           class="btn btn-sm btn-outline-primary table-action" title="View PDF" data-bs-toggle="tooltip">
+                            <i class="bi bi-file-earmark-pdf"></i>
                         </a>
                         <a asp-page-handler="GeneratePpt" asp-route-id="@Song.Id"
                            class="btn btn-sm btn-outline-secondary table-action" title="Generate PowerPoint"
