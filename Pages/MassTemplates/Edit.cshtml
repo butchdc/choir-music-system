@@ -1,0 +1,70 @@
+@page "{id:int}"
+@model choir_music_system.Pages.MassTemplates.EditModel
+
+@{
+    ViewData["Title"] = "Edit Mass Template";
+}
+
+<h1>Edit Mass Template</h1>
+
+<form method="post">
+
+    <input type="hidden"
+           asp-for="Template.Id" />
+
+    <input type="hidden"
+           asp-for="ReturnUrl" />
+
+    <div class="mb-3">
+        <label asp-for="Template.Name"
+               class="form-label">
+            Name
+        </label>
+
+        <input asp-for="Template.Name"
+               class="form-control" />
+
+        <span asp-validation-for="Template.Name"
+              class="text-danger">
+        </span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Template.Notes"
+               class="form-label">
+            Notes
+        </label>
+
+        <textarea asp-for="Template.Notes"
+                  class="form-control"
+                  rows="4">
+        </textarea>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        <i class="bi bi-check-lg me-1"></i>
+        Save Changes
+    </button>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
+    {
+        <a href="@Model.ReturnUrl"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+    }
+    else
+    {
+        <a asp-page="./Index"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+    }
+
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

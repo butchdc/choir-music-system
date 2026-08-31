@@ -11,63 +11,139 @@
     Create a Mass plan before selecting music.
 </p>
 
-<form method="post" enctype="multipart/form-data">
 
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<form method="post"
+      enctype="multipart/form-data">
+
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger mb-3">
+    </div>
+
 
     <div class="mb-3">
-        <label asp-for="Mass.Name" class="form-label">
+
+        <label asp-for="Mass.Name"
+               class="form-label">
             Name
         </label>
 
-        <input asp-for="Mass.Name" class="form-control" placeholder="e.g. Sunday Mass" />
+        <input asp-for="Mass.Name"
+               class="form-control"
+               placeholder="e.g. Sunday Mass" />
 
-        <span asp-validation-for="Mass.Name" class="text-danger"></span>
+        <span asp-validation-for="Mass.Name"
+              class="text-danger">
+        </span>
+
     </div>
 
+
     <div class="mb-3">
-        <label asp-for="Mass.MassDate" class="form-label">
+
+        <label asp-for="Mass.MassDate"
+               class="form-label">
             Mass Date
         </label>
 
-        <input asp-for="Mass.MassDate" type="date" class="form-control" />
+        <input asp-for="Mass.MassDate"
+               type="date"
+               class="form-control" />
+
     </div>
 
+
     <div class="mb-3">
-        <label asp-for="Mass.Notes" class="form-label">
+
+        <label asp-for="MassTemplateId"
+               class="form-label">
+            Mass Template
+        </label>
+
+        <select asp-for="MassTemplateId"
+                class="form-select">
+
+            <option value="">
+                No template
+            </option>
+
+            @foreach (var template in Model.MassTemplates)
+            {
+                <option value="@template.Id">
+                    @template.Name
+                </option>
+            }
+
+        </select>
+
+        <div class="form-text">
+            Optional. Songs and presentation items
+            from the template will be added to the
+            new Mass.
+        </div>
+
+        <span asp-validation-for="MassTemplateId"
+              class="text-danger">
+        </span>
+
+    </div>
+
+
+    <div class="mb-3">
+
+        <label asp-for="Mass.Notes"
+               class="form-label">
             Notes
         </label>
 
-        <textarea asp-for="Mass.Notes" class="form-control" rows="4"></textarea>
+        <textarea asp-for="Mass.Notes"
+                  class="form-control"
+                  rows="4">
+        </textarea>
+
     </div>
 
+
     <div class="mb-3">
-        <label asp-for="BackgroundImage" class="form-label">
+
+        <label asp-for="BackgroundImage"
+               class="form-label">
             Presentation Background
         </label>
 
-        <input asp-for="BackgroundImage" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+        <input asp-for="BackgroundImage"
+               type="file"
+               accept=".jpg,.jpeg,.png,image/jpeg,image/png"
                class="form-control" />
 
         <div class="form-text">
-            Optional. Used as the background for the generated PowerPoint.
-            JPG or PNG, maximum 10 MB.
+            Optional. Used as the background for the
+            generated PowerPoint. JPG or PNG,
+            maximum 10 MB.
         </div>
 
-        <span asp-validation-for="BackgroundImage" class="text-danger"></span>
+        <span asp-validation-for="BackgroundImage"
+              class="text-danger">
+        </span>
+
     </div>
 
+
     <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">
+
+        <button type="submit"
+                class="btn btn-primary">
             Create Mass
         </button>
 
-        <a asp-page="Index" class="btn btn-secondary">
+        <a asp-page="Index"
+           class="btn btn-secondary">
             Cancel
         </a>
+
     </div>
 
 </form>
+
 
 @section Scripts
 {

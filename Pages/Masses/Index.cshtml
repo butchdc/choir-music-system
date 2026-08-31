@@ -128,10 +128,16 @@ else
                                title="Edit Mass" data-bs-toggle="tooltip">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            
+
                             <a asp-page="Plan" asp-route-id="@mass.Id" class="btn btn-sm btn-primary table-action"
                                title="Plan Music" data-bs-toggle="tooltip">
                                 <i class="bi bi-music-note-list"></i>
+                            </a>
+
+                            <a asp-page="/MassTemplates/CreateFromMass" asp-route-massId="@mass.Id"
+                               class="btn btn-sm btn-outline-secondary table-action" title="Save as Template"
+                               data-bs-toggle="tooltip">
+                                <i class="bi bi-journal-plus"></i>
                             </a>
 
                             <a asp-page="Index" asp-page-handler="Duplicate" asp-route-id="@mass.Id"

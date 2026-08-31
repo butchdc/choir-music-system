@@ -1,0 +1,67 @@
+@page
+@model choir_music_system.Pages.MassTemplates.CreateFromMassModel
+
+@{
+    ViewData["Title"] = "Save Mass as Template";
+}
+
+<h1>Save Mass as Template</h1>
+
+<p class="text-muted">
+    Create a reusable template from
+    <strong>@Model.Mass.Name</strong>.
+</p>
+
+<form method="post">
+
+    <input type="hidden"
+           name="massId"
+           value="@Model.Mass.Id" />
+
+    <div class="mb-3">
+
+        <label asp-for="TemplateName"
+               class="form-label">
+            Template Name
+        </label>
+
+        <input asp-for="TemplateName"
+               class="form-control" />
+
+        <span asp-validation-for="TemplateName"
+              class="text-danger">
+        </span>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="Notes"
+               class="form-label">
+            Notes
+        </label>
+
+        <textarea asp-for="Notes"
+                  class="form-control"
+                  rows="4">
+        </textarea>
+
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        <i class="bi bi-journal-plus me-1"></i>
+        Create Template
+    </button>
+
+    <a asp-page="/Masses/Index"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

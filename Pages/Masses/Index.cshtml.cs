@@ -55,6 +55,52 @@ public class IndexModel : PageModel
             "application/vnd.openxmlformats-officedocument.presentationml.presentation",
             fileName);
     }
+    public async Task<IActionResult> OnGetSaveAsTemplateAsync(int id)
+    {
+        var mass = await _context.Masses
+            .Include(x => x.PlanItems)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (mass is null)
+        {
+            return NotFound();
+        }
+
+        var template = new MassTemplate
+        {
+            Name = $"{mass.Name} Template",
+            Notes = mass.Notes,
+            IsActive = true,
+            CreatedDate = DateTime.UtcNow,
+            UpdatedDate = DateTime.UtcNow
+        };
+
+        _context.MassTemplates.Add(template);
+
+        await _context.SaveChangesAsync();
+
+        foreach (var item in mass.PlanItems
+            .OrderBy(x => x.DisplayOrder))
+        {
+            _context.MassTemplateItems.Add(
+                new MassTemplateItem
+                {
+                    MassTemplateId = template.Id,
+                    ItemType = item.ItemType,
+                    SongId = item.SongId,
+                    PresentationItemId = item.PresentationItemId,
+                    MassPart = item.MassPart,
+                    DisplayOrder = item.DisplayOrder
+                });
+        }
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToPage(
+            "/MassTemplates/Plan",
+            new { id = template.Id }
+        );
+    }
 
     public async Task OnGetAsync(string? filter)
     {

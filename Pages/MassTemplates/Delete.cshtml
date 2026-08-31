@@ -1,0 +1,44 @@
+@page "{id:int}"
+@model choir_music_system.Pages.MassTemplates.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete Mass Template";
+}
+
+<h1>Delete Mass Template</h1>
+
+<p>
+    Are you sure you want to remove
+    <strong>@Model.Template.Name</strong>?
+</p>
+
+<form method="post">
+
+    <input type="hidden"
+           asp-for="Template.Id" />
+
+    <input type="hidden"
+           asp-for="ReturnUrl" />
+
+    <button type="submit"
+            class="btn btn-danger">
+        <i class="bi bi-trash me-1"></i>
+        Delete
+    </button>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ReturnUrl))
+    {
+        <a href="@Model.ReturnUrl"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+    }
+    else
+    {
+        <a asp-page="./Index"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+    }
+
+</form>

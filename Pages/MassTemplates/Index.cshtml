@@ -1,0 +1,82 @@
+@page
+@model choir_music_system.Pages.MassTemplates.IndexModel
+
+@{
+    ViewData["Title"] = "Mass Templates";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Mass Templates</h1>
+        <p class="text-muted mb-0">
+            Reusable Mass plans with default songs and presentation items.
+        </p>
+    </div>
+
+    <a asp-page="./Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>
+        Add Mass Template
+    </a>
+</div>
+
+@if (Model.Templates.Count == 0)
+{
+    <div class="alert alert-light border">
+        No Mass templates have been created yet.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Notes</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var template in Model.Templates)
+                {
+                    <tr>
+                        <td class="fw-semibold">
+                            @template.Name
+                        </td>
+
+                        <td>
+                            @template.Notes
+                        </td>
+
+                        <td class="text-end">
+                            <div class="d-inline-flex gap-2">
+
+                                <a asp-page="./Plan" asp-route-id="@template.Id"
+                                   class="btn btn-sm btn-outline-primary table-action" title="Plan Template"
+                                   data-bs-toggle="tooltip">
+                                    <i class="bi bi-music-note-list"></i>
+                                </a>
+
+                                <a asp-page="./Edit" asp-route-id="@template.Id"
+                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                   class="btn btn-sm btn-outline-secondary table-action" title="Edit" data-bs-toggle="tooltip">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a asp-page="./Delete" asp-route-id="@template.Id"
+                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                   class="btn btn-sm btn-outline-danger table-action" title="Delete" data-bs-toggle="tooltip">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+}

@@ -18,6 +18,10 @@ public class ChoirDbContext : DbContext
     public DbSet<Mass> Masses => Set<Mass>();
     public DbSet<MassSong> MassSongs { get; set; }
 
+    public DbSet<MassTemplate> MassTemplates { get; set; } = null!;
+
+    public DbSet<MassTemplateItem> MassTemplateItems { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
