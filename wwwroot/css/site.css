@@ -11210,3 +11210,55 @@ a.presentation-item-title:hover {
     color: #fff;
     opacity: 1;
 }
+
+/* =========================================================
+   COMPACT MASS PARTS
+   ========================================================= */
+
+.mass-parts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.mass-part {
+    overflow: visible;
+}
+
+.mass-part-header {
+    cursor: pointer;
+    min-height: 72px;
+}
+
+.mass-part-header::after {
+    content: "\F282";
+    font-family: "bootstrap-icons";
+    margin-left: 0.75rem;
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.mass-part.is-open .mass-part-header::after {
+    transform: rotate(180deg);
+}
+
+.mass-part-body {
+    display: none;
+    border-top: 1px solid #e2e8f0;
+}
+
+.mass-part.is-open .mass-part-body {
+    display: block;
+}
+
+/*
+ * Keep search results above neighbouring Mass Parts.
+ */
+.mass-part.is-open {
+    position: relative;
+    z-index: 20;
+}
+
+.mass-part:has(.music-results[style*="display: block"]) {
+    z-index: 100;
+}

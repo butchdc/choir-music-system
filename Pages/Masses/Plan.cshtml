@@ -39,6 +39,278 @@
 }
 
 
+
+<style>
+/* =========================================================
+   COMPACT / COLLAPSIBLE MASS PARTS
+   ========================================================= */
+
+.mass-parts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.mass-part {
+    position: relative;
+    overflow: visible;
+}
+
+.mass-part-header {
+    min-height: 68px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.mass-part-header::after {
+    content: "\F282";
+    margin-left: 0.75rem;
+    color: #94a3b8;
+    font-family: "bootstrap-icons";
+    font-size: 0.78rem;
+    transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.mass-part-header:hover::after {
+    color: #475569;
+}
+
+.mass-part.is-open .mass-part-header::after {
+    transform: rotate(180deg);
+}
+
+.mass-part-body {
+    display: none;
+    border-top: 1px solid #e2e8f0;
+}
+
+.mass-part.is-open .mass-part-body {
+    display: block;
+}
+
+.mass-part.is-open {
+    z-index: 20;
+}
+
+.mass-part.has-open-results {
+    z-index: 100;
+}
+
+.mass-part-header:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: -2px;
+}
+
+@@media (max-width: 640px) {
+    .mass-part-header {
+        min-height: 60px;
+    }
+}
+
+
+/* =========================================================
+   PLAN MASS - TWO COLUMN WORKSPACE
+   ========================================================= */
+.mass-plan-page {
+    max-width: 1500px;
+    margin: 0 auto;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.mass-plan-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.mass-plan-left,
+.mass-plan-right {
+    min-width: 0;
+}
+
+.mass-plan-right {
+    position: sticky;
+    top: 1rem;
+}
+
+.mass-plan-column-heading {
+    margin: 0 0 .7rem;
+}
+
+.mass-plan-column-heading h2 {
+    margin: 0;
+    color: #17345f;
+    font-size: 1.05rem;
+    font-weight: 750;
+    letter-spacing: -.01em;
+}
+
+.mass-plan-column-heading p {
+    margin: .15rem 0 0;
+    color: #64748b;
+    font-size: .76rem;
+}
+
+/* Make the selected-song typography match Mass Presentation Order. */
+.mass-plan-page .mass-part-title,
+.mass-plan-page .music-search,
+.mass-plan-page .presentation-item-title {
+    font-family: inherit;
+    color: #17345f;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+.mass-plan-page .music-search {
+    font-size: .82rem;
+}
+
+.mass-plan-page .mass-part-title,
+.mass-plan-page .presentation-item-title {
+    font-size: .82rem;
+}
+
+/* Compact the left-side rows so all Mass parts are easy to scan. */
+.mass-plan-page .mass-parts-grid {
+    gap: .45rem;
+}
+
+.mass-plan-page .mass-part {
+    border-radius: 10px;
+}
+
+.mass-plan-page .mass-part-header {
+    min-height: 58px;
+    padding-top: .55rem;
+    padding-bottom: .55rem;
+}
+
+.mass-plan-page .mass-part-body {
+    padding-top: .65rem;
+    padding-bottom: .65rem;
+}
+
+/* Keep the right column compact inside the workspace. */
+.mass-plan-page .presentation-order-section,
+.mass-plan-page .add-presentation-section {
+    margin-top: 0;
+}
+
+.mass-plan-page .add-presentation-section {
+    margin-top: .85rem;
+}
+
+.mass-plan-page .presentation-order-heading h3,
+.mass-plan-page .add-presentation-header h3 {
+    font-family: inherit;
+}
+
+.mass-plan-page .presentation-timeline-item {
+    min-width: 0;
+    cursor: grab;
+    transition: opacity .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+
+.mass-plan-page .presentation-timeline-item:active {
+    cursor: grabbing;
+}
+
+.mass-plan-page .presentation-timeline-item.is-dragging {
+    opacity: .45;
+    transform: scale(.99);
+}
+
+.mass-plan-page .presentation-timeline-item.drag-over {
+    box-shadow: 0 -3px 0 #2563eb;
+}
+
+.mass-plan-page .presentation-drag-handle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 24px;
+    color: #94a3b8;
+    cursor: grab;
+}
+
+.mass-plan-page .presentation-drag-handle i {
+    font-size: 1rem;
+}
+
+.mass-plan-page .presentation-timeline-item:hover .presentation-drag-handle {
+    color: #475569;
+}
+
+.mass-plan-bottom-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.1rem;
+    padding: .75rem .85rem;
+    position: sticky;
+    bottom: .75rem;
+    z-index: 30;
+    background: rgba(255,255,255,.96);
+    border: 1px solid #dce5ef;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(15,23,42,.09);
+    backdrop-filter: blur(8px);
+}
+
+.mass-plan-bottom-info {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    color: #64748b;
+    font-size: .72rem;
+}
+
+.mass-plan-bottom-info strong {
+    color: #17345f;
+}
+
+.mass-plan-bottom-buttons {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.mass-plan-bottom-buttons .music-plan-save {
+    min-width: 180px;
+}
+
+@@media (max-width: 1100px) {
+    .mass-plan-workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .mass-plan-right {
+        position: static;
+    }
+}
+
+@@media (max-width: 640px) {
+    .mass-plan-bottom-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .mass-plan-bottom-buttons {
+        width: 100%;
+    }
+
+    .mass-plan-bottom-buttons .btn {
+        flex: 1;
+    }
+}
+
+</style>
+
+<div class="mass-plan-page">
+
 <!-- MASS PLAN HEADER -->
 
 <div class="mass-plan-header mb-4">
@@ -179,6 +451,15 @@
     </div>
 
 </div>
+
+<div class="mass-plan-workspace">
+
+    <section class="mass-plan-left">
+
+        <div class="mass-plan-column-heading">
+            <h2>Mass Parts</h2>
+            <p>Select the songs for each part of the Mass. Click a row to edit it.</p>
+        </div>
 
 <form method="post" id="musicPlanForm">
 
@@ -410,67 +691,13 @@
         }
 
     </div>
-    <div class="music-plan-actions music-plan-actions-sticky">
-
-        <div class="music-plan-actions-info">
-
-            <div class="music-plan-actions-icon">
-                <i class="bi bi-check2-circle"></i>
-            </div>
-
-            <div>
-                <strong>Music Selection</strong>
-
-                <span>
-                    <div class="music-plan-actions-info">
-
-                        <div class="music-plan-actions-icon">
-                            <i class="bi bi-music-note-list"></i>
-                        </div>
-
-                        <div>
-                            <strong>
-                                <span id="musicPlanSelectedCount">
-                                    @plannedSongCount
-                                </span>
-                                song@(plannedSongCount == 1 ? "" : "s") selected
-                            </strong>
-
-                            <span>
-                                Changes are saved when you click Save Music Plan.
-                            </span>
-                        </div>
-
-                    </div>
-                    Save your song selections before continuing.
-                </span>
-            </div>
-
-        </div>
-
-
-        <div class="music-plan-actions-buttons">
-
-            <a asp-page="Index" class="btn music-plan-cancel">
-
-                Cancel
-
-            </a>
-
-
-            <button type="submit" class="btn music-plan-save">
-
-                <i class="bi bi-check-lg"></i>
-
-                Save Music Plan
-
-            </button>
-
-        </div>
-
-    </div>
-
 </form>
+
+    </section>
+
+    <aside class="mass-plan-right">
+
+
 
 <!-- PRESENTATION ORDER -->
 
@@ -548,7 +775,12 @@
 
 
                 <div class="mass-plan-item presentation-timeline-item @(planItem.ItemType == "Song" ? "is-song" : "is-presentation")"
-                     data-plan-item-id="@planItem.Id">
+                     data-plan-item-id="@planItem.Id"
+                     draggable="true">
+
+                    <div class="presentation-drag-handle" title="Drag to reorder" aria-label="Drag to reorder">
+                        <i class="bi bi-grip-vertical"></i>
+                    </div>
 
                     <!-- ORDER -->
 
@@ -843,12 +1075,130 @@
 
 </div>
 
+    </aside>
+
+</div>
+
+<div class="mass-plan-bottom-actions">
+    <div class="mass-plan-bottom-info">
+        <i class="bi bi-music-note-list"></i>
+        <span>
+            <strong><span id="musicPlanSelectedCount">@plannedSongCount</span></strong>
+            song@(plannedSongCount == 1 ? "" : "s") selected
+        </span>
+    </div>
+
+    <div class="mass-plan-bottom-buttons">
+        <a asp-page="Index" class="btn music-plan-cancel">
+            Cancel
+        </a>
+
+        <button type="submit" form="musicPlanForm" class="btn music-plan-save">
+            <i class="bi bi-check-lg"></i>
+            Save Mass Plan
+        </button>
+    </div>
+</div>
+
+</div>
+
 @section Scripts
 {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
             const form = document.getElementById("musicPlanForm");
+
+            /* =========================================================
+               COLLAPSIBLE MASS PARTS
+               ========================================================= */
+
+            const collapsibleMassParts =
+                document.querySelectorAll(".mass-part");
+
+            collapsibleMassParts.forEach(function (part) {
+
+                const header =
+                    part.querySelector(".mass-part-header");
+
+                if (!header) {
+                    return;
+                }
+
+                header.setAttribute("role", "button");
+                header.setAttribute("tabindex", "0");
+                header.setAttribute("aria-expanded", "false");
+
+                function closePart(targetPart) {
+                    targetPart.classList.remove("is-open");
+                    targetPart.classList.remove("has-open-results");
+
+                    const targetHeader =
+                        targetPart.querySelector(".mass-part-header");
+
+                    if (targetHeader) {
+                        targetHeader.setAttribute("aria-expanded", "false");
+                    }
+
+                    targetPart
+                        .querySelectorAll(".music-results")
+                        .forEach(function (results) {
+                            results.style.display = "none";
+                        });
+                }
+
+                function togglePart() {
+
+                    const willOpen =
+                        !part.classList.contains("is-open");
+
+                    collapsibleMassParts.forEach(function (otherPart) {
+                        if (otherPart !== part) {
+                            closePart(otherPart);
+                        }
+                    });
+
+                    if (!willOpen) {
+                        closePart(part);
+                        return;
+                    }
+
+                    part.classList.add("is-open");
+                    header.setAttribute("aria-expanded", "true");
+
+                    const firstSearch =
+                        part.querySelector(".music-search");
+
+                    if (
+                        firstSearch &&
+                        !firstSearch.dataset.musicId
+                    ) {
+                        setTimeout(function () {
+                            firstSearch.focus();
+                        }, 100);
+                    }
+                }
+
+                header.addEventListener("click", function (event) {
+
+                    if (event.target.closest("a, button, input, select")) {
+                        return;
+                    }
+
+                    togglePart();
+                });
+
+                header.addEventListener("keydown", function (event) {
+
+                    if (event.key !== "Enter" && event.key !== " ") {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    togglePart();
+                });
+            });
+
 
             const presentationLibrary = [
                                                     @foreach (var item in Model.PresentationLibrary
@@ -904,8 +1254,8 @@
                 (search || "")
                     .toLowerCase()
                     .trim();
-
-            if (query.length < 3) {
+//length of chars
+            if (query.length < 1) {
                 presentationResults.innerHTML = "";
                 presentationResults.style.display = "none";
                 return;
@@ -1089,7 +1439,7 @@
                         presentationSearch.value
                             .trim();
 
-                    if (value.length >= 3) {
+                    if (value.length > 0) {
                         renderPresentationResults(value);
                     }
 
@@ -1424,6 +1774,11 @@
             });
 
             results.style.display = "block";
+
+            const parentPart = input.closest(".mass-part");
+            if (parentPart) {
+                parentPart.classList.add("has-open-results");
+            }
         });
 
 
@@ -1494,6 +1849,12 @@
                     .querySelectorAll(".music-results")
                     .forEach(results => {
                         results.style.display = "none";
+                    });
+
+                document
+                    .querySelectorAll(".mass-part.has-open-results")
+                    .forEach(part => {
+                        part.classList.remove("has-open-results");
                     });
             }
 
@@ -1586,6 +1947,80 @@
         const massPlanList = document.getElementById('massPlanList');
 
         if (massPlanList) {
+            let draggedPlanItem = null;
+
+            massPlanList.addEventListener('dragstart', function (event) {
+                const row = event.target.closest('.mass-plan-item');
+
+                if (!row) {
+                    return;
+                }
+
+                if (event.target.closest('button, a, form')) {
+                    event.preventDefault();
+                    return;
+                }
+
+                draggedPlanItem = row;
+                row.classList.add('is-dragging');
+
+                if (event.dataTransfer) {
+                    event.dataTransfer.effectAllowed = 'move';
+                    event.dataTransfer.setData('text/plain', row.dataset.planItemId || '');
+                }
+            });
+
+            massPlanList.addEventListener('dragover', function (event) {
+                if (!draggedPlanItem) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                const target = event.target.closest('.mass-plan-item');
+
+                document.querySelectorAll('#massPlanList .drag-over')
+                    .forEach(row => row.classList.remove('drag-over'));
+
+                if (!target || target === draggedPlanItem) {
+                    return;
+                }
+
+                target.classList.add('drag-over');
+
+                const rect = target.getBoundingClientRect();
+                const insertAfter = event.clientY > rect.top + (rect.height / 2);
+
+                if (insertAfter) {
+                    massPlanList.insertBefore(draggedPlanItem, target.nextSibling);
+                } else {
+                    massPlanList.insertBefore(draggedPlanItem, target);
+                }
+
+                updatePlanNumbers();
+            });
+
+            massPlanList.addEventListener('drop', async function (event) {
+                if (!draggedPlanItem) {
+                    return;
+                }
+
+                event.preventDefault();
+                await savePlanOrder();
+            });
+
+            massPlanList.addEventListener('dragend', function () {
+                if (draggedPlanItem) {
+                    draggedPlanItem.classList.remove('is-dragging');
+                }
+
+                document.querySelectorAll('#massPlanList .drag-over')
+                    .forEach(row => row.classList.remove('drag-over'));
+
+                draggedPlanItem = null;
+                updatePlanNumbers();
+            });
+
             massPlanList.addEventListener('click', async function (event) {
                 const upButton = event.target.closest('.move-up');
                 const downButton = event.target.closest('.move-down');
