@@ -3,24 +3,6 @@
 
 @{
     ViewData["Title"] = "Presentation Library";
-
-    var titleDirection =
-        Model.Sort == "title" &&
-        Model.Direction == "asc"
-            ? "desc"
-            : "asc";
-
-    var typeDirection =
-        Model.Sort == "type" &&
-        Model.Direction == "asc"
-            ? "desc"
-            : "asc";
-
-    var languageDirection =
-        Model.Sort == "language" &&
-        Model.Direction == "asc"
-            ? "desc"
-            : "asc";
 }
 
 <div class="presentation-library-page">
@@ -58,8 +40,7 @@
                 <span>Items</span>
             </div>
 
-            <a asp-page="./Create"
-               class="btn btn-warning presentation-library-add">
+            <a asp-page="./Create" class="btn btn-warning presentation-library-add">
 
                 <i class="bi bi-plus-circle me-1"></i>
                 Add Presentation Item
@@ -86,8 +67,7 @@
                 and other content for your Mass presentations.
             </p>
 
-            <a asp-page="./Create"
-               class="btn btn-warning">
+            <a asp-page="./Create" class="btn btn-warning">
 
                 <i class="bi bi-plus-circle me-1"></i>
                 Add First Item
@@ -105,16 +85,10 @@
 
                 <i class="bi bi-search"></i>
 
-                <input type="text"
-                       id="presentationLibrarySearch"
-                       class="form-control"
-                       placeholder="Search title, type or language..."
-                       autocomplete="off" />
+                <input type="text" id="presentationLibrarySearch" class="form-control"
+                       placeholder="Search title, type or language..." autocomplete="off" />
 
-                <button type="button"
-                        id="presentationLibraryClear"
-                        class="presentation-library-clear"
-                        title="Clear search">
+                <button type="button" id="presentationLibraryClear" class="presentation-library-clear" title="Clear search">
 
                     <i class="bi bi-x-lg"></i>
 
@@ -140,73 +114,22 @@
 
             <div class="table-responsive">
 
-                <table class="table align-middle presentation-library-table">
+                <table class="table align-middle presentation-library-table js-sortable-table">
 
                     <thead>
                         <tr>
 
-                            <th>
-
-                                <a asp-page="./Index"
-                                   asp-route-sort="title"
-                                   asp-route-direction="@titleDirection"
-                                   class="presentation-sort-link">
-
-                                    Title
-
-                                    @if (Model.Sort == "title")
-                                    {
-                                        <i class="bi @(Model.Direction == "asc"
-                                            ? "bi-chevron-up"
-                                            : "bi-chevron-down")"></i>
-                                    }
-
-                                </a>
-
+                            <th data-sort="text">
+                                Title
                             </th>
 
-
-                            <th>
-
-                                <a asp-page="./Index"
-                                   asp-route-sort="type"
-                                   asp-route-direction="@typeDirection"
-                                   class="presentation-sort-link">
-
-                                    Type
-
-                                    @if (Model.Sort == "type")
-                                    {
-                                        <i class="bi @(Model.Direction == "asc"
-                                            ? "bi-chevron-up"
-                                            : "bi-chevron-down")"></i>
-                                    }
-
-                                </a>
-
+                            <th data-sort="text">
+                                Type
                             </th>
 
-
-                            <th>
-
-                                <a asp-page="./Index"
-                                   asp-route-sort="language"
-                                   asp-route-direction="@languageDirection"
-                                   class="presentation-sort-link">
-
-                                    Language
-
-                                    @if (Model.Sort == "language")
-                                    {
-                                        <i class="bi @(Model.Direction == "asc"
-                                            ? "bi-chevron-up"
-                                            : "bi-chevron-down")"></i>
-                                    }
-
-                                </a>
-
+                            <th data-sort="text">
+                                Language
                             </th>
-
 
                             <th class="text-end">
                                 Actions
@@ -243,8 +166,7 @@
 
                                         <div>
 
-                                            <a asp-page="Edit"
-                                               asp-route-id="@item.Id"
+                                            <a asp-page="Edit" asp-route-id="@item.Id"
                                                asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
                                                class="presentation-item-name">
                                                 @item.Title
@@ -286,22 +208,18 @@
 
                                     <div class="d-inline-flex gap-2">
 
-                                        <a asp-page="Edit"
-                                           asp-route-id="@item.Id"
+                                        <a asp-page="Edit" asp-route-id="@item.Id"
                                            asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                           class="btn btn-sm btn-outline-secondary table-action"
-                                           title="Edit"
+                                           class="btn btn-sm btn-outline-secondary table-action" title="Edit"
                                            data-bs-toggle="tooltip">
 
                                             <i class="bi bi-pencil"></i>
 
                                         </a>
 
-                                        <a asp-page="Delete"
-                                           asp-route-id="@item.Id"
+                                        <a asp-page="Delete" asp-route-id="@item.Id"
                                            asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                           class="btn btn-sm btn-outline-danger table-action"
-                                           title="Delete"
+                                           class="btn btn-sm btn-outline-danger table-action" title="Delete"
                                            data-bs-toggle="tooltip">
 
                                             <i class="bi bi-trash"></i>
@@ -322,8 +240,7 @@
             </div>
 
 
-            <div id="presentationLibraryNoResults"
-                 class="presentation-library-no-results">
+            <div id="presentationLibraryNoResults" class="presentation-library-no-results">
 
                 <i class="bi bi-search"></i>
 

@@ -99,365 +99,361 @@ else
 
     </div>
 
-<!-- MUSIC LIBRARY FILTERS -->
+    <!-- MUSIC LIBRARY FILTERS -->
 
-<div class="library-filters mb-3">
+    <div class="library-filters mb-3">
 
-    <div class="library-filter-label">
-        <i class="bi bi-funnel"></i>
-        Filter
-    </div>
+        <div class="library-filter-label">
+            <i class="bi bi-funnel"></i>
+            Filter
+        </div>
 
-    <div class="library-filter-chips">
+        <div class="library-filter-chips">
 
-        <a asp-page="/MusicLibrary/Index"
-           class="library-filter-chip @(string.IsNullOrWhiteSpace(Model.Filter) ? "active" : "")">
-            All
-        </a>
-
-
-        @if (Model.NeedsAttentionCount > 0)
-        {
             <a asp-page="/MusicLibrary/Index"
-               asp-route-filter="needs-attention"
-               class="library-filter-chip library-filter-attention @(Model.Filter == "needs-attention" ? "active" : "")">
-
-                <i class="bi bi-exclamation-circle"></i>
-                Needs Attention
-
-                <span>@Model.NeedsAttentionCount</span>
-
+               class="library-filter-chip @(string.IsNullOrWhiteSpace(Model.Filter) ? "active" : "")">
+                All
             </a>
-        }
 
 
-        @if (Model.MissingLyricsCount > 0)
-        {
-            <a asp-page="/MusicLibrary/Index"
-               asp-route-filter="missing-lyrics"
-               class="library-filter-chip @(Model.Filter == "missing-lyrics" ? "active" : "")">
+            @if (Model.NeedsAttentionCount > 0)
+            {
+                <a asp-page="/MusicLibrary/Index" asp-route-filter="needs-attention"
+                   class="library-filter-chip library-filter-attention @(Model.Filter == "needs-attention" ? "active" : "")">
 
-                <i class="bi bi-file-earmark-slides"></i>
-                Missing Lyrics
+                    <i class="bi bi-exclamation-circle"></i>
+                    Needs Attention
 
-                <span>@Model.MissingLyricsCount</span>
+                    <span>@Model.NeedsAttentionCount</span>
 
-            </a>
-        }
-
-
-        @if (Model.MissingPdfCount > 0)
-        {
-            <a asp-page="/MusicLibrary/Index"
-               asp-route-filter="missing-pdf"
-               class="library-filter-chip @(Model.Filter == "missing-pdf" ? "active" : "")">
-
-                <i class="bi bi-file-earmark-pdf"></i>
-                Missing PDF
-
-                <span>@Model.MissingPdfCount</span>
-
-            </a>
-        }
+                </a>
+            }
 
 
-        @if (Model.MissingOneLicenseCount > 0)
-        {
-            <a asp-page="/MusicLibrary/Index"
-               asp-route-filter="missing-one-license"
-               class="library-filter-chip @(Model.Filter == "missing-one-license" ? "active" : "")">
+            @if (Model.MissingLyricsCount > 0)
+            {
+                <a asp-page="/MusicLibrary/Index" asp-route-filter="missing-lyrics"
+                   class="library-filter-chip @(Model.Filter == "missing-lyrics" ? "active" : "")">
 
-                <i class="bi bi-shield-check"></i>
-                Missing One License
+                    <i class="bi bi-file-earmark-slides"></i>
+                    Missing Lyrics
 
-                <span>@Model.MissingOneLicenseCount</span>
+                    <span>@Model.MissingLyricsCount</span>
 
-            </a>
-        }
+                </a>
+            }
 
 
-        @if (Model.MissingComposerCount > 0)
-        {
-            <a asp-page="/MusicLibrary/Index"
-               asp-route-filter="missing-composer"
-               class="library-filter-chip @(Model.Filter == "missing-composer" ? "active" : "")">
+            @if (Model.MissingPdfCount > 0)
+            {
+                <a asp-page="/MusicLibrary/Index" asp-route-filter="missing-pdf"
+                   class="library-filter-chip @(Model.Filter == "missing-pdf" ? "active" : "")">
 
-                <i class="bi bi-person"></i>
-                Missing Composer
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    Missing PDF
 
-                <span>@Model.MissingComposerCount</span>
+                    <span>@Model.MissingPdfCount</span>
 
-            </a>
-        }
+                </a>
+            }
+
+
+            @if (Model.MissingOneLicenseCount > 0)
+            {
+                <a asp-page="/MusicLibrary/Index" asp-route-filter="missing-one-license"
+                   class="library-filter-chip @(Model.Filter == "missing-one-license" ? "active" : "")">
+
+                    <i class="bi bi-shield-check"></i>
+                    Missing One License
+
+                    <span>@Model.MissingOneLicenseCount</span>
+
+                </a>
+            }
+
+
+            @if (Model.MissingComposerCount > 0)
+            {
+                <a asp-page="/MusicLibrary/Index" asp-route-filter="missing-composer"
+                   class="library-filter-chip @(Model.Filter == "missing-composer" ? "active" : "")">
+
+                    <i class="bi bi-person"></i>
+                    Missing Composer
+
+                    <span>@Model.MissingComposerCount</span>
+
+                </a>
+            }
+
+        </div>
 
     </div>
+    <div class="presentation-library-table-card">
 
-</div>
-<div class="presentation-library-table-card">
+        <div class="table-responsive">
 
-    <div class="table-responsive">
+            <table class="table align-middle presentation-library-table js-sortable-table" id="musicTable">
 
-        <table class="table align-middle presentation-library-table"
-               id="musicTable">
-
-            <thead>
-                <tr>
-                    <th>Song</th>
-                    <th>Mass Part</th>
-                    <th>Composer</th>
-                    <th>One License</th>
-                    <th>Key</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                @foreach (var Song in Model.Songs)
-                {
+                <thead>
                     <tr>
 
-                        <!-- SONG -->
+                        <th data-sort="text">
+                            Song
+                        </th>
 
-                        <td>
+                        <th data-sort="text">
+                            Mass Part
+                        </th>
 
-                            <div class="presentation-item-title">
+                        <th data-sort="text">
+                            Composer
+                        </th>
 
-                                <div class="presentation-item-mark music-library-mark">
+                        <th data-sort="text">
+                            One License
+                        </th>
 
-                                    <i class="bi bi-music-note-beamed"></i>
+                        <th data-sort="text">
+                            Key
+                        </th>
 
-                                </div>
+                        <th class="text-end">
+                            Actions
+                        </th>
 
-                                <div>
+                    </tr>
+                </thead>
 
-                                    <a asp-page="Edit"
-                                       asp-route-id="@Song.Id"
-                                       asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                       class="presentation-item-name">
+                <tbody>
 
-                                        @Song.Title
+                    @foreach (var Song in Model.Songs)
+                    {
+                        <tr>
 
-                                    </a>
+                            <!-- SONG -->
 
+                            <td>
 
-                                    <div class="music-library-row-meta">
+                                <div class="presentation-item-title">
 
-                                        @if (!string.IsNullOrWhiteSpace(Song.PdfPath))
-                                        {
-                                            <span class="music-library-ready"
-                                                  title="PDF available"
-                                                  data-bs-toggle="tooltip">
+                                    <div class="presentation-item-mark music-library-mark">
 
-                                                <i class="bi bi-file-earmark-pdf"></i>
-                                                PDF
+                                        <i class="bi bi-music-note-beamed"></i>
 
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="music-library-missing"
-                                                  title="PDF missing"
-                                                  data-bs-toggle="tooltip">
+                                    </div>
 
-                                                <i class="bi bi-file-earmark-pdf"></i>
-                                                No PDF
+                                    <div>
 
-                                            </span>
-                                        }
+                                        <a asp-page="Edit" asp-route-id="@Song.Id"
+                                           asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                           class="presentation-item-name">
+
+                                            @Song.Title
+
+                                        </a>
 
 
-                                        @if (!string.IsNullOrWhiteSpace(Song.PresentationLyrics))
-                                        {
-                                            <span class="music-library-ready"
-                                                  title="Presentation lyrics available"
-                                                  data-bs-toggle="tooltip">
+                                        <div class="music-library-row-meta">
 
-                                                <i class="bi bi-file-earmark-slides"></i>
-                                                Lyrics
+                                            @if (!string.IsNullOrWhiteSpace(Song.PdfPath))
+                                            {
+                                                <span class="music-library-ready" title="PDF available" data-bs-toggle="tooltip">
 
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="music-library-missing"
-                                                  title="Presentation lyrics missing"
-                                                  data-bs-toggle="tooltip">
+                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                    PDF
 
-                                                <i class="bi bi-file-earmark-slides"></i>
-                                                No Lyrics
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="music-library-missing" title="PDF missing" data-bs-toggle="tooltip">
 
-                                            </span>
-                                        }
+                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                    No PDF
+
+                                                </span>
+                                            }
+
+
+                                            @if (!string.IsNullOrWhiteSpace(Song.PresentationLyrics))
+                                            {
+                                                <span class="music-library-ready" title="Presentation lyrics available"
+                                                      data-bs-toggle="tooltip">
+
+                                                    <i class="bi bi-file-earmark-slides"></i>
+                                                    Lyrics
+
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="music-library-missing" title="Presentation lyrics missing"
+                                                      data-bs-toggle="tooltip">
+
+                                                    <i class="bi bi-file-earmark-slides"></i>
+                                                    No Lyrics
+
+                                                </span>
+                                            }
+
+                                        </div>
 
                                     </div>
 
                                 </div>
 
-                            </div>
-
-                        </td>
+                            </td>
 
 
-                        <!-- MASS PART -->
+                            <!-- MASS PART -->
 
-                        <td>
+                            <td>
 
-                            @if (!string.IsNullOrWhiteSpace(
-                                Song.SuggestedMassPart))
-                            {
-                                <span class="presentation-type-badge music-mass-part-badge">
-                                    @Song.SuggestedMassPart
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">
-                                    —
-                                </span>
-                            }
-
-                        </td>
-
-
-                        <!-- COMPOSER -->
-
-                        <td>
-
-                            @if (!string.IsNullOrWhiteSpace(Song.Composer))
-                            {
-                                <span class="music-library-composer">
-                                    @Song.Composer
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">
-                                    —
-                                </span>
-                            }
-
-                        </td>
-
-
-                        <!-- ONE LICENSE -->
-
-                        <td>
-
-                            @if (!string.IsNullOrWhiteSpace(
-                                Song.OneLicenseNumber))
-                            {
-                                <span class="music-license-badge ready">
-
-                                    <i class="bi bi-check-circle-fill"></i>
-
-                                    @Song.OneLicenseNumber
-
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="music-license-badge missing">
-
-                                    <i class="bi bi-exclamation-circle"></i>
-
-                                    Missing
-
-                                </span>
-                            }
-
-                        </td>
-
-
-                        <!-- KEY -->
-
-                        <td>
-
-                            @if (!string.IsNullOrWhiteSpace(Song.Key))
-                            {
-                                <span class="music-key-badge">
-                                    @Song.Key
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">
-                                    —
-                                </span>
-                            }
-
-                        </td>
-
-
-                        <!-- ACTIONS -->
-
-                        <td class="text-end">
-
-                            <div class="d-inline-flex gap-2">
-
-                                <a asp-page="Edit"
-                                   asp-route-id="@Song.Id"
-                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                   class="btn btn-sm btn-outline-secondary table-action"
-                                   title="Edit"
-                                   data-bs-toggle="tooltip">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                </a>
-
-
-                                @if (!string.IsNullOrWhiteSpace(Song.PdfPath))
+                                @if (!string.IsNullOrWhiteSpace(
+                                    Song.SuggestedMassPart))
                                 {
-                                    <a asp-page="View"
-                                       asp-route-id="@Song.Id"
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       class="btn btn-sm btn-outline-primary table-action"
-                                       title="View PDF"
-                                       data-bs-toggle="tooltip">
-
-                                        <i class="bi bi-file-earmark-pdf"></i>
-
-                                    </a>
+                                    <span class="presentation-type-badge music-mass-part-badge">
+                                        @Song.SuggestedMassPart
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">
+                                        —
+                                    </span>
                                 }
 
-
-                                <a asp-page-handler="GeneratePpt"
-                                   asp-route-id="@Song.Id"
-                                   class="btn btn-sm btn-outline-secondary table-action"
-                                   title="Generate PowerPoint"
-                                   data-bs-toggle="tooltip">
-
-                                    <i class="bi bi-file-earmark-slides"></i>
-
-                                </a>
+                            </td>
 
 
-                                <a asp-page="Delete"
-                                   asp-route-id="@Song.Id"
-                                   class="btn btn-sm btn-outline-danger table-action"
-                                   title="Delete"
-                                   data-bs-toggle="tooltip">
+                            <!-- COMPOSER -->
 
-                                    <i class="bi bi-trash"></i>
+                            <td>
 
-                                </a>
+                                @if (!string.IsNullOrWhiteSpace(Song.Composer))
+                                {
+                                    <span class="music-library-composer">
+                                        @Song.Composer
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">
+                                        —
+                                    </span>
+                                }
 
-                            </div>
+                            </td>
 
-                        </td>
 
-                    </tr>
-                }
+                            <!-- ONE LICENSE -->
 
-            </tbody>
+                            <td>
 
-        </table>
+                                @if (!string.IsNullOrWhiteSpace(
+                                    Song.OneLicenseNumber))
+                                {
+                                    <span class="music-license-badge ready">
+
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                        @Song.OneLicenseNumber
+
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="music-license-badge missing">
+
+                                        <i class="bi bi-exclamation-circle"></i>
+
+                                        Missing
+
+                                    </span>
+                                }
+
+                            </td>
+
+
+                            <!-- KEY -->
+
+                            <td>
+
+                                @if (!string.IsNullOrWhiteSpace(Song.Key))
+                                {
+                                    <span class="music-key-badge">
+                                        @Song.Key
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">
+                                        —
+                                    </span>
+                                }
+
+                            </td>
+
+
+                            <!-- ACTIONS -->
+
+                            <td class="text-end">
+
+                                <div class="d-inline-flex gap-2">
+
+                                    <a asp-page="Edit" asp-route-id="@Song.Id"
+                                       asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                       class="btn btn-sm btn-outline-secondary table-action" title="Edit"
+                                       data-bs-toggle="tooltip">
+
+                                        <i class="bi bi-pencil"></i>
+
+                                    </a>
+
+
+                                    @if (!string.IsNullOrWhiteSpace(Song.PdfPath))
+                                    {
+                                        <a asp-page="View" asp-route-id="@Song.Id" target="_blank" rel="noopener noreferrer"
+                                           class="btn btn-sm btn-outline-primary table-action" title="View PDF"
+                                           data-bs-toggle="tooltip">
+
+                                            <i class="bi bi-file-earmark-pdf"></i>
+
+                                        </a>
+                                    }
+
+
+                                    <a asp-page-handler="GeneratePpt" asp-route-id="@Song.Id"
+                                       class="btn btn-sm btn-outline-secondary table-action" title="Generate PowerPoint"
+                                       data-bs-toggle="tooltip">
+
+                                        <i class="bi bi-file-earmark-slides"></i>
+
+                                    </a>
+
+
+                                    <a asp-page="Delete" asp-route-id="@Song.Id"
+                                       class="btn btn-sm btn-outline-danger table-action" title="Delete"
+                                       data-bs-toggle="tooltip">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
-
-</div>
 
 }
 @section Scripts

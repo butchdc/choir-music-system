@@ -40,8 +40,7 @@
                 @(Model.Templates.Count == 1 ? "Template" : "Templates")
             </span>
 
-            <a asp-page="./Create"
-               class="btn btn-warning presentation-library-add">
+            <a asp-page="./Create" class="btn btn-warning presentation-library-add">
 
                 <i class="bi bi-plus-lg me-1"></i>
                 Add Mass Template
@@ -68,8 +67,7 @@
                 Mass plans can be prepared more quickly.
             </p>
 
-            <a asp-page="./Create"
-               class="btn btn-warning">
+            <a asp-page="./Create" class="btn btn-warning">
 
                 <i class="bi bi-plus-lg me-1"></i>
                 Create First Template
@@ -86,16 +84,10 @@
 
                 <i class="bi bi-search"></i>
 
-                <input type="text"
-                       id="massTemplateSearch"
-                       class="form-control"
-                       placeholder="Search templates..."
+                <input type="text" id="massTemplateSearch" class="form-control" placeholder="Search templates..."
                        autocomplete="off" />
 
-                <button type="button"
-                        id="massTemplateClear"
-                        class="presentation-library-clear"
-                        title="Clear search">
+                <button type="button" id="massTemplateClear" class="presentation-library-clear" title="Clear search">
 
                     <i class="bi bi-x-lg"></i>
 
@@ -119,22 +111,24 @@
 
             <div class="table-responsive">
 
-                <table class="table align-middle presentation-library-table">
+                <table class="table align-middle presentation-library-table js-sortable-table">
 
                     <thead>
-
                         <tr>
 
-                            <th>Template</th>
+                            <th data-sort="text">
+                                Template
+                            </th>
 
-                            <th>Notes</th>
+                            <th data-sort="text">
+                                Notes
+                            </th>
 
                             <th class="text-end">
                                 Actions
                             </th>
 
                         </tr>
-
                     </thead>
 
 
@@ -157,9 +151,7 @@
 
                                         <div>
 
-                                            <a asp-page="./Plan"
-                                               asp-route-id="@template.Id"
-                                               class="presentation-item-name">
+                                            <a asp-page="./Plan" asp-route-id="@template.Id" class="presentation-item-name">
 
                                                 @template.Name
 
@@ -201,10 +193,8 @@
 
                                     <div class="d-inline-flex gap-2">
 
-                                        <a asp-page="./Plan"
-                                           asp-route-id="@template.Id"
-                                           class="btn btn-sm btn-outline-primary table-action"
-                                           title="Plan Template"
+                                        <a asp-page="./Plan" asp-route-id="@template.Id"
+                                           class="btn btn-sm btn-outline-primary table-action" title="Plan Template"
                                            data-bs-toggle="tooltip">
 
                                             <i class="bi bi-music-note-list"></i>
@@ -212,11 +202,9 @@
                                         </a>
 
 
-                                        <a asp-page="./Edit"
-                                           asp-route-id="@template.Id"
+                                        <a asp-page="./Edit" asp-route-id="@template.Id"
                                            asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                           class="btn btn-sm btn-outline-secondary table-action"
-                                           title="Edit"
+                                           class="btn btn-sm btn-outline-secondary table-action" title="Edit"
                                            data-bs-toggle="tooltip">
 
                                             <i class="bi bi-pencil"></i>
@@ -224,11 +212,9 @@
                                         </a>
 
 
-                                        <a asp-page="./Delete"
-                                           asp-route-id="@template.Id"
+                                        <a asp-page="./Delete" asp-route-id="@template.Id"
                                            asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                           class="btn btn-sm btn-outline-danger table-action"
-                                           title="Delete"
+                                           class="btn btn-sm btn-outline-danger table-action" title="Delete"
                                            data-bs-toggle="tooltip">
 
                                             <i class="bi bi-trash"></i>
@@ -249,9 +235,7 @@
             </div>
 
 
-            <div id="massTemplateNoResults"
-                 class="presentation-library-no-results"
-                 style="display:none;">
+            <div id="massTemplateNoResults" class="presentation-library-no-results" style="display:none;">
 
                 <i class="bi bi-search"></i>
 

@@ -11175,3 +11175,38 @@ a.presentation-item-title:hover {
         flex-basis: 42px;
     }
 }
+
+/* =========================================================
+   JAVASCRIPT SORTABLE TABLE HEADERS
+   ========================================================= */
+
+.sortable-header {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    transition:
+        background-color .12s ease,
+        color .12s ease;
+}
+
+.sortable-header:hover {
+    background: #475569 !important;
+}
+
+.sortable-header:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: -2px;
+}
+
+.sort-icon {
+    margin-left: .35rem;
+    color: #94a3b8;
+    font-size: .65rem;
+    opacity: .75;
+}
+
+.sortable-header[data-sort-direction="asc"] .sort-icon,
+.sortable-header[data-sort-direction="desc"] .sort-icon {
+    color: #fff;
+    opacity: 1;
+}
