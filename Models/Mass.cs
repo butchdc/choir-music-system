@@ -11,6 +11,11 @@ public class Mass
     public string Name { get; set; } = string.Empty;
 
     public DateTime MassDate { get; set; }
+    [StringLength(200)]
+    public string? Venue { get; set; }
+
+    [StringLength(4000)]
+    public string? MassIntroduction { get; set; }
 
     [StringLength(2000)]
     public string? Notes { get; set; }

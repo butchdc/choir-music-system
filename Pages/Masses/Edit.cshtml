@@ -71,7 +71,7 @@
                         <div>
                             <h2>Mass Details</h2>
                             <p>
-                                Update the name and date
+                                Update the name, date and venue
                                 for this Mass.
                             </p>
                         </div>
@@ -115,6 +115,34 @@
 
                             </div>
 
+                            <span asp-validation-for="Mass.MassDate"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="create-mass-field">
+
+                            <label asp-for="Mass.Venue"
+                                   class="form-label">
+                                Venue
+                            </label>
+
+                            <div class="create-mass-input-icon">
+
+                                <i class="bi bi-geo-alt"></i>
+
+                                <input asp-for="Mass.Venue"
+                                       class="form-control"
+                                       placeholder="e.g. Holy Cross" />
+
+                            </div>
+
+                            <span asp-validation-for="Mass.Venue"
+                                  class="text-danger">
+                            </span>
+
                         </div>
 
                     </div>
@@ -127,14 +155,60 @@
                     <div class="create-mass-card-header">
 
                         <div class="create-mass-card-icon">
-                            <i class="bi bi-card-text"></i>
+                            <i class="bi bi-chat-left-text"></i>
                         </div>
 
                         <div>
-                            <h2>Notes</h2>
+                            <h2>Mass Introduction</h2>
                             <p>
-                                Update any notes used while
-                                preparing this Mass.
+                                Introduction displayed on the opening
+                                Mass slide in the presentation.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="create-mass-field">
+
+                        <textarea asp-for="Mass.MassIntroduction"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Enter the introduction for this Mass..."></textarea>
+
+                        <span asp-validation-for="Mass.MassIntroduction"
+                              class="text-danger">
+                        </span>
+
+                        <div class="create-mass-help">
+
+                            <i class="bi bi-easel2"></i>
+
+                            <span>
+                                This will be used as the subtitle
+                                on the Mass title slide.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="create-mass-card">
+
+                    <div class="create-mass-card-header">
+
+                        <div class="create-mass-card-icon">
+                            <i class="bi bi-journal-text"></i>
+                        </div>
+
+                        <div>
+                            <h2>Internal Notes</h2>
+                            <p>
+                                Planning notes for your team.
+                                These are not shown in the presentation.
                             </p>
                         </div>
 
@@ -145,8 +219,12 @@
 
                         <textarea asp-for="Mass.Notes"
                                   class="form-control"
-                                  rows="6"
-                                  placeholder="Optional notes for this Mass..."></textarea>
+                                  rows="5"
+                                  placeholder="Optional internal notes for this Mass..."></textarea>
+
+                        <span asp-validation-for="Mass.Notes"
+                              class="text-danger">
+                        </span>
 
                     </div>
 
@@ -220,6 +298,7 @@
 
                         <label asp-for="BackgroundImage"
                                class="form-label">
+
                             @if (!string.IsNullOrWhiteSpace(
                                 Model.Mass.PresentationBackgroundPath))
                             {
@@ -229,6 +308,7 @@
                             {
                                 <text>Choose Background</text>
                             }
+
                         </label>
 
                         <input asp-for="BackgroundImage"
@@ -257,6 +337,7 @@
                     </div>
 
                     <div>
+
                         <strong>
                             Music &amp; Presentation Plan
                         </strong>
@@ -269,8 +350,10 @@
                         <a asp-page="Plan"
                            asp-route-id="@Model.Mass.Id"
                            class="edit-mass-plan-link">
+
                             Open Mass Plan
                             <i class="bi bi-arrow-right"></i>
+
                         </a>
 
                     </div>

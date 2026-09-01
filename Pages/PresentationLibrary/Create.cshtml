@@ -10,12 +10,9 @@
     <div class="presentation-editor-header">
 
         <a asp-page="./Index" class="presentation-editor-back">
-
             <i class="bi bi-arrow-left"></i>
             Presentation Library
-
         </a>
-
 
         <div class="presentation-editor-heading">
 
@@ -42,12 +39,11 @@
 
     </div>
 
-
     <form method="post" class="presentation-editor-form">
 
-        <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger">
         </div>
-
 
         <div class="presentation-editor-grid">
 
@@ -74,30 +70,34 @@
 
                     </div>
 
-
                     <div class="presentation-editor-details-grid">
 
                         <div class="presentation-editor-field presentation-editor-title-field">
 
-                            <label asp-for="Item.Title" class="form-label">
+                            <label asp-for="Item.Title"
+                                   class="form-label">
                                 Title
                             </label>
 
-                            <input asp-for="Item.Title" class="form-control" placeholder="e.g. Nicene Creed" />
+                            <input asp-for="Item.Title"
+                                   class="form-control"
+                                   placeholder="e.g. Nicene Creed" />
 
-                            <span asp-validation-for="Item.Title" class="text-danger">
+                            <span asp-validation-for="Item.Title"
+                                  class="text-danger">
                             </span>
 
                         </div>
 
-
                         <div class="presentation-editor-field">
 
-                            <label asp-for="Item.Type" class="form-label">
+                            <label asp-for="Item.Type"
+                                   class="form-label">
                                 Type
                             </label>
 
-                            <select asp-for="Item.Type" class="form-select">
+                            <select asp-for="Item.Type"
+                                    class="form-select">
 
                                 <option value="Psalm Response">
                                     Psalm Response
@@ -127,14 +127,15 @@
 
                         </div>
 
-
                         <div class="presentation-editor-field">
 
-                            <label asp-for="Item.Language" class="form-label">
+                            <label asp-for="Item.Language"
+                                   class="form-label">
                                 Language
                             </label>
 
-                            <select asp-for="Item.Language" class="form-select">
+                            <select asp-for="Item.Language"
+                                    class="form-select">
 
                                 <option value="English">
                                     English
@@ -160,6 +161,65 @@
 
                 </section>
 
+                <!-- POWERPOINT LAYOUT -->
+
+                <section class="presentation-editor-card">
+
+                    <div class="presentation-editor-card-header">
+
+                        <div class="presentation-editor-card-icon">
+                            <i class="bi bi-layout-text-window-reverse"></i>
+                        </div>
+
+                        <div>
+                            <h2>PowerPoint Layout</h2>
+
+                            <p>
+                                Optionally use a specific layout
+                                from the PowerPoint master template.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="presentation-editor-field">
+
+                        <label asp-for="Item.PowerPointLayout"
+                               class="form-label">
+                            Master Layout
+                        </label>
+
+                        <select asp-for="Item.PowerPointLayout"
+                                class="form-select">
+
+                            <option value="">
+                                Default Presentation Layout
+                            </option>
+
+                            @foreach (var layout in Model.PowerPointLayouts)
+                            {
+                                <option value="@layout">
+                                    @layout
+                                </option>
+                            }
+
+                        </select>
+
+                        <div class="form-text">
+                            Leave this as Default for normal presentation
+                            items. Choose a specific master layout only
+                            when the item requires its own design.
+                        </div>
+
+                        <span asp-validation-for="Item.PowerPointLayout"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </section>
+
+                <!-- PRESENTATION TEXT -->
 
                 <section class="presentation-editor-card presentation-text-card">
 
@@ -180,18 +240,19 @@
 
                     </div>
 
-
                     <div class="presentation-editor-field">
 
-                        <textarea asp-for="Item.PresentationText" id="presentationTextEditor"
-                                  class="form-control presentation-text-editor" rows="16" placeholder="[SLIDE:TITLED]
-                        First slide...
+                        <textarea asp-for="Item.PresentationText"
+                                  id="presentationTextEditor"
+                                  class="form-control presentation-text-editor"
+                                  rows="16"
+                                  placeholder="[SLIDE:TITLED]
+First slide...
 
-                        [SLIDE]
-                        Next slide..."></textarea>
+[SLIDE]
+Next slide..."></textarea>
 
                     </div>
-
 
                     <div class="presentation-editor-hints">
 
@@ -205,7 +266,6 @@
                             </span>
 
                         </div>
-
 
                         <div class="presentation-editor-hint">
 
@@ -223,7 +283,6 @@
 
             </div>
 
-
             <!-- SIDE HELP -->
 
             <aside class="presentation-editor-sidebar">
@@ -235,16 +294,17 @@
                     </div>
 
                     <div>
+
                         <strong>Writing tip</strong>
 
                         <p>
                             Keep each slide concise so the text
                             remains readable when projected.
                         </p>
+
                     </div>
 
                 </div>
-
 
                 <div class="presentation-slide-guide">
 
@@ -272,7 +332,6 @@
 
                     </div>
 
-
                     <div class="presentation-slide-example">
 
                         <span class="presentation-slide-tag">
@@ -291,10 +350,48 @@
 
                 </div>
 
+                <div class="presentation-slide-guide">
+
+                    <div class="presentation-slide-guide-heading">
+
+                        <i class="bi bi-file-earmark-slides"></i>
+
+                        <span>Custom Layout</span>
+
+                    </div>
+
+                    <div class="presentation-slide-example">
+
+                        <strong>
+                            HC Safety
+                        </strong>
+
+                        <p>
+                            Select the HC Safety master layout for
+                            the Holy Cross safety presentation item.
+                        </p>
+
+                    </div>
+
+                    <div class="presentation-slide-example">
+
+                        <strong>
+                            Background
+                        </strong>
+
+                        <p>
+                            Custom presentation layouts will use the
+                            Mass background with 85% transparency
+                            when the PowerPoint is generated.
+                        </p>
+
+                    </div>
+
+                </div>
+
             </aside>
 
         </div>
-
 
         <div class="presentation-editor-actions">
 
@@ -308,19 +405,17 @@
 
             </div>
 
-
             <div class="presentation-editor-actions-buttons">
 
-                <a asp-page="./Index" class="btn btn-outline-secondary">
-
+                <a asp-page="./Index"
+                   class="btn btn-outline-secondary">
                     Cancel
-
                 </a>
 
-                <button type="submit" class="btn btn-warning presentation-editor-save">
+                <button type="submit"
+                        class="btn btn-warning presentation-editor-save">
 
                     <i class="bi bi-check2-circle me-1"></i>
-
                     Save Presentation Item
 
                 </button>

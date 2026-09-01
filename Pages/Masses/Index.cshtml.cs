@@ -12,6 +12,9 @@ public class IndexModel : PageModel
     private readonly ChoirDbContext _context;
     private readonly PowerPointService _powerPointService;
 
+    private const int PageSize = 20;
+
+
     public IndexModel(
         ChoirDbContext context,
         PowerPointService powerPointService)
@@ -20,181 +23,552 @@ public class IndexModel : PageModel
         _powerPointService = powerPointService;
     }
 
+
     public IList<Mass> Masses { get; set; }
         = new List<Mass>();
 
-    public string? ActiveFilter { get; set; }
 
-    public async Task<IActionResult> OnGetGeneratePptAsync(int id)
+    public string ActiveFilter { get; set; }
+        = "upcoming";
+
+
+    public string? Search { get; set; }
+
+
+    public int PageNumber { get; set; }
+        = 1;
+
+
+    public int TotalPages { get; set; }
+
+
+    public int TotalCount { get; set; }
+
+
+    public async Task<IActionResult> OnGetGeneratePptAsync(
+        int id)
     {
         var mass = await _context.Masses
+
             .Include(x => x.PlanItems)
                 .ThenInclude(x => x.Song)
+
             .Include(x => x.PlanItems)
                 .ThenInclude(x => x.PresentationItem)
-            .FirstOrDefaultAsync(x => x.Id == id);
+
+            .FirstOrDefaultAsync(
+                x => x.Id == id
+            );
+
 
         if (mass is null)
         {
             return NotFound();
         }
 
+
         var filePath =
-            _powerPointService.GenerateMassPresentation(mass);
+            _powerPointService
+                .GenerateMassPresentation(mass);
+
 
         var fileBytes =
-            await System.IO.File.ReadAllBytesAsync(filePath);
+            await System.IO.File
+                .ReadAllBytesAsync(filePath);
+
 
         var fileName =
             Path.GetFileName(filePath);
 
+
         System.IO.File.Delete(filePath);
+
 
         return File(
             fileBytes,
             "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-            fileName);
+            fileName
+        );
     }
-    public async Task<IActionResult> OnGetSaveAsTemplateAsync(int id)
+
+
+    public async Task<IActionResult>
+        OnGetSaveAsTemplateAsync(
+            int id)
     {
         var mass = await _context.Masses
+
             .Include(x => x.PlanItems)
-            .FirstOrDefaultAsync(x => x.Id == id);
+
+            .FirstOrDefaultAsync(
+                x => x.Id == id
+            );
+
 
         if (mass is null)
         {
             return NotFound();
         }
 
-        var template = new MassTemplate
+
+        var template =
+            new MassTemplate
+            {
+                Name =
+                    $"{mass.Name} Template",
+
+                Notes =
+                    mass.Notes,
+
+                IsActive =
+                    true,
+
+                CreatedDate =
+                    DateTime.UtcNow,
+
+                UpdatedDate =
+                    DateTime.UtcNow
+            };
+
+
+        _context.MassTemplates
+            .Add(template);
+
+
+        await _context
+            .SaveChangesAsync();
+
+
+        foreach (
+            var item in mass.PlanItems
+                .OrderBy(
+                    x => x.DisplayOrder
+                )
+        )
         {
-            Name = $"{mass.Name} Template",
-            Notes = mass.Notes,
-            IsActive = true,
-            CreatedDate = DateTime.UtcNow,
-            UpdatedDate = DateTime.UtcNow
-        };
+            _context.MassTemplateItems
+                .Add(
+                    new MassTemplateItem
+                    {
+                        MassTemplateId =
+                            template.Id,
 
-        _context.MassTemplates.Add(template);
+                        ItemType =
+                            item.ItemType,
 
-        await _context.SaveChangesAsync();
+                        SongId =
+                            item.SongId,
 
-        foreach (var item in mass.PlanItems
-            .OrderBy(x => x.DisplayOrder))
-        {
-            _context.MassTemplateItems.Add(
-                new MassTemplateItem
-                {
-                    MassTemplateId = template.Id,
-                    ItemType = item.ItemType,
-                    SongId = item.SongId,
-                    PresentationItemId = item.PresentationItemId,
-                    MassPart = item.MassPart,
-                    DisplayOrder = item.DisplayOrder
-                });
+                        PresentationItemId =
+                            item.PresentationItemId,
+
+                        MassPart =
+                            item.MassPart,
+
+                        DisplayOrder =
+                            item.DisplayOrder
+                    }
+                );
         }
 
-        await _context.SaveChangesAsync();
+
+        await _context
+            .SaveChangesAsync();
+
 
         return RedirectToPage(
             "/MassTemplates/Plan",
-            new { id = template.Id }
+            new
+            {
+                id = template.Id
+            }
         );
     }
 
-    public async Task OnGetAsync(string? filter)
+
+    public async Task OnGetAsync(
+        string? filter,
+        string? search,
+        int pageNumber = 1)
     {
-        ActiveFilter = filter;
+        /*
+         * Default view is Upcoming.
+         */
+        ActiveFilter =
+            string.IsNullOrWhiteSpace(filter)
+                ? "upcoming"
+                : filter
+                    .Trim()
+                    .ToLowerInvariant();
 
-        var today = DateTime.Today;
 
-        var query = _context.Masses
-            .Include(x => x.Songs)
-                .ThenInclude(x => x.Song)
-            .AsQueryable();
+        /*
+         * Only allow expected filters.
+         */
+        if (
+            ActiveFilter != "upcoming" &&
+            ActiveFilter != "past" &&
+            ActiveFilter != "all"
+        )
+        {
+            ActiveFilter =
+                "upcoming";
+        }
 
-        switch (filter?.ToLowerInvariant())
+
+        Search =
+            string.IsNullOrWhiteSpace(search)
+                ? null
+                : search.Trim();
+
+
+        PageNumber =
+            pageNumber < 1
+                ? 1
+                : pageNumber;
+
+
+        var today =
+            DateTime.Today;
+
+
+        var query =
+            _context.Masses
+                .Include(x => x.Songs)
+                    .ThenInclude(
+                        x => x.Song
+                    )
+                .AsQueryable();
+
+
+        /*
+         * Date filter.
+         */
+        switch (ActiveFilter)
         {
             case "upcoming":
-                query = query.Where(x => x.MassDate >= today);
+
+                query =
+                    query.Where(
+                        x =>
+                            x.MassDate >= today
+                    );
+
                 break;
 
+
             case "past":
-                query = query.Where(x => x.MassDate < today);
+
+                query =
+                    query.Where(
+                        x =>
+                            x.MassDate < today
+                    );
+
+                break;
+
+
+            case "all":
+
                 break;
         }
 
-        Masses = await query
-            .OrderByDescending(x => x.MassDate)
-            .ToListAsync();
+
+        /*
+         * Search Mass Name + Venue.
+         */
+        if (
+            !string.IsNullOrWhiteSpace(
+                Search
+            )
+        )
+        {
+            var searchTerm =
+                Search.ToLower();
+
+
+            query =
+                query.Where(
+                    x =>
+
+                        x.Name
+                            .ToLower()
+                            .Contains(
+                                searchTerm
+                            )
+
+                        ||
+
+                        (
+                            x.Venue != null
+                            &&
+                            x.Venue
+                                .ToLower()
+                                .Contains(
+                                    searchTerm
+                                )
+                        )
+                );
+        }
+
+
+        /*
+         * Total count before paging.
+         */
+        TotalCount =
+            await query.CountAsync();
+
+
+        TotalPages =
+            TotalCount == 0
+                ? 0
+                : (int)Math.Ceiling(
+                    TotalCount /
+                    (double)PageSize
+                );
+
+
+        /*
+         * Protect against an invalid
+         * page number after filtering.
+         */
+        if (
+            TotalPages > 0 &&
+            PageNumber > TotalPages
+        )
+        {
+            PageNumber =
+                TotalPages;
+        }
+
+
+        /*
+         * Upcoming:
+         * nearest Mass first.
+         *
+         * Past:
+         * newest previous Mass first.
+         *
+         * All:
+         * newest Mass first.
+         */
+        IOrderedQueryable<Mass>
+            orderedQuery;
+
+
+        if (
+            ActiveFilter ==
+            "upcoming"
+        )
+        {
+            orderedQuery =
+                query
+                    .OrderBy(
+                        x =>
+                            x.MassDate
+                    )
+                    .ThenBy(
+                        x =>
+                            x.Name
+                    );
+        }
+        else
+        {
+            orderedQuery =
+                query
+                    .OrderByDescending(
+                        x =>
+                            x.MassDate
+                    )
+                    .ThenBy(
+                        x =>
+                            x.Name
+                    );
+        }
+
+
+        Masses =
+            await orderedQuery
+
+                .Skip(
+                    (PageNumber - 1)
+                    * PageSize
+                )
+
+                .Take(
+                    PageSize
+                )
+
+                .ToListAsync();
     }
 
-    public async Task<IActionResult> OnGetDuplicateAsync(int id)
+
+    public async Task<IActionResult>
+        OnGetDuplicateAsync(
+            int id)
     {
-        var sourceMass = await _context.Masses
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var sourceMass =
+            await _context.Masses
+                .FirstOrDefaultAsync(
+                    x => x.Id == id
+                );
+
 
         if (sourceMass is null)
         {
             return NotFound();
         }
 
-        var sourceSelections = await _context.MassSongs
-            .Where(x => x.MassId == id)
-            .OrderBy(x => x.DisplayOrder)
-            .ToListAsync();
 
-        var sourcePlanItems = await _context.MassPlanItems
-            .Where(x => x.MassId == id)
-            .OrderBy(x => x.DisplayOrder)
-            .ToListAsync();
+        var sourceSelections =
+            await _context.MassSongs
 
-        var newMass = new Mass
+                .Where(
+                    x =>
+                        x.MassId == id
+                )
+
+                .OrderBy(
+                    x =>
+                        x.DisplayOrder
+                )
+
+                .ToListAsync();
+
+
+        var sourcePlanItems =
+            await _context.MassPlanItems
+
+                .Where(
+                    x =>
+                        x.MassId == id
+                )
+
+                .OrderBy(
+                    x =>
+                        x.DisplayOrder
+                )
+
+                .ToListAsync();
+
+
+        var newMass =
+            new Mass
+            {
+                Name =
+                    $"{sourceMass.Name} Copy",
+
+                MassDate =
+                    sourceMass
+                        .MassDate
+                        .AddDays(7),
+
+                Venue =
+                    sourceMass.Venue,
+
+                MassIntroduction =
+                    sourceMass
+                        .MassIntroduction,
+
+                Notes =
+                    sourceMass.Notes,
+
+                PresentationBackgroundPath =
+                    sourceMass
+                        .PresentationBackgroundPath,
+
+                CreatedDate =
+                    DateTime.UtcNow,
+
+                UpdatedDate =
+                    DateTime.UtcNow
+            };
+
+
+        _context.Masses
+            .Add(newMass);
+
+
+        await _context
+            .SaveChangesAsync();
+
+
+        /*
+         * Copy song selections.
+         */
+        foreach (
+            var selection
+            in sourceSelections
+        )
         {
-            Name = $"{sourceMass.Name} Copy",
-            MassDate = sourceMass.MassDate.AddDays(7),
-            Notes = sourceMass.Notes,
-            CreatedDate = DateTime.UtcNow,
-            UpdatedDate = DateTime.UtcNow
-        };
+            _context.MassSongs
+                .Add(
+                    new MassSong
+                    {
+                        MassId =
+                            newMass.Id,
 
-        _context.Masses.Add(newMass);
+                        SongId =
+                            selection.SongId,
 
-        await _context.SaveChangesAsync();
+                        MassPart =
+                            selection.MassPart,
 
-        foreach (var selection in sourceSelections)
-        {
-            _context.MassSongs.Add(
-                new MassSong
-                {
-                    MassId = newMass.Id,
-                    SongId = selection.SongId,
-                    MassPart = selection.MassPart,
-                    DisplayOrder = selection.DisplayOrder
-                }
-            );
+                        DisplayOrder =
+                            selection
+                                .DisplayOrder
+                    }
+                );
         }
 
-        foreach (var item in sourcePlanItems)
+
+        /*
+         * Copy unified presentation
+         * plan order.
+         */
+        foreach (
+            var item
+            in sourcePlanItems
+        )
         {
-            _context.MassPlanItems.Add(
-                new MassPlanItem
-                {
-                    MassId = newMass.Id,
-                    ItemType = item.ItemType,
-                    SongId = item.SongId,
-                    PresentationItemId = item.PresentationItemId,
-                    MassPart = item.MassPart,
-                    DisplayOrder = item.DisplayOrder
-                }
-            );
+            _context.MassPlanItems
+                .Add(
+                    new MassPlanItem
+                    {
+                        MassId =
+                            newMass.Id,
+
+                        ItemType =
+                            item.ItemType,
+
+                        SongId =
+                            item.SongId,
+
+                        PresentationItemId =
+                            item
+                                .PresentationItemId,
+
+                        MassPart =
+                            item.MassPart,
+
+                        DisplayOrder =
+                            item
+                                .DisplayOrder
+                    }
+                );
         }
 
-        await _context.SaveChangesAsync();
+
+        await _context
+            .SaveChangesAsync();
+
 
         return RedirectToPage(
             "Edit",
-            new { id = newMass.Id }
+            new
+            {
+                id = newMass.Id
+            }
         );
     }
 }

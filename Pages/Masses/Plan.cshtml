@@ -1254,8 +1254,8 @@
                 (search || "")
                     .toLowerCase()
                     .trim();
-//length of chars
-            if (query.length < 1) {
+
+            if (query.length < 3) {
                 presentationResults.innerHTML = "";
                 presentationResults.style.display = "none";
                 return;
@@ -1439,7 +1439,7 @@
                         presentationSearch.value
                             .trim();
 
-                    if (value.length > 0) {
+                    if (value.length >= 3) {
                         renderPresentationResults(value);
                     }
 

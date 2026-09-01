@@ -522,7 +522,8 @@ public class PowerPointService
         {
             ApplyMassBackgroundToLayouts(
                 presentationPart,
-                backgroundPath);
+                backgroundPath,
+                mass);
         }
 
         var presentation = presentationPart.Presentation;
@@ -580,7 +581,7 @@ public class PowerPointService
         SetShapeText(
             titleSlidePart.Slide,
             "Subtitle",
-            mass.Notes ?? string.Empty);
+            mass.MassIntroduction ?? string.Empty);
 
         titleSlidePart.Slide.Save();
 
@@ -769,9 +770,12 @@ public class PowerPointService
 
                 foreach (var block in blocks)
                 {
-                    var layoutName = block.Titled
-                        ? "Presentation - Title + Text"
-                        : "Presentation - Text";
+                    var layoutName =
+                        !string.IsNullOrWhiteSpace(item.PowerPointLayout)
+                            ? item.PowerPointLayout.Trim()
+                            : block.Titled
+                                ? "Presentation - Title + Text"
+                                : "Presentation - Text";
 
                     var layoutPart =
                         FindLayout(
@@ -968,83 +972,121 @@ public class PowerPointService
 
         layoutPart.SlideLayout.Save();
     }
-    private static void ApplyMassBackgroundToLayouts(
+private static void ApplyMassBackgroundToLayouts(
     PresentationPart presentationPart,
-    string backgroundPath)
+    string backgroundPath,
+    Mass mass)
+{
+    var titleLayout =
+        FindLayout(
+            presentationPart,
+            "Title");
+
+    var dividerLayout =
+        FindLayout(
+            presentationPart,
+            "Divider");
+
+    var titledSongLayout =
+        FindLayout(
+            presentationPart,
+            "Song - Title + Lyrics");
+
+    var lyricsLayout =
+        FindLayout(
+            presentationPart,
+            "Song - Lyrics");
+
+    var presentationTitleLayout =
+        FindLayout(
+            presentationPart,
+            "Presentation - Title + Text");
+
+    var presentationTextLayout =
+        FindLayout(
+            presentationPart,
+            "Presentation - Text");
+
+    if (titleLayout != null)
     {
-        var titleLayout =
-            FindLayout(presentationPart, "Title");
-
-        var dividerLayout =
-            FindLayout(presentationPart, "Divider");
-
-        var titledSongLayout =
-            FindLayout(
-                presentationPart,
-                "Song - Title + Lyrics");
-
-        var lyricsLayout =
-            FindLayout(
-                presentationPart,
-                "Song - Lyrics");
-
-        var presentationTitleLayout =
-            FindLayout(
-                presentationPart,
-                "Presentation - Title + Text");
-
-        var presentationTextLayout =
-            FindLayout(
-                presentationPart,
-                "Presentation - Text");
-
-
-        if (titleLayout != null)
-        {
-            AddBackgroundToLayout(
-                titleLayout,
-                backgroundPath,
-                0);
-        }
-
-        if (dividerLayout != null)
-        {
-            AddBackgroundToLayout(
-                dividerLayout,
-                backgroundPath,
-                0);
-        }
-
-        if (titledSongLayout != null)
-        {
-            AddBackgroundToLayout(
-                titledSongLayout,
-                backgroundPath,
-                85);
-        }
-
-        if (lyricsLayout != null)
-        {
-            AddBackgroundToLayout(
-                lyricsLayout,
-                backgroundPath,
-                85);
-        }
-
-        if (presentationTitleLayout != null)
-        {
-            AddBackgroundToLayout(
-                presentationTitleLayout,
-                backgroundPath,
-                85);
-        }
-
-        if (presentationTextLayout != null)
-        {
-            AddBackgroundToLayout(
-                presentationTextLayout,
-                backgroundPath,
-                85);
-        }
+        AddBackgroundToLayout(
+            titleLayout,
+            backgroundPath,
+            0);
     }
+
+    if (dividerLayout != null)
+    {
+        AddBackgroundToLayout(
+            dividerLayout,
+            backgroundPath,
+            0);
+    }
+
+    if (titledSongLayout != null)
+    {
+        AddBackgroundToLayout(
+            titledSongLayout,
+            backgroundPath,
+            85);
+    }
+
+    if (lyricsLayout != null)
+    {
+        AddBackgroundToLayout(
+            lyricsLayout,
+            backgroundPath,
+            85);
+    }
+
+    if (presentationTitleLayout != null)
+    {
+        AddBackgroundToLayout(
+            presentationTitleLayout,
+            backgroundPath,
+            85);
+    }
+
+    if (presentationTextLayout != null)
+    {
+        AddBackgroundToLayout(
+            presentationTextLayout,
+            backgroundPath,
+            85);
+    }
+
+    var customLayoutNames =
+        mass.PlanItems
+            .Where(x =>
+                x.ItemType == "Presentation" &&
+                x.PresentationItem != null &&
+                !string.IsNullOrWhiteSpace(
+                    x.PresentationItem.PowerPointLayout))
+            .Select(x =>
+                x.PresentationItem!
+                    .PowerPointLayout!
+                    .Trim())
+            .Distinct(
+                StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+    foreach (var customLayoutName in customLayoutNames)
+    {
+        var customLayout =
+            FindLayout(
+                presentationPart,
+                customLayoutName);
+
+        if (customLayout == null)
+        {
+            throw new InvalidOperationException(
+                $"Layout '{customLayoutName}' was not found.");
+        }
+
+        AddBackgroundToLayout(
+            customLayout,
+            backgroundPath,
+            85);
+    }
+}
 }

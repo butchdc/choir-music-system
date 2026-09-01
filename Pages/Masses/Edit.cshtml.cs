@@ -123,6 +123,8 @@ public class EditModel : PageModel
 
         existing.Name = Mass.Name;
         existing.MassDate = Mass.MassDate;
+        existing.Venue = Mass.Venue;
+        existing.MassIntroduction = Mass.MassIntroduction;
         existing.Notes = Mass.Notes;
         existing.UpdatedDate = DateTime.UtcNow;
 

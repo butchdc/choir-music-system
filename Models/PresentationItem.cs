@@ -13,6 +13,9 @@ public class PresentationItem
     [StringLength(100)]
     public string Type { get; set; } = string.Empty;
 
+    [StringLength(200)]
+    public string? PowerPointLayout { get; set; }
+
     [StringLength(50)]
     public string Language { get; set; } = "English";
 

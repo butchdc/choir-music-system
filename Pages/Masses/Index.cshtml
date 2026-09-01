@@ -39,19 +39,17 @@
             <i class="bi bi-calendar3"></i>
 
             <span>
-                <strong>@Model.Masses.Count</strong>
-                shown
+                <strong>@Model.TotalCount</strong>
+                found
             </span>
 
         </div>
 
-        <a asp-page="Create"
-           class="btn masses-create-button">
+        <a asp-page="Create" class="btn masses-create-button">
 
             <i class="bi bi-plus-lg"></i>
 
             Create Mass
-
         </a>
 
     </div>
@@ -59,7 +57,7 @@
 </div>
 
 
-<!-- MASSES FILTERS -->
+<!-- MASSES TOOLBAR -->
 
 <div class="masses-toolbar mb-3">
 
@@ -70,16 +68,7 @@
 
     <div class="masses-filter-chips">
 
-        <a asp-page="Index"
-           class="masses-filter-chip @(string.IsNullOrEmpty(Model.ActiveFilter) ? "active" : "")">
-
-            <i class="bi bi-collection"></i>
-            All
-
-        </a>
-
-        <a asp-page="Index"
-           asp-route-filter="upcoming"
+        <a asp-page="Index" asp-route-filter="upcoming" asp-route-search="@Model.Search"
            class="masses-filter-chip @(Model.ActiveFilter == "upcoming" ? "active" : "")">
 
             <i class="bi bi-calendar-event"></i>
@@ -87,8 +76,8 @@
 
         </a>
 
-        <a asp-page="Index"
-           asp-route-filter="past"
+
+        <a asp-page="Index" asp-route-filter="past" asp-route-search="@Model.Search"
            class="masses-filter-chip @(Model.ActiveFilter == "past" ? "active" : "")">
 
             <i class="bi bi-clock-history"></i>
@@ -96,9 +85,55 @@
 
         </a>
 
+
+        <a asp-page="Index" asp-route-filter="all" asp-route-search="@Model.Search"
+           class="masses-filter-chip @(Model.ActiveFilter == "all" ? "active" : "")">
+
+            <i class="bi bi-collection"></i>
+            All
+
+        </a>
+
     </div>
 
+
+    <form method="get" asp-page="Index" class="masses-search-form">
+
+        <input type="hidden" name="filter" value="@Model.ActiveFilter" />
+
+        <div class="input-group">
+
+            <span class="input-group-text">
+                <i class="bi bi-search"></i>
+            </span>
+
+            <input type="search" name="search" value="@Model.Search" class="form-control"
+                   placeholder="Search Mass name or venue..." aria-label="Search Masses" />
+
+            @if (!string.IsNullOrWhiteSpace(Model.Search))
+            {
+                <a asp-page="Index" asp-route-filter="@Model.ActiveFilter" class="btn btn-outline-secondary"
+                   title="Clear search">
+
+                    <i class="bi bi-x-lg"></i>
+
+                </a>
+            }
+
+            <button type="submit" class="btn btn-outline-primary">
+
+                Search
+
+            </button>
+
+        </div>
+
+    </form>
+
 </div>
+
+
+<!-- EMPTY STATE -->
 
 @if (Model.Masses.Count == 0)
 {
@@ -108,32 +143,58 @@
             <i class="bi bi-calendar2-plus"></i>
         </div>
 
-        <h4>No Masses found</h4>
-
-        <p>
-            @if (Model.ActiveFilter == "upcoming")
-            {
-                <span>There are no upcoming Masses planned.</span>
-            }
-            else if (Model.ActiveFilter == "past")
-            {
-                <span>There are no past Masses to display.</span>
-            }
-            else
-            {
-                <span>Create your first Mass and start planning the music.</span>
-            }
-        </p>
-
-        @if (string.IsNullOrEmpty(Model.ActiveFilter))
+        @if (!string.IsNullOrWhiteSpace(Model.Search))
         {
-            <a asp-page="Create"
-               class="btn btn-primary">
+            <h4>No matching Masses</h4>
 
-                <i class="bi bi-plus-lg me-1"></i>
-                Create Mass
+            <p>
+                No Masses matched
+                <strong>@Model.Search</strong>
+                in this view.
+            </p>
+
+            <a asp-page="Index" asp-route-filter="@Model.ActiveFilter" class="btn btn-outline-primary">
+
+                <i class="bi bi-x-lg me-1"></i>
+                Clear Search
 
             </a>
+        }
+        else
+        {
+            <h4>No Masses found</h4>
+
+            <p>
+                @if (Model.ActiveFilter == "upcoming")
+                {
+                    <span>
+                        There are no upcoming Masses planned.
+                    </span>
+                }
+                else if (Model.ActiveFilter == "past")
+                {
+                    <span>
+                        There are no past Masses to display.
+                    </span>
+                }
+                else
+                {
+                    <span>
+                        Create your first Mass and start planning the music.
+                    </span>
+                }
+            </p>
+
+            @if (Model.ActiveFilter == "upcoming" ||
+                 Model.ActiveFilter == "all")
+            {
+                <a asp-page="Create" class="btn btn-primary">
+
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Create Mass
+
+                </a>
+            }
         }
 
     </div>
@@ -191,9 +252,7 @@ else
 
                             <div class="mass-list-title-row">
 
-                                <a asp-page="Plan"
-                                   asp-route-id="@mass.Id"
-                                   class="mass-list-title">
+                                <a asp-page="Plan" asp-route-id="@mass.Id" class="mass-list-title">
 
                                     @mass.Name
 
@@ -231,6 +290,16 @@ else
                                 </span>
 
 
+                                @if (!string.IsNullOrWhiteSpace(mass.Venue))
+                                {
+                                    <span>
+                                        <i class="bi bi-geo-alt"></i>
+
+                                        @mass.Venue
+                                    </span>
+                                }
+
+
                                 <span>
                                     <i class="bi bi-music-note-list"></i>
 
@@ -251,9 +320,7 @@ else
 
                         <!-- PRIMARY ACTION -->
 
-                        <a asp-page="Plan"
-                           asp-route-id="@mass.Id"
-                           class="btn mass-plan-button">
+                        <a asp-page="Plan" asp-route-id="@mass.Id" class="btn mass-plan-button">
 
                             <i class="bi bi-music-note-list"></i>
 
@@ -284,53 +351,44 @@ else
                             {
                                 var songs = part.ToList();
 
+                                var partName =
+                                    string.IsNullOrWhiteSpace(part.Key)
+                                        ? "Other"
+                                        : part.Key;
+
+                                var extraId =
+                                    $"extra-{mass.Id}-{partName.Replace(" ", "-")}";
+
+
                                 <div class="mass-lineup-chip">
 
                                     <span class="mass-lineup-chip-part">
-                                        @part.Key
+                                        @partName
                                     </span>
 
-                                    <a asp-page="/MusicLibrary/View"
-                                       asp-route-id="@songs[0].Song.Id"
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       class="mass-lineup-chip-song">
 
-                                        @songs[0].Song.Title
-
-                                    </a>
+                                    <span class="mass-lineup-chip-song">
+                                        @songs[0].Song!.Title
+                                    </span>
 
 
                                     @if (songs.Count > 1)
                                     {
-                                        var extraId =
-                                            $"extra-{mass.Id}-{part.Key.Replace(" ", "-")}";
-
-                                        <button type="button"
-                                                class="mass-lineup-chip-more"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#@extraId"
-                                                aria-expanded="false"
-                                                aria-controls="@extraId">
+                                        <button type="button" class="mass-lineup-chip-more" data-bs-toggle="collapse"
+                                                data-bs-target="#@extraId" aria-expanded="false" aria-controls="@extraId">
 
                                             +@(songs.Count - 1)
 
                                         </button>
 
 
-                                        <div class="collapse mass-lineup-chip-extra"
-                                             id="@extraId">
+                                        <div class="collapse mass-lineup-chip-extra" id="@extraId">
 
                                             @foreach (var extraSong in songs.Skip(1))
                                             {
-                                                <a asp-page="/MusicLibrary/View"
-                                                   asp-route-id="@extraSong.Song.Id"
-                                                   target="_blank"
-                                                   rel="noopener noreferrer">
-
-                                                    @extraSong.Song.Title
-
-                                                </a>
+                                                <span>
+                                                    @extraSong.Song!.Title
+                                                </span>
                                             }
 
                                         </div>
@@ -349,11 +407,8 @@ else
 
                         <div class="mass-list-output-actions">
 
-                            <a asp-page="MusicPack"
-                               asp-route-id="@mass.Id"
-                               class="mass-output-button"
-                               title="Generate Music Pack"
-                               data-bs-toggle="tooltip">
+                            <a asp-page="MusicPack" asp-route-id="@mass.Id" class="mass-output-button"
+                               title="Generate Music Pack" data-bs-toggle="tooltip">
 
                                 <i class="bi bi-file-earmark-pdf"></i>
                                 Music Pack
@@ -361,12 +416,8 @@ else
                             </a>
 
 
-                            <a asp-page="./Index"
-                               asp-page-handler="GeneratePpt"
-                               asp-route-id="@mass.Id"
-                               class="mass-output-button"
-                               title="Generate PowerPoint"
-                               data-bs-toggle="tooltip">
+                            <a asp-page="./Index" asp-page-handler="GeneratePpt" asp-route-id="@mass.Id"
+                               class="mass-output-button" title="Generate PowerPoint" data-bs-toggle="tooltip">
 
                                 <i class="bi bi-file-earmark-slides"></i>
                                 PowerPoint
@@ -378,21 +429,16 @@ else
 
                         <div class="mass-list-management-actions">
 
-                            <a asp-page="Edit"
-                               asp-route-id="@mass.Id"
-                               class="btn btn-sm btn-outline-secondary table-action"
-                               title="Edit Mass"
-                               data-bs-toggle="tooltip">
+                            <a asp-page="Edit" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-secondary table-action"
+                               title="Edit Mass" data-bs-toggle="tooltip">
 
                                 <i class="bi bi-pencil"></i>
 
                             </a>
 
 
-                            <a asp-page="/MassTemplates/CreateFromMass"
-                               asp-route-massId="@mass.Id"
-                               class="btn btn-sm btn-outline-secondary table-action"
-                               title="Save as Template"
+                            <a asp-page="/MassTemplates/CreateFromMass" asp-route-massId="@mass.Id"
+                               class="btn btn-sm btn-outline-secondary table-action" title="Save as Template"
                                data-bs-toggle="tooltip">
 
                                 <i class="bi bi-journal-plus"></i>
@@ -400,11 +446,8 @@ else
                             </a>
 
 
-                            <a asp-page="Index"
-                               asp-page-handler="Duplicate"
-                               asp-route-id="@mass.Id"
-                               class="btn btn-sm btn-outline-success table-action"
-                               title="Duplicate Mass"
+                            <a asp-page="Index" asp-page-handler="Duplicate" asp-route-id="@mass.Id"
+                               class="btn btn-sm btn-outline-success table-action" title="Duplicate Mass"
                                data-bs-toggle="tooltip">
 
                                 <i class="bi bi-copy"></i>
@@ -412,11 +455,8 @@ else
                             </a>
 
 
-                            <a asp-page="Delete"
-                               asp-route-id="@mass.Id"
-                               class="btn btn-sm btn-outline-danger table-action"
-                               title="Delete Mass"
-                               data-bs-toggle="tooltip">
+                            <a asp-page="Delete" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-danger table-action"
+                               title="Delete Mass" data-bs-toggle="tooltip">
 
                                 <i class="bi bi-trash"></i>
 
@@ -432,4 +472,116 @@ else
         }
 
     </div>
+
+
+    <!-- PAGINATION -->
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="mt-4" aria-label="Masses pagination">
+
+            <ul class="pagination justify-content-center">
+
+                <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
+
+                    <a class="page-link" asp-page="Index" asp-route-filter="@Model.ActiveFilter"
+                       asp-route-search="@Model.Search" asp-route-pageNumber="@(Model.PageNumber - 1)">
+
+                        <i class="bi bi-chevron-left"></i>
+                        Previous
+
+                    </a>
+
+                </li>
+
+
+                @{
+                    var startPage = Math.Max(1, Model.PageNumber - 2);
+                    var endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+                }
+
+
+                @if (startPage > 1)
+                {
+                    <li class="page-item">
+
+                        <a class="page-link" asp-page="Index" asp-route-filter="@Model.ActiveFilter"
+                           asp-route-search="@Model.Search" asp-route-pageNumber="1">
+
+                            1
+
+                        </a>
+
+                    </li>
+
+                    @if (startPage > 2)
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">…</span>
+                        </li>
+                    }
+                }
+
+
+                @for (var pageItem = startPage; pageItem <= endPage; pageItem++)
+                {
+                    <li class="page-item @(pageItem == Model.PageNumber ? "active" : "")">
+
+                        <a class="page-link" asp-page="Index" asp-route-filter="@Model.ActiveFilter"
+                           asp-route-search="@Model.Search" asp-route-pageNumber="@pageItem">
+
+                            @pageItem
+
+                        </a>
+
+                    </li>
+                }
+
+
+                @if (endPage < Model.TotalPages)
+                {
+                    @if (endPage < Model.TotalPages - 1)
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">…</span>
+                        </li>
+                    }
+
+                    <li class="page-item">
+
+                        <a class="page-link" asp-page="Index" asp-route-filter="@Model.ActiveFilter"
+                           asp-route-search="@Model.Search" asp-route-pageNumber="@Model.TotalPages">
+
+                            @Model.TotalPages
+
+                        </a>
+
+                    </li>
+                }
+
+
+                <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
+
+                    <a class="page-link" asp-page="Index" asp-route-filter="@Model.ActiveFilter"
+                       asp-route-search="@Model.Search" asp-route-pageNumber="@(Model.PageNumber + 1)">
+
+                        Next
+                        <i class="bi bi-chevron-right"></i>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+
+        <div class="text-center text-muted small mb-4">
+
+            Page @Model.PageNumber of @Model.TotalPages
+            · @Model.TotalCount Mass@(Model.TotalCount == 1 ? "" : "es")
+
+        </div>
+    }
 }
