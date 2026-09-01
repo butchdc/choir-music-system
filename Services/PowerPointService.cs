@@ -554,55 +554,73 @@ public class PowerPointService
         }
 
         uint nextSlideId = 256;
-
-        var titleLayout =
-    FindLayout(presentationPart, "Title")
-    ?? throw new InvalidOperationException(
-        "Layout 'Title' was not found.");
-
-        var titleSlidePart =
-            presentationPart.AddNewPart<SlidePart>();
-
-        titleSlidePart.Slide =
-            CreateSlideFromLayout(titleLayout);
-
-        titleSlidePart.AddPart(titleLayout);
-
-        SetShapeText(
-          titleSlidePart.Slide,
-          "Title",
-          mass.Name);
-
-        SetShapeText(
-            titleSlidePart.Slide,
-            "Date",
-            mass.MassDate.ToString("dddd, d MMMM yyyy"));
-
-        SetShapeText(
-            titleSlidePart.Slide,
-            "Subtitle",
-            mass.MassIntroduction ?? string.Empty);
-
-        titleSlidePart.Slide.Save();
-
-        slideIdList.Append(
-            new P.SlideId
-            {
-                Id = nextSlideId++,
-                RelationshipId =
-                    presentationPart.GetIdOfPart(titleSlidePart)
-            });
         string? currentMassPart = null;
 
         foreach (var planItem in mass.PlanItems
                      .OrderBy(x => x.DisplayOrder))
         {
+
+            // -------------------------------------------------
+            // MASS TITLE
+            // -------------------------------------------------
+
+            if (string.Equals(
+                    planItem.ItemType,
+                    "MassTitle",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                var titleLayout =
+                    FindLayout(
+                        presentationPart,
+                        "Title")
+                    ?? throw new InvalidOperationException(
+                        "Layout 'Title' was not found.");
+
+                var titleSlidePart =
+                    presentationPart.AddNewPart<SlidePart>();
+
+                titleSlidePart.Slide =
+                    CreateSlideFromLayout(titleLayout);
+
+                titleSlidePart.AddPart(titleLayout);
+
+                SetShapeText(
+                    titleSlidePart.Slide,
+                    "Title",
+                    mass.Name);
+
+                SetShapeText(
+                    titleSlidePart.Slide,
+                    "Date",
+                    mass.MassDate.ToString(
+                        "dddd, d MMMM yyyy"));
+
+                SetShapeText(
+                    titleSlidePart.Slide,
+                    "Subtitle",
+                    mass.MassIntroduction ?? string.Empty);
+
+                titleSlidePart.Slide.Save();
+
+                slideIdList.Append(
+                    new P.SlideId
+                    {
+                        Id = nextSlideId++,
+                        RelationshipId =
+                            presentationPart.GetIdOfPart(
+                                titleSlidePart)
+                    });
+
+                currentMassPart = null;
+
+                continue;
+            }
             // -------------------------------------------------
             // Divider when Mass Part changes
             // -------------------------------------------------
 
             var needsDivider =
-                planItem.ItemType == "Presentation" ||
+                !string.IsNullOrWhiteSpace(planItem.MassPart) &&
                 !string.Equals(
                     currentMassPart,
                     planItem.MassPart,
@@ -972,121 +990,121 @@ public class PowerPointService
 
         layoutPart.SlideLayout.Save();
     }
-private static void ApplyMassBackgroundToLayouts(
-    PresentationPart presentationPart,
-    string backgroundPath,
-    Mass mass)
-{
-    var titleLayout =
-        FindLayout(
-            presentationPart,
-            "Title");
-
-    var dividerLayout =
-        FindLayout(
-            presentationPart,
-            "Divider");
-
-    var titledSongLayout =
-        FindLayout(
-            presentationPart,
-            "Song - Title + Lyrics");
-
-    var lyricsLayout =
-        FindLayout(
-            presentationPart,
-            "Song - Lyrics");
-
-    var presentationTitleLayout =
-        FindLayout(
-            presentationPart,
-            "Presentation - Title + Text");
-
-    var presentationTextLayout =
-        FindLayout(
-            presentationPart,
-            "Presentation - Text");
-
-    if (titleLayout != null)
+    private static void ApplyMassBackgroundToLayouts(
+        PresentationPart presentationPart,
+        string backgroundPath,
+        Mass mass)
     {
-        AddBackgroundToLayout(
-            titleLayout,
-            backgroundPath,
-            0);
-    }
-
-    if (dividerLayout != null)
-    {
-        AddBackgroundToLayout(
-            dividerLayout,
-            backgroundPath,
-            0);
-    }
-
-    if (titledSongLayout != null)
-    {
-        AddBackgroundToLayout(
-            titledSongLayout,
-            backgroundPath,
-            85);
-    }
-
-    if (lyricsLayout != null)
-    {
-        AddBackgroundToLayout(
-            lyricsLayout,
-            backgroundPath,
-            85);
-    }
-
-    if (presentationTitleLayout != null)
-    {
-        AddBackgroundToLayout(
-            presentationTitleLayout,
-            backgroundPath,
-            85);
-    }
-
-    if (presentationTextLayout != null)
-    {
-        AddBackgroundToLayout(
-            presentationTextLayout,
-            backgroundPath,
-            85);
-    }
-
-    var customLayoutNames =
-        mass.PlanItems
-            .Where(x =>
-                x.ItemType == "Presentation" &&
-                x.PresentationItem != null &&
-                !string.IsNullOrWhiteSpace(
-                    x.PresentationItem.PowerPointLayout))
-            .Select(x =>
-                x.PresentationItem!
-                    .PowerPointLayout!
-                    .Trim())
-            .Distinct(
-                StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-    foreach (var customLayoutName in customLayoutNames)
-    {
-        var customLayout =
+        var titleLayout =
             FindLayout(
                 presentationPart,
-                customLayoutName);
+                "Title");
 
-        if (customLayout == null)
+        var dividerLayout =
+            FindLayout(
+                presentationPart,
+                "Divider");
+
+        var titledSongLayout =
+            FindLayout(
+                presentationPart,
+                "Song - Title + Lyrics");
+
+        var lyricsLayout =
+            FindLayout(
+                presentationPart,
+                "Song - Lyrics");
+
+        var presentationTitleLayout =
+            FindLayout(
+                presentationPart,
+                "Presentation - Title + Text");
+
+        var presentationTextLayout =
+            FindLayout(
+                presentationPart,
+                "Presentation - Text");
+
+        if (titleLayout != null)
         {
-            throw new InvalidOperationException(
-                $"Layout '{customLayoutName}' was not found.");
+            AddBackgroundToLayout(
+                titleLayout,
+                backgroundPath,
+                0);
         }
 
-        AddBackgroundToLayout(
-            customLayout,
-            backgroundPath,
-            85);
+        if (dividerLayout != null)
+        {
+            AddBackgroundToLayout(
+                dividerLayout,
+                backgroundPath,
+                0);
+        }
+
+        if (titledSongLayout != null)
+        {
+            AddBackgroundToLayout(
+                titledSongLayout,
+                backgroundPath,
+                85);
+        }
+
+        if (lyricsLayout != null)
+        {
+            AddBackgroundToLayout(
+                lyricsLayout,
+                backgroundPath,
+                85);
+        }
+
+        if (presentationTitleLayout != null)
+        {
+            AddBackgroundToLayout(
+                presentationTitleLayout,
+                backgroundPath,
+                85);
+        }
+
+        if (presentationTextLayout != null)
+        {
+            AddBackgroundToLayout(
+                presentationTextLayout,
+                backgroundPath,
+                85);
+        }
+
+        var customLayoutNames =
+            mass.PlanItems
+                .Where(x =>
+                    x.ItemType == "Presentation" &&
+                    x.PresentationItem != null &&
+                    !string.IsNullOrWhiteSpace(
+                        x.PresentationItem.PowerPointLayout))
+                .Select(x =>
+                    x.PresentationItem!
+                        .PowerPointLayout!
+                        .Trim())
+                .Distinct(
+                    StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+        foreach (var customLayoutName in customLayoutNames)
+        {
+            var customLayout =
+                FindLayout(
+                    presentationPart,
+                    customLayoutName);
+
+            if (customLayout == null)
+            {
+                throw new InvalidOperationException(
+                    $"Layout '{customLayoutName}' was not found.");
+            }
+
+            AddBackgroundToLayout(
+                customLayout,
+                backgroundPath,
+                85);
+        }
     }
-}
 }

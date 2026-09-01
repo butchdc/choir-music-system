@@ -20,9 +20,7 @@
         "Communion",
         "Recessional"
     };
-}
 
-@{
     var plannedSongCount = Model.Selections
         .Count(x => x.SongId.HasValue);
 
@@ -38,1020 +36,1342 @@
     var totalMassParts = massParts.Length;
 }
 
-
-
 <style>
-/* =========================================================
-   COMPACT / COLLAPSIBLE MASS PARTS
-   ========================================================= */
+    /* =========================================================
+       PAGE
+       ========================================================= */
 
-.mass-parts-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-}
+    .mass-plan-page {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding-bottom: 2rem;
+        font-family:
+            Inter,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Helvetica,
+            Arial,
+            sans-serif;
+    }
 
-.mass-part {
-    position: relative;
-    overflow: visible;
-}
 
-.mass-part-header {
-    min-height: 68px;
-    cursor: pointer;
-    user-select: none;
-}
+    /* =========================================================
+       TABS
+       ========================================================= */
 
-.mass-part-header::after {
-    content: "\F282";
-    margin-left: 0.75rem;
-    color: #94a3b8;
-    font-family: "bootstrap-icons";
-    font-size: 0.78rem;
-    transition: transform 0.18s ease, color 0.18s ease;
-}
+    .mass-plan-tabs {
+        display: flex;
+        align-items: center;
+        gap: .35rem;
 
-.mass-part-header:hover::after {
-    color: #475569;
-}
+        margin-bottom: 1rem;
+        padding: .3rem;
 
-.mass-part.is-open .mass-part-header::after {
-    transform: rotate(180deg);
-}
+        border: 1px solid #dfe7f1;
+        border-radius: 12px;
 
-.mass-part-body {
-    display: none;
-    border-top: 1px solid #e2e8f0;
-}
+        background: #f8fafc;
+    }
 
-.mass-part.is-open .mass-part-body {
-    display: block;
-}
+    .mass-plan-tab {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: .4rem;
 
-.mass-part.is-open {
-    z-index: 20;
-}
+        min-height: 42px;
 
-.mass-part.has-open-results {
-    z-index: 100;
-}
+        padding: .55rem .95rem;
 
-.mass-part-header:focus-visible {
-    outline: 2px solid #93c5fd;
-    outline-offset: -2px;
-}
+        border: 0;
+        border-radius: 9px;
 
-@@media (max-width: 640px) {
+        background: transparent;
+
+        color: #64748b;
+
+        font-size: .75rem;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+            background .15s ease,
+            color .15s ease,
+            box-shadow .15s ease;
+    }
+
+    .mass-plan-tab:hover {
+        color: #17345f;
+        background: #fff;
+    }
+
+    .mass-plan-tab.is-active {
+        color: #17345f;
+        background: #fff;
+
+        box-shadow:
+            0 2px 8px rgba(15, 23, 42, .07);
+    }
+
+    .mass-plan-tab .tab-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 22px;
+        height: 22px;
+
+        padding: 0 .35rem;
+
+        border-radius: 999px;
+
+        background: #eef2f7;
+        color: #52657d;
+
+        font-size: .62rem;
+        font-weight: 800;
+    }
+
+    .mass-plan-tab.is-active .tab-count {
+        background: #eaf2ff;
+        color: #2563eb;
+    }
+
+    .mass-plan-tab-panel {
+        display: none;
+    }
+
+    .mass-plan-tab-panel.is-active {
+        display: block;
+    }
+
+
+    /* =========================================================
+       SECTION HEADINGS
+       ========================================================= */
+
+    .mass-plan-column-heading {
+        margin: 0 0 .8rem;
+    }
+
+    .mass-plan-column-heading h2 {
+        margin: 0;
+
+        color: #17345f;
+
+        font-size: 1.05rem;
+        font-weight: 750;
+        letter-spacing: -.01em;
+    }
+
+    .mass-plan-column-heading p {
+        margin: .15rem 0 0;
+
+        color: #64748b;
+
+        font-size: .76rem;
+    }
+
+
+    /* =========================================================
+       MUSIC PLAN GRID
+       ========================================================= */
+
+    .mass-parts-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: .65rem;
+
+        align-items: start;
+    }
+
+    .mass-part {
+        position: relative;
+
+        overflow: visible;
+
+        min-width: 0;
+
+        border-radius: 11px;
+    }
+
+    .mass-part.is-open {
+        grid-column: 1 / -1;
+
+        z-index: 20;
+    }
+
+    .mass-part.has-open-results {
+        z-index: 100;
+    }
+
+
+    /* =========================================================
+       MASS PART HEADER
+       ========================================================= */
+
     .mass-part-header {
-        min-height: 60px;
-    }
-}
+        display: flex;
+        align-items: center;
 
+        min-height: 72px;
 
-/* =========================================================
-   PLAN MASS - TWO COLUMN WORKSPACE
-   ========================================================= */
-.mass-plan-page {
-    max-width: 1500px;
-    margin: 0 auto;
-    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
+        padding: .65rem .75rem;
 
-.mass-plan-workspace {
-    display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
-    gap: 1.25rem;
-    align-items: start;
-}
-
-.mass-plan-left,
-.mass-plan-right {
-    min-width: 0;
-}
-
-.mass-plan-right {
-    position: sticky;
-    top: 1rem;
-}
-
-.mass-plan-column-heading {
-    margin: 0 0 .7rem;
-}
-
-.mass-plan-column-heading h2 {
-    margin: 0;
-    color: #17345f;
-    font-size: 1.05rem;
-    font-weight: 750;
-    letter-spacing: -.01em;
-}
-
-.mass-plan-column-heading p {
-    margin: .15rem 0 0;
-    color: #64748b;
-    font-size: .76rem;
-}
-
-/* Make the selected-song typography match Mass Presentation Order. */
-.mass-plan-page .mass-part-title,
-.mass-plan-page .music-search,
-.mass-plan-page .presentation-item-title {
-    font-family: inherit;
-    color: #17345f;
-    font-weight: 700;
-    letter-spacing: -.01em;
-}
-
-.mass-plan-page .music-search {
-    font-size: .82rem;
-}
-
-.mass-plan-page .mass-part-title,
-.mass-plan-page .presentation-item-title {
-    font-size: .82rem;
-}
-
-/* Compact the left-side rows so all Mass parts are easy to scan. */
-.mass-plan-page .mass-parts-grid {
-    gap: .45rem;
-}
-
-.mass-plan-page .mass-part {
-    border-radius: 10px;
-}
-
-.mass-plan-page .mass-part-header {
-    min-height: 58px;
-    padding-top: .55rem;
-    padding-bottom: .55rem;
-}
-
-.mass-plan-page .mass-part-body {
-    padding-top: .65rem;
-    padding-bottom: .65rem;
-}
-
-/* Keep the right column compact inside the workspace. */
-.mass-plan-page .presentation-order-section,
-.mass-plan-page .add-presentation-section {
-    margin-top: 0;
-}
-
-.mass-plan-page .add-presentation-section {
-    margin-top: .85rem;
-}
-
-.mass-plan-page .presentation-order-heading h3,
-.mass-plan-page .add-presentation-header h3 {
-    font-family: inherit;
-}
-
-.mass-plan-page .presentation-timeline-item {
-    min-width: 0;
-    cursor: grab;
-    transition: opacity .15s ease, transform .15s ease, box-shadow .15s ease;
-}
-
-.mass-plan-page .presentation-timeline-item:active {
-    cursor: grabbing;
-}
-
-.mass-plan-page .presentation-timeline-item.is-dragging {
-    opacity: .45;
-    transform: scale(.99);
-}
-
-.mass-plan-page .presentation-timeline-item.drag-over {
-    box-shadow: 0 -3px 0 #2563eb;
-}
-
-.mass-plan-page .presentation-drag-handle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 auto;
-    width: 24px;
-    color: #94a3b8;
-    cursor: grab;
-}
-
-.mass-plan-page .presentation-drag-handle i {
-    font-size: 1rem;
-}
-
-.mass-plan-page .presentation-timeline-item:hover .presentation-drag-handle {
-    color: #475569;
-}
-
-.mass-plan-bottom-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 1.1rem;
-    padding: .75rem .85rem;
-    position: sticky;
-    bottom: .75rem;
-    z-index: 30;
-    background: rgba(255,255,255,.96);
-    border: 1px solid #dce5ef;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(15,23,42,.09);
-    backdrop-filter: blur(8px);
-}
-
-.mass-plan-bottom-info {
-    display: flex;
-    align-items: center;
-    gap: .45rem;
-    color: #64748b;
-    font-size: .72rem;
-}
-
-.mass-plan-bottom-info strong {
-    color: #17345f;
-}
-
-.mass-plan-bottom-buttons {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-}
-
-.mass-plan-bottom-buttons .music-plan-save {
-    min-width: 180px;
-}
-
-@@media (max-width: 1100px) {
-    .mass-plan-workspace {
-        grid-template-columns: 1fr;
+        cursor: pointer;
+        user-select: none;
     }
 
-    .mass-plan-right {
-        position: static;
-    }
-}
+    .mass-part-header::after {
+        content: "\F282";
 
-@@media (max-width: 640px) {
-    .mass-plan-bottom-actions {
-        align-items: stretch;
-        flex-direction: column;
+        flex: 0 0 auto;
+
+        margin-left: .65rem;
+
+        color: #94a3b8;
+
+        font-family: "bootstrap-icons";
+        font-size: .72rem;
+
+        transition:
+            transform .18s ease,
+            color .18s ease;
     }
 
-    .mass-plan-bottom-buttons {
-        width: 100%;
+    .mass-part-header:hover::after {
+        color: #475569;
     }
 
-    .mass-plan-bottom-buttons .btn {
+    .mass-part.is-open .mass-part-header::after {
+        transform: rotate(180deg);
+    }
+
+    .mass-part-header:focus-visible {
+        outline: 2px solid #93c5fd;
+        outline-offset: -2px;
+    }
+
+
+    /* =========================================================
+       MASS PART HEADING
+       ========================================================= */
+
+    .mass-part-heading {
         flex: 1;
+        min-width: 0;
     }
-}
 
+    .mass-part-heading-main {
+        display: flex;
+        align-items: center;
+
+        gap: .55rem;
+
+        min-width: 0;
+    }
+
+    .mass-part-heading-content {
+        flex: 1;
+
+        min-width: 0;
+    }
+
+    .mass-part-number {
+        width: 28px;
+        height: 28px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        flex: 0 0 28px;
+
+        color: #52657d;
+        background: #f1f5f9;
+
+        border-radius: 8px;
+
+        font-size: .62rem;
+        font-weight: 800;
+    }
+
+    .mass-part.is-planned .mass-part-number {
+        color: #17765c;
+        background: #e7f7f1;
+    }
+
+    .mass-part-icon-inline {
+        width: 30px;
+        height: 30px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        flex: 0 0 30px;
+
+        border-radius: 8px;
+
+        color: #60758f;
+        background: #f1f5f9;
+
+        font-size: .72rem;
+    }
+
+    .mass-part.is-planned .mass-part-icon-inline {
+        color: #188267;
+        background: #e9f7f2;
+    }
+
+    .mass-part-title {
+        overflow: hidden;
+
+        color: #17345f;
+
+        font-family: inherit;
+
+        font-size: .78rem;
+        font-weight: 750;
+        letter-spacing: -.01em;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       COLLAPSED SONG PREVIEW
+       ========================================================= */
+
+    .mass-part-summary {
+        min-width: 0;
+
+        margin-top: .14rem;
+    }
+
+    .mass-part-summary-song {
+        overflow: hidden;
+
+        color: #5d7089;
+
+        font-size: .66rem;
+        font-weight: 600;
+        line-height: 1.35;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .mass-part-summary-empty {
+        color: #9aa7b7;
+
+        font-size: .63rem;
+        font-weight: 500;
+    }
+
+    .mass-part-summary-more {
+        display: inline-block;
+
+        margin-top: .05rem;
+
+        color: #8391a3;
+
+        font-size: .59rem;
+        font-weight: 650;
+    }
+
+
+    /* =========================================================
+       EXPANDED MASS PART
+       ========================================================= */
+
+    .mass-part-body {
+        display: none;
+
+        padding: .7rem .8rem;
+
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .mass-part.is-open .mass-part-body {
+        display: block;
+    }
+
+    .mass-part.is-open .mass-part-header {
+        min-height: 62px;
+    }
+
+    .mass-part.is-open .mass-part-summary {
+        opacity: .7;
+    }
+
+
+    /* =========================================================
+       MUSIC SEARCH TYPOGRAPHY
+       ========================================================= */
+
+    .mass-plan-page .music-search,
+    .mass-plan-page .presentation-item-title {
+        font-family: inherit;
+
+        color: #17345f;
+
+        font-weight: 700;
+        letter-spacing: -.01em;
+    }
+
+    .mass-plan-page .music-search {
+        font-size: .82rem;
+    }
+
+    .mass-plan-page .presentation-item-title {
+        font-size: .82rem;
+    }
+
+
+    /* =========================================================
+       MUSIC PLAN ACTIONS
+       ========================================================= */
+
+    .music-tab-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 1rem;
+
+        margin-top: 1rem;
+        padding: .75rem .85rem;
+
+        border: 1px solid #dce5ef;
+        border-radius: 12px;
+
+        background: #fff;
+    }
+
+    .music-tab-actions-info {
+        display: flex;
+        align-items: center;
+
+        gap: .45rem;
+
+        color: #64748b;
+
+        font-size: .72rem;
+    }
+
+    .music-tab-actions-info strong {
+        color: #17345f;
+    }
+
+    .music-tab-actions-buttons {
+        display: flex;
+        align-items: center;
+
+        gap: .5rem;
+    }
+
+    .music-tab-actions-buttons .music-plan-save {
+        min-width: 180px;
+    }
+
+
+    /* =========================================================
+       PRESENTATION PLAN
+       ========================================================= */
+
+    .presentation-workspace {
+        display: flex;
+        flex-direction: column;
+
+        gap: 1rem;
+    }
+
+    /*
+       Add Presentation goes first.
+    */
+
+    .presentation-workspace-side {
+        order: 1;
+
+        width: 100%;
+        min-width: 0;
+    }
+
+    /*
+       Presentation Order goes second.
+    */
+
+    .presentation-workspace-main {
+        order: 2;
+
+        width: 100%;
+        min-width: 0;
+    }
+
+    .presentation-order-section,
+    .add-presentation-section {
+        margin-top: 0;
+    }
+
+
+    /* =========================================================
+       ADD PRESENTATION - HORIZONTAL LAYOUT
+       ========================================================= */
+
+    .presentation-workspace-side .add-presentation-section {
+        overflow: visible;
+    }
+
+    .presentation-workspace-side .add-presentation-fields {
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1fr) 260px auto;
+
+        gap: .65rem;
+
+        align-items: end;
+    }
+
+    .presentation-workspace-side .presentation-field-main {
+        min-width: 0;
+    }
+
+    .presentation-workspace-side .add-presentation-action {
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .presentation-workspace-side .add-presentation-button {
+        min-width: 110px;
+
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+       PRESENTATION SEARCH RESULTS
+       ========================================================= */
+
+    .presentation-picker {
+        position: relative;
+    }
+
+    .presentation-search-results {
+        display: none;
+
+        position: absolute;
+
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+
+        z-index: 5000;
+
+        max-height: 320px;
+
+        overflow-y: auto;
+
+        border: 1px solid #dce4ed;
+        border-radius: 9px;
+
+        background: #fff;
+
+        box-shadow:
+            0 12px 28px rgba(15, 23, 42, .14);
+    }
+
+
+    /* =========================================================
+       PRESENTATION ORDER DRAGGING
+       ========================================================= */
+
+    .presentation-timeline-item {
+        min-width: 0;
+
+        cursor: grab;
+
+        transition:
+            opacity .15s ease,
+            transform .15s ease,
+            box-shadow .15s ease;
+    }
+
+    .presentation-timeline-item:active {
+        cursor: grabbing;
+    }
+
+    .presentation-timeline-item.is-dragging {
+        opacity: .45;
+
+        transform: scale(.99);
+    }
+
+    .presentation-timeline-item.drag-over {
+        box-shadow:
+            0 -3px 0 #2563eb;
+    }
+
+    .presentation-drag-handle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        flex: 0 0 auto;
+
+        width: 24px;
+
+        color: #94a3b8;
+
+        cursor: grab;
+    }
+
+    .presentation-drag-handle i {
+        font-size: 1rem;
+    }
+
+    .presentation-timeline-item:hover .presentation-drag-handle {
+        color: #475569;
+    }
+
+
+    /* =========================================================
+       MASS TITLE
+       ========================================================= */
+
+    .presentation-timeline-item.is-mass-title {
+        border-left: 3px solid #d9a238;
+    }
+
+    .presentation-timeline-item.is-mass-title .presentation-item-icon {
+        color: #b17a21;
+        background: #fff8e8;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @@media (max-width: 900px) {
+
+        .mass-parts-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .mass-part.is-open {
+            grid-column: auto;
+        }
+
+        .presentation-workspace-side .add-presentation-fields {
+            grid-template-columns:
+                minmax(0, 1fr) 220px;
+        }
+
+        .presentation-workspace-side .add-presentation-action {
+            grid-column: 1 / -1;
+        }
+
+        .presentation-workspace-side .add-presentation-button {
+            width: 100%;
+        }
+    }
+
+
+    @@media (max-width: 640px) {
+
+        .mass-plan-tabs {
+            align-items: stretch;
+
+            flex-direction: column;
+        }
+
+        .mass-plan-tab {
+            width: 100%;
+        }
+
+        .mass-part-header {
+            min-height: 66px;
+        }
+
+        .music-tab-actions {
+            align-items: stretch;
+
+            flex-direction: column;
+        }
+
+        .music-tab-actions-buttons {
+            width: 100%;
+        }
+
+        .music-tab-actions-buttons .btn {
+            flex: 1;
+        }
+
+        .presentation-workspace-side .add-presentation-fields {
+            grid-template-columns: 1fr;
+        }
+
+        .presentation-workspace-side .add-presentation-action {
+            grid-column: auto;
+        }
+    }
 </style>
+
 
 <div class="mass-plan-page">
 
-<!-- MASS PLAN HEADER -->
+    <!-- =====================================================
+         MASS PLAN HEADER
+         ===================================================== -->
 
-<div class="mass-plan-header mb-4">
+    <div class="mass-plan-header mb-4">
 
-    <div class="mass-plan-header-main">
+        <div class="mass-plan-header-main">
 
-        <a asp-page="Index" class="mass-plan-back" title="Back to Masses" data-bs-toggle="tooltip">
+            <a asp-page="Index" class="mass-plan-back" title="Back to Masses" data-bs-toggle="tooltip">
 
-            <i class="bi bi-arrow-left"></i>
+                <i class="bi bi-arrow-left"></i>
 
-        </a>
-
-
-        <div class="mass-plan-header-icon">
-
-            <i class="bi bi-music-note-list"></i>
-
-        </div>
+            </a>
 
 
-        <div>
+            <div class="mass-plan-header-icon">
 
-            <div class="mass-plan-header-kicker">
-                Mass Planning
-            </div>
-
-            <h1>
-                @Model.Mass.Name
-            </h1>
-
-            <div class="mass-plan-header-date">
-
-                <i class="bi bi-calendar3"></i>
-
-                @Model.Mass.MassDate.ToString("dddd, d MMMM yyyy")
+                <i class="bi bi-music-note-list"></i>
 
             </div>
 
-        </div>
 
-    </div>
+            <div>
 
-
-    <div class="mass-plan-header-actions">
-
-        <a asp-page="Edit" asp-route-id="@Model.Mass.Id" class="mass-plan-header-button">
-
-            <i class="bi bi-pencil"></i>
-            Mass Details
-
-        </a>
-
-    </div>
-
-</div>
-
-
-<!-- PLAN SUMMARY -->
-
-<div class="mass-plan-summary mb-4">
-
-    <div class="mass-plan-summary-item">
-
-        <div class="mass-plan-summary-icon songs">
-            <i class="bi bi-music-note-beamed"></i>
-        </div>
-
-        <div>
-            <strong>@plannedSongCount</strong>
-            <span>Planned Songs</span>
-        </div>
-
-    </div>
-
-
-    <div class="mass-plan-summary-divider"></div>
-
-
-    <div class="mass-plan-summary-item">
-
-        <div class="mass-plan-summary-icon parts">
-            <i class="bi bi-list-check"></i>
-        </div>
-
-        <div>
-            <strong>@plannedPartCount / @totalMassParts</strong>
-            <span>Mass Parts</span>
-        </div>
-
-    </div>
-
-
-    <div class="mass-plan-summary-divider"></div>
-
-
-    <div class="mass-plan-summary-item">
-
-        <div class="mass-plan-summary-icon presentation">
-            <i class="bi bi-file-earmark-slides"></i>
-        </div>
-
-        <div>
-            <strong>@presentationCount</strong>
-            <span>Presentation Items</span>
-        </div>
-
-    </div>
-
-
-    <div class="mass-plan-summary-progress">
-
-        <div class="mass-plan-summary-progress-label">
-
-            <span>Music Planning</span>
-
-            <strong>
-                @(totalMassParts == 0
-                    ? 0
-                    : (int)Math.Round(
-                        (double)plannedPartCount /
-                        totalMassParts * 100))%
-            </strong>
-
-        </div>
-
-        <div class="progress">
-
-            <div class="progress-bar" role="progressbar"
-                 style="width: @(totalMassParts == 0
-                                                                                                                                                                                                                                                                                    ? 0
-                                                                                                                                                                                                                                                                                    : (int)Math.Round(
-                                                                                                                                                                                                                                                                                        (double)plannedPartCount /
-                                                                                                                                                                                                                                                                                        totalMassParts * 100))%">
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="mass-plan-workspace">
-
-    <section class="mass-plan-left">
-
-        <div class="mass-plan-column-heading">
-            <h2>Mass Parts</h2>
-            <p>Select the songs for each part of the Mass. Click a row to edit it.</p>
-        </div>
-
-<form method="post" id="musicPlanForm">
-
-    <div id="massParts" class="mass-parts-grid">
-
-        @{
-            var partNumber = 0;
-        }
-
-        @foreach (var part in massParts)
-        {
-            partNumber++;
-
-            var partSelections = Model.Selections
-                .Where(x => x.MassPart == part)
-                .OrderBy(x => x.DisplayOrder)
-                .ToList();
-
-            var hasPlannedSong = partSelections
-                .Any(x => x.SongId.HasValue);
-
-
-            <div class="mass-part @(hasPlannedSong ? "is-planned" : "is-unplanned")" data-mass-part="@part">
-
-                <!-- PART HEADER -->
-
-                <div class="mass-part-header">
-
-                    <div class="mass-part-heading">
-
-                        <div class="mass-part-number">
-                            @partNumber
-                        </div>
-
-                        <div>
-
-                            <div class="mass-part-title">
-                                @part
-                            </div>
-
-                            <div class="mass-part-status">
-
-                                @if (hasPlannedSong)
-                                {
-                                    <span class="planned">
-                                        <i class="bi bi-check-circle-fill"></i>
-
-                                        @partSelections.Count(x => x.SongId.HasValue)
-                                        song@(partSelections.Count(x => x.SongId.HasValue) == 1 ? "" : "s")
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="unplanned">
-                                        <i class="bi bi-circle"></i>
-                                        Not planned
-                                    </span>
-                                }
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="mass-part-icon">
-
-                        @switch (part)
-                        {
-                            case "Entrance":
-                                <i class="bi bi-door-open"></i>
-                                break;
-
-                            case "Kyrie":
-                                <i class="bi bi-heart"></i>
-                                break;
-
-                            case "Gloria":
-                                <i class="bi bi-stars"></i>
-                                break;
-
-                            case "Psalm":
-                                <i class="bi bi-book"></i>
-                                break;
-
-                            case "Alleluia":
-                                <i class="bi bi-music-note-beamed"></i>
-                                break;
-
-                            case "Offertory":
-                                <i class="bi bi-gift"></i>
-                                break;
-
-                            case "Holy":
-                                <i class="bi bi-stars"></i>
-                                break;
-
-                            case "Memorial Acclamation":
-                                <i class="bi bi-cross"></i>
-                                break;
-
-                            case "Amen":
-                                <i class="bi bi-check2-circle"></i>
-                                break;
-
-                            case "Our Father":
-                                <i class="bi bi-people"></i>
-                                break;
-
-                            case "Lamb of God":
-                                <i class="bi bi-peace"></i>
-                                break;
-
-                            case "Communion":
-                                <i class="bi bi-cup-hot"></i>
-                                break;
-
-                            case "Recessional":
-                                <i class="bi bi-box-arrow-right"></i>
-                                break;
-
-                            default:
-                                <i class="bi bi-music-note"></i>
-                                break;
-                        }
-
-                    </div>
-
+                <div class="mass-plan-header-kicker">
+                    Mass Planning
                 </div>
 
+                <h1>
+                    @Model.Mass.Name
+                </h1>
 
-                <!-- SONGS -->
+                <div class="mass-plan-header-date">
 
-                <div class="mass-part-body">
+                    <i class="bi bi-calendar3"></i>
 
-                    <div class="music-rows">
-
-                        @foreach (var selection in partSelections)
-                        {
-                            var selectedMusic = selection.SongId.HasValue
-                                ? Model.Songs.FirstOrDefault(
-                                    x => x.Id == selection.SongId.Value)
-                                : null;
-
-
-                            <div class="music-row">
-
-                                <div class="music-picker position-relative">
-
-                                    <div class="mass-song-search-wrap">
-
-                                        <i class="bi bi-search"></i>
-
-                                        <input type="text" class="form-control music-search"
-                                               value="@(
-                                               selectedMusic is null
-                                                   ? ""
-                                                   : string.Join(
-                                                       " — ",
-                                                       new[]
-                                                       {
-                                                                                                                                                                    selectedMusic.Title,
-                                                                                                                                                                    selectedMusic.Composer,
-                                                                                                                                                                    string.IsNullOrWhiteSpace(selectedMusic.Arrangement)
-                                                                                                                                                                        ? null
-                                                                                                                                                                        : $"Arr: {selectedMusic.Arrangement}",
-                                                                                                                                                                    selectedMusic.SuggestedMassPart,
-                                                                                                                                                                    string.IsNullOrWhiteSpace(selectedMusic.Key)
-                                                                                                                                                                        ? null
-                                                                                                                                                                        : $"Key: {selectedMusic.Key}"
-                                                       }
-                                                       .Where(x => !string.IsNullOrWhiteSpace(x))
-                                                   )
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                )"
-                                               data-music-id="@selectedMusic?.Id" placeholder="Search music..."
-                                               autocomplete="off" />
-
-                                    </div>
-
-
-                                    <div class="music-results list-group position-absolute w-100 shadow"
-                                         style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
-                                    </div>
-
-                                </div>
-
-
-                                <div class="mass-song-actions">
-
-                                    <a class="btn view-music"
-                                       href="@(selectedMusic is null
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ? "#"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                : $"/MusicLibrary/View/{selectedMusic.Id}")"
-                                       target="_blank" rel="noopener noreferrer"
-                                       style="@(selectedMusic is null ? "display:none;" : "")" title="View music sheet"
-                                       data-bs-toggle="tooltip">
-
-                                        <i class="bi bi-file-earmark-pdf"></i>
-
-                                    </a>
-
-
-                                    <button type="button" class="btn remove-song" title="Remove song" data-bs-toggle="tooltip">
-
-                                        <i class="bi bi-x-lg"></i>
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-                        }
-
-                    </div>
-
-
-                    <button type="button" class="add-song">
-
-                        <i class="bi bi-plus-lg"></i>
-
-                        Add song
-
-                    </button>
+                    @Model.Mass.MassDate.ToString(
+                        "dddd, d MMMM yyyy"
+                    )
 
                 </div>
 
             </div>
-        }
-
-    </div>
-</form>
-
-    </section>
-
-    <aside class="mass-plan-right">
-
-
-
-<!-- PRESENTATION ORDER -->
-
-<div class="presentation-order-section">
-
-    <div class="presentation-order-heading">
-
-        <div>
-
-            <div class="presentation-order-kicker">
-                PowerPoint Flow
-            </div>
-
-            <h3>
-                Mass Presentation Order
-            </h3>
-
-            <p>
-                Songs and presentation items will appear in this order
-                in the generated PowerPoint.
-            </p>
 
         </div>
 
 
-        @if (Model.PlanItems.Count > 0)
-        {
-            <div class="presentation-order-count">
+        <div class="mass-plan-header-actions">
 
-                <i class="bi bi-list-ol"></i>
+            <a asp-page="Edit" asp-route-id="@Model.Mass.Id" class="mass-plan-header-button">
 
-                <strong>
-                    @Model.PlanItems.Count
-                </strong>
+                <i class="bi bi-pencil"></i>
 
-                item@(Model.PlanItems.Count == 1 ? "" : "s")
+                Mass Details
 
-            </div>
-        }
+            </a>
+
+        </div>
 
     </div>
 
 
-    @if (Model.PlanItems.Count == 0)
-    {
-        <div class="presentation-order-empty">
+    <!-- =====================================================
+         SUMMARY
+         ===================================================== -->
 
-            <div class="presentation-order-empty-icon">
-                <i class="bi bi-file-earmark-slides"></i>
+    <div class="mass-plan-summary mb-4">
+
+        <div class="mass-plan-summary-item">
+
+            <div class="mass-plan-summary-icon songs">
+
+                <i class="bi bi-music-note-beamed"></i>
+
             </div>
 
             <div>
+
                 <strong>
-                    No presentation items yet
+                    @plannedSongCount
                 </strong>
 
-                <p>
-                    Add songs above or add a Presentation Library item below.
-                </p>
+                <span>
+                    Planned Songs
+                </span>
+
             </div>
 
         </div>
-    }
-    else
-    {
-        <div class="presentation-timeline" id="massPlanList">
-
-            @{
-                var itemNumber = 0;
-            }
-
-            @foreach (var planItem in Model.PlanItems.OrderBy(x => x.DisplayOrder))
-            {
-                itemNumber++;
 
 
-                <div class="mass-plan-item presentation-timeline-item @(planItem.ItemType == "Song" ? "is-song" : "is-presentation")"
-                     data-plan-item-id="@planItem.Id"
-                     draggable="true">
-
-                    <div class="presentation-drag-handle" title="Drag to reorder" aria-label="Drag to reorder">
-                        <i class="bi bi-grip-vertical"></i>
-                    </div>
-
-                    <!-- ORDER -->
-
-                    <div class="presentation-order-number">
-
-                        <span class="plan-item-number">
-                            @itemNumber
-                        </span>
-
-                    </div>
+        <div class="mass-plan-summary-divider"></div>
 
 
-                    <!-- ICON -->
+        <div class="mass-plan-summary-item">
 
-                    <div class="presentation-item-icon">
+            <div class="mass-plan-summary-icon parts">
 
-                        @if (planItem.ItemType == "Song")
-                        {
-                            <i class="bi bi-music-note-beamed"></i>
-                        }
-                        else
-                        {
-                            <i class="bi bi-file-earmark-slides"></i>
-                        }
+                <i class="bi bi-list-check"></i>
 
-                    </div>
+            </div>
 
+            <div>
 
-                    <!-- DETAILS -->
+                <strong>
+                    @plannedPartCount / @totalMassParts
+                </strong>
 
-                    <div class="presentation-item-content">
+                <span>
+                    Mass Parts
+                </span>
 
-                        @if (planItem.ItemType == "Song" &&
-                             planItem.Song is not null)
-                        {
-                            <div class="presentation-item-type">
-                                Song
-                            </div>
+            </div>
 
-                            <div class="presentation-item-title">
-                                @planItem.Song.Title
-                            </div>
-
-                            <div class="presentation-item-meta">
-
-                                @if (!string.IsNullOrWhiteSpace(planItem.MassPart))
-                                {
-                                    <span class="presentation-item-part">
-                                        @planItem.MassPart
-                                    </span>
-                                }
+        </div>
 
 
-                                @if (!string.IsNullOrWhiteSpace(planItem.Song.Composer))
-                                {
-                                    <span>
-                                        <i class="bi bi-person"></i>
-                                        @planItem.Song.Composer
-                                    </span>
-                                }
-
-                            </div>
-                        }
-                        else if (planItem.ItemType == "Presentation")
-                        {
-                            @if (planItem.PresentationItem is not null)
-                            {
-                                <div class="presentation-item-type">
-                                    @planItem.PresentationItem.Type
-                                </div>
-
-                                <a asp-page="/PresentationLibrary/Edit" asp-route-id="@planItem.PresentationItem.Id"
-                                   asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")" class="presentation-item-title">
-
-                                    @planItem.PresentationItem.Title
-
-                                </a>
+        <div class="mass-plan-summary-divider"></div>
 
 
-                                <div class="presentation-item-meta">
+        <div class="mass-plan-summary-item">
 
-                                    @if (!string.IsNullOrWhiteSpace(planItem.MassPart))
-                                    {
-                                        <span class="presentation-item-part">
-                                            @planItem.MassPart
-                                        </span>
-                                    }
+            <div class="mass-plan-summary-icon presentation">
 
+                <i class="bi bi-file-earmark-slides"></i>
 
-                                    @if (!string.IsNullOrWhiteSpace(
-                                        planItem.PresentationItem.Language))
-                                    {
-                                        <span>
+            </div>
 
-                                            <i class="bi bi-translate"></i>
+            <div>
 
-                                            @planItem.PresentationItem.Language
+                <strong>
+                    @presentationCount
+                </strong>
 
-                                        </span>
-                                    }
+                <span>
+                    Presentation Items
+                </span>
 
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="presentation-item-type text-danger">
-                                    Presentation
-                                </div>
+            </div>
 
-                                <div class="presentation-item-title text-danger">
-                                    Presentation item unavailable
-                                </div>
-                            }
-                        }
-
-                    </div>
+        </div>
 
 
-                    <!-- ACTIONS -->
+        <div class="mass-plan-summary-progress">
 
-                    <div class="presentation-item-actions">
+            <div class="mass-plan-summary-progress-label">
 
-                        <button type="button" class="btn move-up" title="Move up" data-bs-toggle="tooltip">
+                <span>
+                    Music Planning
+                </span>
 
-                            <i class="bi bi-chevron-up"></i>
+                <strong>
+                    @(totalMassParts == 0
+                        ? 0
+                        : (int)Math.Round(
+                            (double)plannedPartCount /
+                            totalMassParts * 100
+                        ))%
+                </strong>
 
-                        </button>
+            </div>
 
 
-                        <button type="button" class="btn move-down" title="Move down" data-bs-toggle="tooltip">
+            <div class="progress">
 
-                            <i class="bi bi-chevron-down"></i>
-
-                        </button>
-
-
-                        @if (planItem.ItemType == "Presentation")
-                        {
-                            <form method="post" asp-page-handler="RemovePlanItem">
-
-                                <input type="hidden" name="id" value="@Model.Mass.Id" />
-
-                                <input type="hidden" name="planItemId" value="@planItem.Id" />
-
-                                <button type="submit" class="btn presentation-remove" title="Remove presentation item"
-                                        data-bs-toggle="tooltip">
-
-                                    <i class="bi bi-trash"></i>
-
-                                </button>
-
-                            </form>
-                        }
-
-                    </div>
-
+                <div class="progress-bar" role="progressbar" style="width: @(totalMassParts == 0
+                                                                   ? 0
+                                                                   : (int)Math.Round(
+                                                                       (double)plannedPartCount /
+                                                                       totalMassParts * 100
+                                                                   ))%">
                 </div>
-            }
 
-        </div>
-    }
-
-</div>
-
-
-<!-- ADD PRESENTATION ITEM -->
-
-<div class="add-presentation-section">
-
-    <div class="add-presentation-header">
-
-        <div class="add-presentation-header-icon">
-            <i class="bi bi-file-earmark-slides"></i>
-        </div>
-
-        <div>
-            <div class="add-presentation-kicker">
-                Presentation Library
             </div>
 
-            <h3>Add Presentation Item</h3>
-
-            <p>
-                Add a prayer, response, creed, notice or other reusable
-                presentation item to this Mass.
-            </p>
         </div>
 
     </div>
 
 
-    <form method="post" asp-page-handler="AddPresentation">
+    <!-- =====================================================
+         TABS
+         ===================================================== -->
 
-        <input type="hidden" name="id" value="@Model.Mass.Id" />
+    <div class="mass-plan-tabs" role="tablist">
+
+        <button type="button" class="mass-plan-tab is-active" data-tab-target="musicPlanTab">
+
+            <i class="bi bi-music-note-list"></i>
+
+            Music Plan
+
+            <span class="tab-count">
+                @plannedSongCount
+            </span>
+
+        </button>
 
 
-        <div class="add-presentation-fields">
+        <button type="button" class="mass-plan-tab" data-tab-target="presentationPlanTab">
 
-            <!-- PRESENTATION ITEM -->
+            <i class="bi bi-file-earmark-slides"></i>
 
-            <div class="add-presentation-field presentation-field-main">
+            Presentation Plan
 
-                <label class="form-label">
-                    Presentation Item
-                </label>
+            <span class="tab-count">
+                @Model.PlanItems.Count
+            </span>
 
-                <div class="presentation-picker position-relative">
+        </button>
 
-                    <div class="presentation-search-wrap">
+    </div>
 
-                        <i class="bi bi-search"></i>
 
-                        <input type="text" id="presentationSearch" class="form-control presentation-search"
-                               placeholder="Search title, type or language..." autocomplete="off" />
+    <!-- =====================================================
+         MUSIC PLAN TAB
+         ===================================================== -->
+
+    <section id="musicPlanTab" class="mass-plan-tab-panel is-active">
+
+        <div class="mass-plan-column-heading">
+
+            <h2>
+                Music Plan
+            </h2>
+
+            <p>
+                Review the selected music at a glance.
+                Open a Mass part only when you need to edit it.
+            </p>
+
+        </div>
+
+
+        <form method="post" id="musicPlanForm">
+
+            <div id="massParts" class="mass-parts-grid">
+
+                @{
+                    var partNumber = 0;
+                }
+
+
+                @foreach (var part in massParts)
+                {
+                    partNumber++;
+
+
+                    var partSelections =
+                        Model.Selections
+                            .Where(x =>
+                                x.MassPart == part)
+                            .OrderBy(x =>
+                                x.DisplayOrder)
+                            .ToList();
+
+
+                    var selectedSongs =
+                        partSelections
+                            .Where(x => x.SongId.HasValue)
+                            .Select(x =>
+                                Model.Songs
+                                    .FirstOrDefault(
+                                        song =>
+                                            song.Id ==
+                                            x.SongId!.Value
+                                    )
+                            )
+                            .Where(x => x is not null)
+                            .ToList();
+
+
+                    var hasPlannedSong =
+                        selectedSongs.Count > 0;
+
+
+                    <div class="mass-part @(hasPlannedSong
+                                                                              ? "is-planned"
+                                                                              : "is-unplanned")" data-mass-part="@part">
+
+
+                        <!-- ===============================
+                             PART HEADER
+                             =============================== -->
+
+                        <div class="mass-part-header">
+
+                            <div class="mass-part-heading">
+
+                                <div class="mass-part-heading-main">
+
+
+                                    <!-- NUMBER -->
+
+                                    <div class="mass-part-number">
+
+                                        @partNumber
+
+                                    </div>
+
+
+                                    <!-- ICON -->
+
+                                    <div class="mass-part-icon-inline">
+
+                                        @switch (part)
+                                        {
+                                            case "Entrance":
+
+                                                <i class="bi bi-door-open"></i>
+
+                                                break;
+
+
+                                            case "Kyrie":
+
+                                                <i class="bi bi-heart"></i>
+
+                                                break;
+
+
+                                            case "Gloria":
+
+                                                <i class="bi bi-stars"></i>
+
+                                                break;
+
+
+                                            case "Psalm":
+
+                                                <i class="bi bi-book"></i>
+
+                                                break;
+
+
+                                            case "Alleluia":
+
+                                                <i class="bi bi-music-note-beamed"></i>
+
+                                                break;
+
+
+                                            case "Offertory":
+
+                                                <i class="bi bi-gift"></i>
+
+                                                break;
+
+
+                                            case "Holy":
+
+                                                <i class="bi bi-stars"></i>
+
+                                                break;
+
+
+                                            case "Memorial Acclamation":
+
+                                                <i class="bi bi-cross"></i>
+
+                                                break;
+
+
+                                            case "Amen":
+
+                                                <i class="bi bi-check2-circle"></i>
+
+                                                break;
+
+
+                                            case "Our Father":
+
+                                                <i class="bi bi-people"></i>
+
+                                                break;
+
+
+                                            case "Lamb of God":
+
+                                                <i class="bi bi-peace"></i>
+
+                                                break;
+
+
+                                            case "Communion":
+
+                                                <i class="bi bi-cup-hot"></i>
+
+                                                break;
+
+
+                                            case "Recessional":
+
+                                                <i class="bi bi-box-arrow-right"></i>
+
+                                                break;
+
+
+                                            default:
+
+                                                <i class="bi bi-music-note"></i>
+
+                                                break;
+                                        }
+
+                                    </div>
+
+
+                                    <!-- TITLE / SONG PREVIEW -->
+
+                                    <div class="mass-part-heading-content">
+
+                                        <div class="mass-part-title">
+
+                                            @part
+
+                                        </div>
+
+
+                                        <div class="mass-part-summary">
+
+                                            @if (
+                                                selectedSongs.Count ==
+                                                0)
+                                            {
+                                                <span class="mass-part-summary-empty">
+
+                                                    Not planned
+
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                @foreach (
+                                                    var song
+                                                    in selectedSongs
+                                                        .Take(2))
+                                                {
+                                                    <div class="mass-part-summary-song">
+
+                                                        @song.Title
+
+                                                    </div>
+                                                }
+
+
+                                                @if (
+                                                    selectedSongs.Count >
+                                                    2)
+                                                {
+                                                    <span class="mass-part-summary-more">
+
+                                                        +@(selectedSongs.Count - 2)
+                                                        more
+
+                                                    </span>
+                                                }
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ===============================
+                             SONG EDITOR
+                             =============================== -->
+
+                        <div class="mass-part-body">
+
+                            <div class="music-rows">
+
+                                @foreach (
+                                    var selection
+                                    in partSelections)
+                                {
+                                    var selectedMusic =
+                                        selection.SongId
+                                            .HasValue
+                                            ? Model.Songs
+                                                .FirstOrDefault(
+                                                    x =>
+                                                        x.Id ==
+                                                        selection
+                                                            .SongId
+                                                            .Value
+                                                )
+                                            : null;
+
+
+                                    <div class="music-row">
+
+
+                                        <div class="music-picker position-relative">
+
+
+                                            <div class="mass-song-search-wrap">
+
+                                                <i class="bi bi-search"></i>
+
+
+                                                <input type="text" class="form-control music-search" value="@(
+                                                       selectedMusic is null
+                                                           ? ""
+                                                           : string.Join(
+                                                               " — ",
+                                                               new[]
+                                                               {
+                                                                                     selectedMusic.Title,
+                                                                                     selectedMusic.Composer,
+                                                                                     string.IsNullOrWhiteSpace(
+                                                                                         selectedMusic.Arrangement)
+                                                                                         ? null
+                                                                                         : $"Arr: {selectedMusic.Arrangement}",
+                                                                                     selectedMusic.SuggestedMassPart,
+                                                                                     string.IsNullOrWhiteSpace(
+                                                                                         selectedMusic.Key)
+                                                                                         ? null
+                                                                                         : $"Key: {selectedMusic.Key}"
+                                                               }
+                                                               .Where(x =>
+                                                                   !string.IsNullOrWhiteSpace(x))
+                                                           )
+                                                                                                                                                             )"
+                                                       data-music-id="@selectedMusic?.Id" placeholder="Search music..."
+                                                       autocomplete="off" />
+
+                                            </div>
+
+
+                                            <div class="music-results
+                                                list-group
+                                                position-absolute
+                                                w-100
+                                                shadow" style="
+                                                z-index:1000;
+                                                max-height:250px;
+                                                overflow-y:auto;
+                                                display:none;">
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="mass-song-actions">
+
+                                            <a class="btn view-music"
+                                               href="@(selectedMusic is null
+                                                                                                                                                 ? "#"
+                                                                                                                                                 : $"/MusicLibrary/View/{selectedMusic.Id}")"
+                                               target="_blank" rel="noopener noreferrer" style="@(selectedMusic is null
+                                                                                                                                                 ? "display:none;"
+                                                                                                                                                 : "")"
+                                               title="View music sheet" data-bs-toggle="tooltip">
+
+                                                <i class="bi bi-file-earmark-pdf"></i>
+
+                                            </a>
+
+
+                                            <button type="button" class="btn remove-song" title="Remove song"
+                                                    data-bs-toggle="tooltip">
+
+                                                <i class="bi bi-x-lg"></i>
+
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <button type="button" class="add-song">
+
+                                <i class="bi bi-plus-lg"></i>
+
+                                Add song
+
+                            </button>
+
+                        </div>
 
                     </div>
+                }
+
+            </div>
+
+        </form>
 
 
-                    <input type="hidden" id="presentationItemId" name="presentationItemId" />
+        <!-- MUSIC ACTIONS -->
 
+        <div class="music-tab-actions">
 
-                    <div id="presentationResults"
-                         class="presentation-search-results list-group position-absolute w-100">
-                    </div>
+            <div class="music-tab-actions-info">
 
-                </div>
+                <i class="bi bi-music-note-list"></i>
+
+                <span>
+
+                    <strong>
+
+                        <span id="musicPlanSelectedCount">
+
+                            @plannedSongCount
+
+                        </span>
+
+                    </strong>
+
+                    song@(plannedSongCount == 1
+                                                                ? ""
+                                                                : "s")
+                    selected
+
+                </span>
 
             </div>
 
 
-            <!-- MASS PART -->
+            <div class="music-tab-actions-buttons">
 
-            <div class="add-presentation-field presentation-field-part">
+                <a asp-page="Index" class="btn music-plan-cancel">
 
-                <label class="form-label">
-                    Mass Part
-                </label>
+                    Cancel
 
-                <div class="presentation-select-wrap">
-
-                    <i class="bi bi-list-check"></i>
-
-                    <select name="massPart" class="form-select">
-
-                        <option value="">
-                            Not specified
-                        </option>
-
-                        @foreach (var part in massParts)
-                        {
-                            <option value="@part">
-                                @part
-                            </option>
-                        }
-
-                    </select>
-
-                </div>
-
-            </div>
+                </a>
 
 
-            <!-- ADD -->
+                <button type="submit" form="musicPlanForm" class="btn music-plan-save">
 
-            <div class="add-presentation-action">
+                    <i class="bi bi-check-lg"></i>
 
-                <button type="submit" class="btn add-presentation-button">
-
-                    <i class="bi bi-plus-lg"></i>
-
-                    Add Item
+                    Save Mass Plan
 
                 </button>
 
@@ -1059,184 +1379,977 @@
 
         </div>
 
-    </form>
+    </section>
 
 
-    <div class="add-presentation-footer">
+    <!-- =====================================================
+         PRESENTATION PLAN TAB
+         ===================================================== -->
 
-        <i class="bi bi-info-circle"></i>
+    <section id="presentationPlanTab" class="mass-plan-tab-panel">
 
-        <span>
-            The same Presentation Library item can be added more than once
-            and positioned anywhere in the presentation order.
-        </span>
+        <div class="mass-plan-column-heading">
 
-    </div>
+            <h2>
+                Presentation Plan
+            </h2>
+
+            <p>
+                Add Presentation Library items and arrange
+                the exact PowerPoint order.
+            </p>
+
+        </div>
+
+
+        <div class="presentation-workspace">
+
+
+            <!-- =================================================
+                 ADD PRESENTATION ITEM
+                 ================================================= -->
+
+            <aside class="presentation-workspace-side">
+
+                <div class="add-presentation-section">
+
+
+                    <div class="add-presentation-header">
+
+                        <div class="add-presentation-header-icon">
+
+                            <i class="bi bi-file-earmark-slides"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="add-presentation-kicker">
+
+                                Presentation Library
+
+                            </div>
+
+
+                            <h3>
+
+                                Add Presentation Item
+
+                            </h3>
+
+
+                            <p>
+
+                                Add a prayer, response, creed,
+                                notice or other reusable slide.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form method="post" asp-page-handler="AddPresentation" id="addPresentationForm">
+
+
+                        <input type="hidden" name="id" value="@Model.Mass.Id" />
+
+
+                        <div class="add-presentation-fields">
+
+
+                            <!-- PRESENTATION ITEM -->
+
+                            <div class="add-presentation-field
+                                presentation-field-main">
+
+
+                                <label class="form-label">
+
+                                    Presentation Item
+
+                                </label>
+
+
+                                <div class="presentation-picker">
+
+
+                                    <div class="presentation-search-wrap">
+
+                                        <i class="bi bi-search"></i>
+
+
+                                        <input type="text" id="presentationSearch"
+                                               class="form-control presentation-search"
+                                               placeholder="Search title, type or language..." autocomplete="off" />
+
+                                    </div>
+
+
+                                    <input type="hidden" id="presentationItemId" name="presentationItemId" />
+
+
+                                    <div id="presentationResults" class="presentation-search-results list-group">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- MASS PART -->
+
+                            <div class="add-presentation-field
+                                presentation-field-part">
+
+
+                                <label class="form-label">
+
+                                    Mass Part
+
+                                </label>
+
+
+                                <div class="presentation-select-wrap">
+
+                                    <i class="bi bi-list-check"></i>
+
+
+                                    <select name="massPart" class="form-select">
+
+                                        <option value="">
+
+                                            Not specified
+
+                                        </option>
+
+
+                                        @foreach (
+                                            var part
+                                            in massParts)
+                                        {
+                                            <option value="@part">
+
+                                                @part
+
+                                            </option>
+                                        }
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ADD -->
+
+                            <div class="add-presentation-action">
+
+                                <button type="submit" class="btn add-presentation-button">
+
+                                    <i class="bi bi-plus-lg"></i>
+
+                                    Add Item
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+
+                    <div class="add-presentation-footer">
+
+                        <i class="bi bi-info-circle"></i>
+
+
+                        <span>
+
+                            Presentation items can be added more
+                            than once and dragged anywhere in the
+                            PowerPoint order.
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+
+            <!-- =================================================
+                 PRESENTATION ORDER
+                 ================================================= -->
+
+            <div class="presentation-workspace-main">
+
+                <div class="presentation-order-section">
+
+
+                    <div class="presentation-order-heading">
+
+                        <div>
+
+                            <div class="presentation-order-kicker">
+
+                                PowerPoint Flow
+
+                            </div>
+
+
+                            <h3>
+
+                                Mass Presentation Order
+
+                            </h3>
+
+
+                            <p>
+
+                                Songs, Mass Title and presentation
+                                items will appear in this exact order.
+
+                            </p>
+
+                        </div>
+
+
+                        @if (
+                            Model.PlanItems.Count >
+                            0)
+                        {
+                            <div class="presentation-order-count">
+
+                                <i class="bi bi-list-ol"></i>
+
+
+                                <strong>
+
+                                    @Model.PlanItems.Count
+
+                                </strong>
+
+
+                                item@(Model.PlanItems.Count == 1
+                                                                                                    ? ""
+                                                                                                    : "s")
+
+                            </div>
+                        }
+
+                    </div>
+
+
+                    @if (
+                        Model.PlanItems.Count ==
+                        0)
+                    {
+                        <div class="presentation-order-empty">
+
+
+                            <div class="presentation-order-empty-icon">
+
+                                <i class="bi bi-file-earmark-slides"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+
+                                    No presentation items yet
+
+                                </strong>
+
+
+                                <p>
+
+                                    Add songs in Music Plan or add
+                                    a Presentation Library item above.
+
+                                </p>
+
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="presentation-timeline" id="massPlanList">
+
+                            @{
+                                var itemNumber = 0;
+                            }
+
+
+                            @foreach (
+                                var planItem
+                                in Model.PlanItems
+                                    .OrderBy(x =>
+                                        x.DisplayOrder))
+                            {
+                                itemNumber++;
+
+
+                                <div class="mass-plan-item
+                                    presentation-timeline-item
+                                    @(planItem.ItemType == "Song"
+                                          ? "is-song"
+                                          : planItem.ItemType == "MassTitle"
+                                              ? "is-mass-title"
+                                              : "is-presentation")" data-plan-item-id="@planItem.Id" draggable="true">
+
+
+                                    <!-- DRAG -->
+
+                                    <div class="presentation-drag-handle" title="Drag to reorder" aria-label="Drag to reorder">
+
+                                        <i class="bi bi-grip-vertical"></i>
+
+                                    </div>
+
+
+                                    <!-- NUMBER -->
+
+                                    <div class="presentation-order-number">
+
+                                        <span class="plan-item-number">
+
+                                            @itemNumber
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <!-- ICON -->
+
+                                    <div class="presentation-item-icon">
+
+                                        @if (
+                                            planItem.ItemType ==
+                                            "Song")
+                                        {
+                                            <i class="bi bi-music-note-beamed"></i>
+                                        }
+                                        else if (
+                                            planItem.ItemType ==
+                                            "MassTitle")
+                                        {
+                                            <i class="bi bi-card-heading"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-file-earmark-slides"></i>
+                                        }
+
+                                    </div>
+
+
+                                    <!-- DETAILS -->
+
+                                    <div class="presentation-item-content">
+
+
+                                        @if (
+                                            planItem.ItemType ==
+                                            "MassTitle")
+                                        {
+                                            <div class="presentation-item-type">
+
+                                                System Slide
+
+                                            </div>
+
+
+                                            <div class="presentation-item-title">
+
+                                                Mass Title
+
+                                            </div>
+
+
+                                            <div class="presentation-item-meta">
+
+                                                <span>
+
+                                                    <i class="bi bi-card-heading"></i>
+
+                                                    @Model.Mass.Name
+
+                                                </span>
+
+                                            </div>
+                                        }
+
+
+                                        else if (
+                                            planItem.ItemType ==
+                                            "Song" &&
+                                            planItem.Song is not null)
+                                        {
+                                            <div class="presentation-item-type">
+
+                                                Song
+
+                                            </div>
+
+
+                                            <div class="presentation-item-title">
+
+                                                @planItem.Song.Title
+
+                                            </div>
+
+
+                                            <div class="presentation-item-meta">
+
+
+                                                @if (
+                                                    !string.IsNullOrWhiteSpace(
+                                                        planItem.MassPart))
+                                                {
+                                                    <span class="presentation-item-part">
+
+                                                        @planItem.MassPart
+
+                                                    </span>
+                                                }
+
+
+                                                @if (
+                                                    !string.IsNullOrWhiteSpace(
+                                                        planItem
+                                                            .Song
+                                                            .Composer))
+                                                {
+                                                    <span>
+
+                                                        <i class="bi bi-person"></i>
+
+                                                        @planItem.Song.Composer
+
+                                                    </span>
+                                                }
+
+                                            </div>
+                                        }
+                                        else if (
+                                            planItem.ItemType == "Presentation" &&
+                                            planItem.PresentationItem is not null)
+                                        {
+                                            var presentationItem =
+                                                planItem.PresentationItem;
+
+                                            <div class="presentation-item-type">
+                                                @presentationItem.Type
+                                            </div>
+
+                                            <a asp-page="/PresentationLibrary/Edit" asp-route-id="@presentationItem.Id"
+                                               asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                               class="presentation-item-title">
+
+                                                @presentationItem.Title
+
+                                            </a>
+
+                                            <div class="presentation-item-meta">
+
+                                                @if (!string.IsNullOrWhiteSpace(planItem.MassPart))
+                                                {
+                                                    <span class="presentation-item-part">
+                                                        @planItem.MassPart
+                                                    </span>
+                                                }
+
+                                                @if (!string.IsNullOrWhiteSpace(presentationItem.Language))
+                                                {
+                                                    <span>
+                                                        <i class="bi bi-translate"></i>
+                                                        @presentationItem.Language
+                                                    </span>
+                                                }
+
+                                            </div>
+                                        }
+                                        else if (planItem.ItemType == "Presentation")
+                                        {
+                                            <div class="presentation-item-type text-danger">
+                                                Presentation
+                                            </div>
+
+                                            <div class="presentation-item-title text-danger">
+                                                Presentation item unavailable
+                                            </div>
+                                        }
+
+                                        
+
+                                    </div>
+
+
+                                    <!-- ACTIONS -->
+
+                                    <div class="presentation-item-actions">
+
+
+                                        <button type="button" class="btn move-up" title="Move up" data-bs-toggle="tooltip">
+
+                                            <i class="bi bi-chevron-up"></i>
+
+                                        </button>
+
+
+                                        <button type="button" class="btn move-down" title="Move down" data-bs-toggle="tooltip">
+
+                                            <i class="bi bi-chevron-down"></i>
+
+                                        </button>
+
+
+                                        @if (
+                                            planItem.ItemType ==
+                                            "Presentation")
+                                        {
+                                            <form method="post" asp-page-handler="RemovePlanItem">
+
+
+                                                <input type="hidden" name="id" value="@Model.Mass.Id" />
+
+
+                                                <input type="hidden" name="planItemId" value="@planItem.Id" />
+
+
+                                                <button type="submit" class="btn presentation-remove"
+                                                        title="Remove presentation item" data-bs-toggle="tooltip">
+
+                                                    <i class="bi bi-trash"></i>
+
+                                                </button>
+
+                                            </form>
+                                        }
+
+                                    </div>
+
+                                </div>
+                            }
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
 </div>
 
-    </aside>
-
-</div>
-
-<div class="mass-plan-bottom-actions">
-    <div class="mass-plan-bottom-info">
-        <i class="bi bi-music-note-list"></i>
-        <span>
-            <strong><span id="musicPlanSelectedCount">@plannedSongCount</span></strong>
-            song@(plannedSongCount == 1 ? "" : "s") selected
-        </span>
-    </div>
-
-    <div class="mass-plan-bottom-buttons">
-        <a asp-page="Index" class="btn music-plan-cancel">
-            Cancel
-        </a>
-
-        <button type="submit" form="musicPlanForm" class="btn music-plan-save">
-            <i class="bi bi-check-lg"></i>
-            Save Mass Plan
-        </button>
-    </div>
-</div>
-
-</div>
 
 @section Scripts
 {
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
 
-            const form = document.getElementById("musicPlanForm");
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
 
-            /* =========================================================
-               COLLAPSIBLE MASS PARTS
-               ========================================================= */
 
-            const collapsibleMassParts =
-                document.querySelectorAll(".mass-part");
+                const form =
+                    document.getElementById(
+                        "musicPlanForm"
+                    );
 
-            collapsibleMassParts.forEach(function (part) {
 
-                const header =
-                    part.querySelector(".mass-part-header");
+                /* =================================================
+                   TABS
+                   ================================================= */
 
-                if (!header) {
-                    return;
-                }
+                const tabs =
+                    document.querySelectorAll(
+                        ".mass-plan-tab"
+                    );
 
-                header.setAttribute("role", "button");
-                header.setAttribute("tabindex", "0");
-                header.setAttribute("aria-expanded", "false");
 
-                function closePart(targetPart) {
-                    targetPart.classList.remove("is-open");
-                    targetPart.classList.remove("has-open-results");
+                const tabPanels =
+                    document.querySelectorAll(
+                        ".mass-plan-tab-panel"
+                    );
 
-                    const targetHeader =
-                        targetPart.querySelector(".mass-part-header");
 
-                    if (targetHeader) {
-                        targetHeader.setAttribute("aria-expanded", "false");
-                    }
+                function activateTab(
+                    targetId
+                ) {
 
-                    targetPart
-                        .querySelectorAll(".music-results")
-                        .forEach(function (results) {
-                            results.style.display = "none";
-                        });
-                }
+                    tabs.forEach(
+                        tab => {
 
-                function togglePart() {
+                            const active =
+                                tab.dataset
+                                    .tabTarget ===
+                                targetId;
 
-                    const willOpen =
-                        !part.classList.contains("is-open");
 
-                    collapsibleMassParts.forEach(function (otherPart) {
-                        if (otherPart !== part) {
-                            closePart(otherPart);
+                            tab.classList
+                                .toggle(
+                                    "is-active",
+                                    active
+                                );
                         }
-                    });
+                    );
 
-                    if (!willOpen) {
-                        closePart(part);
-                        return;
-                    }
 
-                    part.classList.add("is-open");
-                    header.setAttribute("aria-expanded", "true");
+                    tabPanels.forEach(
+                        panel => {
 
-                    const firstSearch =
-                        part.querySelector(".music-search");
+                            panel.classList
+                                .toggle(
+                                    "is-active",
+                                    panel.id ===
+                                    targetId
+                                );
+                        }
+                    );
 
-                    if (
-                        firstSearch &&
-                        !firstSearch.dataset.musicId
-                    ) {
-                        setTimeout(function () {
-                            firstSearch.focus();
-                        }, 100);
-                    }
+
+                    sessionStorage
+                        .setItem(
+                            "massPlanActiveTab",
+                            targetId
+                        );
                 }
 
-                header.addEventListener("click", function (event) {
 
-                    if (event.target.closest("a, button, input, select")) {
-                        return;
+                tabs.forEach(
+                    tab => {
+
+                        tab.addEventListener(
+                            "click",
+                            function () {
+
+                                activateTab(
+                                    tab.dataset
+                                        .tabTarget
+                                );
+                            }
+                        );
                     }
+                );
 
-                    togglePart();
-                });
 
-                header.addEventListener("keydown", function (event) {
+                const savedTab =
+                    sessionStorage
+                        .getItem(
+                            "massPlanActiveTab"
+                        );
 
-                    if (event.key !== "Enter" && event.key !== " ") {
-                        return;
+
+                if (
+                    savedTab ===
+                    "musicPlanTab" ||
+                    savedTab ===
+                    "presentationPlanTab"
+                ) {
+                    activateTab(
+                        savedTab
+                    );
+                }
+
+
+                /* =================================================
+                   COLLAPSIBLE MASS PARTS
+                   ================================================= */
+
+                const collapsibleMassParts =
+                    document.querySelectorAll(
+                        ".mass-part"
+                    );
+
+
+                collapsibleMassParts.forEach(
+                    function (part) {
+
+
+                        const header =
+                            part.querySelector(
+                                ".mass-part-header"
+                            );
+
+
+                        if (!header) {
+                            return;
+                        }
+
+
+                        header.setAttribute(
+                            "role",
+                            "button"
+                        );
+
+
+                        header.setAttribute(
+                            "tabindex",
+                            "0"
+                        );
+
+
+                        header.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+
+                        function closePart(
+                            targetPart
+                        ) {
+
+                            targetPart
+                                .classList
+                                .remove(
+                                    "is-open"
+                                );
+
+
+                            targetPart
+                                .classList
+                                .remove(
+                                    "has-open-results"
+                                );
+
+
+                            const targetHeader =
+                                targetPart
+                                    .querySelector(
+                                        ".mass-part-header"
+                                    );
+
+
+                            if (targetHeader) {
+
+                                targetHeader
+                                    .setAttribute(
+                                        "aria-expanded",
+                                        "false"
+                                    );
+                            }
+
+
+                            targetPart
+                                .querySelectorAll(
+                                    ".music-results"
+                                )
+                                .forEach(
+                                    function (
+                                        results
+                                    ) {
+
+                                        results.style
+                                            .display =
+                                            "none";
+                                    }
+                                );
+                        }
+
+
+                        function togglePart() {
+
+
+                            const willOpen =
+                                !part
+                                    .classList
+                                    .contains(
+                                        "is-open"
+                                    );
+
+
+                            collapsibleMassParts
+                                .forEach(
+                                    function (
+                                        otherPart
+                                    ) {
+
+                                        if (
+                                            otherPart !==
+                                            part
+                                        ) {
+                                            closePart(
+                                                otherPart
+                                            );
+                                        }
+                                    }
+                                );
+
+
+                            if (!willOpen) {
+
+                                closePart(
+                                    part
+                                );
+
+                                return;
+                            }
+
+
+                            part.classList
+                                .add(
+                                    "is-open"
+                                );
+
+
+                            header.setAttribute(
+                                "aria-expanded",
+                                "true"
+                            );
+
+
+                            const firstSearch =
+                                part.querySelector(
+                                    ".music-search"
+                                );
+
+
+                            if (
+                                firstSearch &&
+                                !firstSearch
+                                    .dataset
+                                    .musicId
+                            ) {
+                                setTimeout(
+                                    function () {
+
+                                        firstSearch
+                                            .focus();
+                                    },
+                                    100
+                                );
+                            }
+                        }
+
+
+                        header.addEventListener(
+                            "click",
+                            function (
+                                event
+                            ) {
+
+                                if (
+                                    event.target
+                                        .closest(
+                                            "a, button, input, select"
+                                        )
+                                ) {
+                                    return;
+                                }
+
+
+                                togglePart();
+                            }
+                        );
+
+
+                        header.addEventListener(
+                            "keydown",
+                            function (
+                                event
+                            ) {
+
+                                if (
+                                    event.key !==
+                                    "Enter" &&
+                                    event.key !==
+                                    " "
+                                ) {
+                                    return;
+                                }
+
+
+                                event.preventDefault();
+
+
+                                togglePart();
+                            }
+                        );
                     }
-
-                    event.preventDefault();
-                    togglePart();
-                });
-            });
+                );
 
 
-            const presentationLibrary = [
-                                                    @foreach (var item in Model.PresentationLibrary
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .OrderBy(x => x.Type)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .ThenBy(x => x.Title))
-                {
-                    @:{
-                                                                                                    @:id: @item.Id,
-                    @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Title))",
-                    @:type: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Type ?? ""))",
-                    @:language: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Language ?? ""))"
-                                                                                                @:},
+                /* =================================================
+                   DATA
+                   ================================================= */
+
+                const presentationLibrary = [
+
+                            @foreach (
+            var item
+            in Model.PresentationLibrary
+                                                            .OrderBy(x => x.Type)
+                                                            .ThenBy(x => x.Title))
+                    {
+                        @:{
+                                        @:id: @item.Id,
+                        @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Title))",
+                        @:type: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Type ?? ""))",
+                        @:language: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Language ?? ""))"
+                                        @:},
             }
-                                                ];
 
-        const musicLibrary = [                                                                                                                                        @foreach (var music in Model.Songs)
+                        ];
+
+
+        const musicLibrary = [
+
+                            @foreach (
+    var music
+    in Model.Songs)
             {
                 @:{
-                                                                                                                                                                                                                                                                                                                                                    @:id: @music.Id,
-            @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
-            @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
-            @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
-            @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
-            @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
-                                                                                                                                                                                                                                                                                                                                                                                        @:},
+                                        @:id: @music.Id,
+                @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
+                @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
+                @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
+                @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
+                @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
+                                        @:},
         }
-                                                                                                                                                                                            ];
+
+                        ];
+
+
+        /* =================================================
+           PRESENTATION SEARCH
+           ================================================= */
+
         const presentationSearch =
-            document.getElementById("presentationSearch");
+            document.getElementById(
+                "presentationSearch"
+            );
+
 
         const presentationItemId =
-            document.getElementById("presentationItemId");
+            document.getElementById(
+                "presentationItemId"
+            );
+
 
         const presentationResults =
-            document.getElementById("presentationResults");
+            document.getElementById(
+                "presentationResults"
+            );
 
 
-        function renderPresentationResults(search) {
+        function renderPresentationResults(
+            search
+        ) {
 
             if (
                 !presentationSearch ||
@@ -1247,7 +2360,9 @@
             }
 
 
-            presentationResults.innerHTML = "";
+            presentationResults
+                .innerHTML =
+                "";
 
 
             const query =
@@ -1255,896 +2370,1895 @@
                     .toLowerCase()
                     .trim();
 
-            if (query.length < 3) {
-                presentationResults.innerHTML = "";
-                presentationResults.style.display = "none";
+
+            if (
+                query.length <
+                1
+            ) {
+
+                presentationResults
+                    .style
+                    .display =
+                    "none";
+
+
                 return;
             }
 
-            let matches = presentationLibrary;
+
+            let matches =
+                presentationLibrary
+                    .filter(
+                        item => {
+
+                            const searchableText =
+                                [
+                                    item.title,
+                                    item.type,
+                                    item.language
+                                ]
+                                    .join(" ")
+                                    .toLowerCase();
 
 
-            if (query) {
-
-                matches = presentationLibrary
-                    .filter(item => {
-
-                        const searchableText = [
-                            item.title,
-                            item.type,
-                            item.language
-                        ]
-                            .join(" ")
-                            .toLowerCase();
-
-                        return searchableText.includes(query);
-                    })
-                    .sort((a, b) => {
-
-                        const aExact =
-                            a.title.toLowerCase() === query;
-
-                        const bExact =
-                            b.title.toLowerCase() === query;
-
-
-                        if (aExact !== bExact) {
-                            return aExact ? -1 : 1;
+                            return searchableText
+                                .includes(
+                                    query
+                                );
                         }
+                    )
+                    .sort(
+                        (a, b) => {
 
 
-                        const aStarts =
-                            a.title.toLowerCase().startsWith(query);
+                            const aExact =
+                                a.title
+                                    .toLowerCase() ===
+                                query;
 
-                        const bStarts =
-                            b.title.toLowerCase().startsWith(query);
+
+                            const bExact =
+                                b.title
+                                    .toLowerCase() ===
+                                query;
 
 
-                        if (aStarts !== bStarts) {
-                            return aStarts ? -1 : 1;
+                            if (
+                                aExact !==
+                                bExact
+                            ) {
+                                return aExact
+                                    ? -1
+                                    : 1;
+                            }
+
+
+                            const aStarts =
+                                a.title
+                                    .toLowerCase()
+                                    .startsWith(
+                                        query
+                                    );
+
+
+                            const bStarts =
+                                b.title
+                                    .toLowerCase()
+                                    .startsWith(
+                                        query
+                                    );
+
+
+                            if (
+                                aStarts !==
+                                bStarts
+                            ) {
+                                return aStarts
+                                    ? -1
+                                    : 1;
+                            }
+
+
+                            return a.title
+                                .localeCompare(
+                                    b.title
+                                );
                         }
+                    )
+                    .slice(
+                        0,
+                        15
+                    );
 
 
-                        return a.title.localeCompare(b.title);
-                    });
-
-            }
-
-
-            matches = matches.slice(0, 15);
-
-
-            if (matches.length === 0) {
+            if (
+                matches.length ===
+                0
+            ) {
 
                 const empty =
-                    document.createElement("div");
+                    document
+                        .createElement(
+                            "div"
+                        );
+
 
                 empty.className =
                     "presentation-search-empty";
 
+
                 empty.innerHTML = `
-                                                <i class="bi bi-search"></i>
-                                                <span>No presentation items found</span>
-                                            `;
+                                    <i class="bi bi-search"></i>
+                                    <span>No presentation items found</span>
+                                `;
 
-                presentationResults.appendChild(empty);
 
-                presentationResults.style.display = "block";
+                presentationResults
+                    .appendChild(
+                        empty
+                    );
+
+
+                presentationResults
+                    .style
+                    .display =
+                    "block";
+
 
                 return;
             }
 
 
-            matches.forEach(item => {
-
-                const button =
-                    document.createElement("button");
-
-                button.type = "button";
-
-                button.className =
-                    "list-group-item list-group-item-action presentation-result";
+            matches.forEach(
+                item => {
 
 
-                const icon =
-                    document.createElement("div");
-
-                icon.className =
-                    "presentation-result-icon";
-
-                icon.innerHTML =
-                    '<i class="bi bi-file-earmark-slides"></i>';
+                    const button =
+                        document
+                            .createElement(
+                                "button"
+                            );
 
 
-                const content =
-                    document.createElement("div");
-
-                content.className =
-                    "presentation-result-content";
+                    button.type =
+                        "button";
 
 
-                const title =
-                    document.createElement("div");
-
-                title.className =
-                    "presentation-result-title";
-
-                title.textContent =
-                    item.title;
+                    button.className =
+                        "list-group-item list-group-item-action presentation-result";
 
 
-                const meta =
-                    document.createElement("div");
-
-                meta.className =
-                    "presentation-result-meta";
-
-
-                const metaParts = [];
-
-                if (item.type) {
-                    metaParts.push(item.type);
-                }
-
-                if (item.language) {
-                    metaParts.push(item.language);
-                }
-
-                meta.textContent =
-                    metaParts.join(" • ");
+                    const icon =
+                        document
+                            .createElement(
+                                "div"
+                            );
 
 
-                content.appendChild(title);
-
-                if (metaParts.length > 0) {
-                    content.appendChild(meta);
-                }
+                    icon.className =
+                        "presentation-result-icon";
 
 
-                button.appendChild(icon);
-                button.appendChild(content);
+                    icon.innerHTML =
+                        '<i class="bi bi-file-earmark-slides"></i>';
 
 
-                button.addEventListener("click", function () {
+                    const content =
+                        document
+                            .createElement(
+                                "div"
+                            );
 
-                    presentationSearch.value =
+
+                    content.className =
+                        "presentation-result-content";
+
+
+                    const title =
+                        document
+                            .createElement(
+                                "div"
+                            );
+
+
+                    title.className =
+                        "presentation-result-title";
+
+
+                    title.textContent =
                         item.title;
 
-                    presentationItemId.value =
-                        item.id;
 
-                    presentationSearch.classList
-                        .remove("is-invalid");
-
-                    presentationResults.style.display =
-                        "none";
-                });
+                    const meta =
+                        document
+                            .createElement(
+                                "div"
+                            );
 
 
-                presentationResults.appendChild(button);
+                    meta.className =
+                        "presentation-result-meta";
 
-            });
+
+                    const metaParts =
+                        [];
 
 
-            presentationResults.style.display =
+                    if (
+                        item.type
+                    ) {
+                        metaParts
+                            .push(
+                                item.type
+                            );
+                    }
+
+
+                    if (
+                        item.language
+                    ) {
+                        metaParts
+                            .push(
+                                item.language
+                            );
+                    }
+
+
+                    meta.textContent =
+                        metaParts
+                            .join(
+                                " • "
+                            );
+
+
+                    content.appendChild(
+                        title
+                    );
+
+
+                    if (
+                        metaParts.length >
+                        0
+                    ) {
+
+                        content
+                            .appendChild(
+                                meta
+                            );
+                    }
+
+
+                    button.appendChild(
+                        icon
+                    );
+
+
+                    button.appendChild(
+                        content
+                    );
+
+
+                    button.addEventListener(
+                        "click",
+                        function () {
+
+
+                            presentationSearch
+                                .value =
+                                item.title;
+
+
+                            presentationItemId
+                                .value =
+                                item.id;
+
+
+                            presentationSearch
+                                .classList
+                                .remove(
+                                    "is-invalid"
+                                );
+
+
+                            presentationResults
+                                .style
+                                .display =
+                                "none";
+                        }
+                    );
+
+
+                    presentationResults
+                        .appendChild(
+                            button
+                        );
+                }
+            );
+
+
+            presentationResults
+                .style
+                .display =
                 "block";
         }
-        if (presentationSearch) {
 
-            presentationSearch.addEventListener(
-                "focus",
-                function () {
 
-                    const value =
-                        presentationSearch.value
-                            .trim();
+        if (
+            presentationSearch
+        ) {
 
-                    if (value.length >= 3) {
-                        renderPresentationResults(value);
+            presentationSearch
+                .addEventListener(
+                    "focus",
+                    function () {
+
+
+                        const value =
+                            presentationSearch
+                                .value
+                                .trim();
+
+
+                        if (
+                            value.length >=
+                            1
+                        ) {
+
+                            renderPresentationResults(
+                                value
+                            );
+                        }
                     }
-
-                }
-            );
+                );
 
 
-            presentationSearch.addEventListener(
-                "input",
-                function () {
+            presentationSearch
+                .addEventListener(
+                    "input",
+                    function () {
 
-                    if (presentationItemId) {
-                        presentationItemId.value = "";
+
+                        if (
+                            presentationItemId
+                        ) {
+
+                            presentationItemId
+                                .value =
+                                "";
+                        }
+
+
+                        presentationSearch
+                            .classList
+                            .remove(
+                                "is-invalid"
+                            );
+
+
+                        renderPresentationResults(
+                            presentationSearch
+                                .value
+                        );
                     }
-
-                    presentationSearch.classList.remove(
-                        "is-invalid"
-                    );
-
-                    renderPresentationResults(
-                        presentationSearch.value
-                    );
-
-                }
-            );
-
+                );
         }
 
 
         document.addEventListener(
             "click",
-            function (event) {
+            function (
+                event
+            ) {
 
                 if (
                     presentationResults &&
-                    !event.target.closest(".presentation-picker")
+                    !event.target
+                        .closest(
+                            ".presentation-picker"
+                        )
                 ) {
-                    presentationResults.style.display =
+
+                    presentationResults
+                        .style
+                        .display =
                         "none";
                 }
-
             }
         );
 
+
         const addPresentationForm =
-            presentationSearch?.closest("form");
-
-        if (addPresentationForm) {
-
-            addPresentationForm.addEventListener(
-                "submit",
-                function (event) {
-
-                    if (
-                        presentationSearch &&
-                        presentationSearch.value.trim() &&
-                        !presentationItemId.value
-                    ) {
-
-                        event.preventDefault();
-
-                        presentationSearch.classList
-                            .add("is-invalid");
-
-                        presentationSearch.focus();
-
-                        renderPresentationResults(
-                            presentationSearch.value
-                        );
-
-                    }
-
-                }
+            document.getElementById(
+                "addPresentationForm"
             );
 
+
+        if (
+            addPresentationForm
+        ) {
+
+            addPresentationForm
+                .addEventListener(
+                    "submit",
+                    function (
+                        event
+                    ) {
+
+                        if (
+                            presentationSearch &&
+                            presentationSearch
+                                .value
+                                .trim() &&
+                            !presentationItemId
+                                .value
+                        ) {
+
+                            event.preventDefault();
+
+
+                            presentationSearch
+                                .classList
+                                .add(
+                                    "is-invalid"
+                                );
+
+
+                            presentationSearch
+                                .focus();
+
+
+                            renderPresentationResults(
+                                presentationSearch
+                                    .value
+                            );
+
+
+                            return;
+                        }
+
+
+                        sessionStorage
+                            .setItem(
+                                "massPlanActiveTab",
+                                "presentationPlanTab"
+                            );
+                    }
+                );
         }
+
+
+        /* =================================================
+           CREATE MUSIC ROW
+           ================================================= */
 
         function createMusicRow() {
 
-            const row = document.createElement("div");
 
-            row.className = "music-row";
+            const row =
+                document
+                    .createElement(
+                        "div"
+                    );
+
+
+            row.className =
+                "music-row";
+
 
             row.innerHTML = `
-                                                                <div class="music-picker position-relative">
+                                <div class="music-picker position-relative">
 
-                                                                    <div class="mass-song-search-wrap">
+                                    <div class="mass-song-search-wrap">
 
-                                                                        <i class="bi bi-search"></i>
+                                        <i class="bi bi-search"></i>
 
-                                                                        <input type="text"
-                                                                               class="form-control music-search"
-                                                                               data-music-id=""
-                                                                               placeholder="Search music..."
-                                                                               autocomplete="off" />
+                                        <input type="text"
+                                               class="form-control music-search"
+                                               data-music-id=""
+                                               placeholder="Search music..."
+                                               autocomplete="off" />
 
-                                                                    </div>
+                                    </div>
 
-                                                                    <div class="music-results list-group position-absolute w-100 shadow"
-                                                                         style="z-index: 1000; max-height: 250px; overflow-y: auto; display: none;">
-                                                                    </div>
+                                    <div class="music-results
+                                                list-group
+                                                position-absolute
+                                                w-100
+                                                shadow"
+                                         style="
+                                             z-index:1000;
+                                             max-height:250px;
+                                             overflow-y:auto;
+                                             display:none;">
+                                    </div>
 
-                                                                </div>
+                                </div>
 
-                                                                <div class="mass-song-actions">
+                                <div class="mass-song-actions">
 
-                                                                    <a class="btn view-music"
-                                                                       href="#"
-                                                                       target="_blank"
-                                                                       rel="noopener noreferrer"
-                                                                       style="display:none;"
-                                                                       title="View music sheet">
+                                    <a class="btn view-music"
+                                       href="#"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       style="display:none;"
+                                       title="View music sheet">
 
-                                                                        <i class="bi bi-file-earmark-pdf"></i>
+                                        <i class="bi bi-file-earmark-pdf"></i>
 
-                                                                    </a>
+                                    </a>
 
-                                                                    <button type="button"
-                                                                            class="btn remove-song"
-                                                                            title="Remove song">
+                                    <button type="button"
+                                            class="btn remove-song"
+                                            title="Remove song">
 
-                                                                        <i class="bi bi-x-lg"></i>
+                                        <i class="bi bi-x-lg"></i>
 
-                                                                    </button>
+                                    </button>
 
-                                                                </div>
-                                                            `;
+                                </div>
+                            `;
+
 
             return row;
         }
 
+
+        /* =================================================
+           MUSIC COUNT
+           ================================================= */
+
         function updateSelectedSongCount() {
 
-            const counter =
-                document.getElementById("musicPlanSelectedCount");
 
-            if (!counter) {
+            const counter =
+                document.getElementById(
+                    "musicPlanSelectedCount"
+                );
+
+
+            if (
+                !counter
+            ) {
                 return;
             }
 
+
             const selectedCount =
                 Array.from(
-                    document.querySelectorAll(
-                        ".mass-part .music-search"
-                    )
+                    document
+                        .querySelectorAll(
+                            ".mass-part .music-search"
+                        )
                 )
-                    .filter(input =>
-                        input.dataset.musicId
+                    .filter(
+                        input =>
+                            input.dataset
+                                .musicId
                     )
                     .length;
+
 
             counter.textContent =
                 selectedCount;
         }
 
-        document.addEventListener("input", function (event) {
 
-            if (!event.target.classList.contains("music-search")) {
-                return;
-            }
+        /* =================================================
+           MUSIC SEARCH
+           ================================================= */
 
-            const input = event.target;
+        document.addEventListener(
+            "input",
+            function (
+                event
+            ) {
 
-            const picker =
-                input.closest(".music-picker");
-
-            const results =
-                picker.querySelector(".music-results");
-
-            const search =
-                input.value.toLowerCase().trim();
-
-            input.dataset.musicId = "";
-            input.classList.remove("is-invalid");
-
-            results.innerHTML = "";
-
-            if (!search) {
-                results.style.display = "none";
-                return;
-            }
-
-            const massPart =
-                input.closest(".mass-part").dataset.massPart;
-
-            const matches = musicLibrary
-                .filter(music => {
-
-                    const searchableText = [
-                        music.title,
-                        music.composer,
-                        music.arrangement,
-                        music.suggestedPart,
-                        music.key
-                    ]
-                        .join(" ")
-                        .toLowerCase();
-
-                    return searchableText.includes(search);
-                })
-                .sort((a, b) => {
-
-                    const aExactTitle =
-                        a.title.toLowerCase() === search;
-
-                    const bExactTitle =
-                        b.title.toLowerCase() === search;
-
-                    if (aExactTitle !== bExactTitle) {
-                        return aExactTitle ? -1 : 1;
-                    }
-
-                    const aTitleStarts =
-                        a.title.toLowerCase().startsWith(search);
-
-                    const bTitleStarts =
-                        b.title.toLowerCase().startsWith(search);
-
-                    if (aTitleStarts !== bTitleStarts) {
-                        return aTitleStarts ? -1 : 1;
-                    }
-
-                    const aSuggested =
-                        a.suggestedPart.toLowerCase() ===
-                        massPart.toLowerCase();
-
-                    const bSuggested =
-                        b.suggestedPart.toLowerCase() ===
-                        massPart.toLowerCase();
-
-                    if (aSuggested !== bSuggested) {
-                        return aSuggested ? -1 : 1;
-                    }
-
-                    return a.title.localeCompare(b.title);
-                })
-                .slice(0, 15);
-
-            if (matches.length === 0) {
-                results.style.display = "none";
-                return;
-            }
-
-            matches.forEach(music => {
-
-                const item =
-                    document.createElement("button");
-
-                item.type = "button";
-
-                item.className =
-                    "list-group-item list-group-item-action";
-
-                const title =
-                    document.createElement("div");
-
-                title.className = "fw-semibold";
-                title.textContent = music.title;
-
-                const details =
-                    document.createElement("div");
-
-                details.className = "small text-muted";
-
-                const detailParts = [];
-
-                if (music.composer) {
-                    detailParts.push(music.composer);
-                }
-
-                if (music.arrangement) {
-                    detailParts.push(`Arr: ${music.arrangement}`);
-                }
-
-                if (music.suggestedPart) {
-                    detailParts.push(music.suggestedPart);
-                }
-
-                if (music.key) {
-                    detailParts.push(`Key: ${music.key}`);
-                }
-
-                details.textContent =
-                    detailParts.join(" • ");
-
-                item.appendChild(title);
-
-                if (detailParts.length > 0) {
-                    item.appendChild(details);
-                }
-
-                item.addEventListener("click", function () {
-
-                    const selectedDetails = [];
-
-                    selectedDetails.push(music.title);
-
-                    if (music.composer) {
-                        selectedDetails.push(music.composer);
-                    }
-
-                    if (music.arrangement) {
-                        selectedDetails.push(`Arr: ${music.arrangement}`);
-                    }
-
-                    if (music.suggestedPart) {
-                        selectedDetails.push(music.suggestedPart);
-                    }
-
-                    if (music.key) {
-                        selectedDetails.push(`Key: ${music.key}`);
-                    }
-
-                    input.value = selectedDetails.join(" — ");
-                    input.dataset.musicId = music.id;
-                    const row =
-                        input.closest(".music-row");
-
-                    const viewButton =
-                        row.querySelector(".view-music");
-
-                    viewButton.href =
-                        `/MusicLibrary/View/${music.id}`;
-
-                    viewButton.style.display = "";
-
-                    results.style.display = "none";
-                    updateSelectedSongCount();
-                });
-
-                results.appendChild(item);
-            });
-
-            results.style.display = "block";
-
-            const parentPart = input.closest(".mass-part");
-            if (parentPart) {
-                parentPart.classList.add("has-open-results");
-            }
-        });
-
-
-        document.addEventListener("click", function (event) {
-
-            const addButton =
-                event.target.closest(".add-song");
-
-            if (addButton) {
-
-                const card =
-                    addButton.closest(".mass-part");
-
-                const rows =
-                    card.querySelector(".music-rows");
-
-                const newRow = createMusicRow();
-
-                rows.appendChild(newRow);
-
-                newRow
-                    .querySelector(".music-search")
-                    .focus();
-
-                return;
-            }
-
-
-            const removeButton =
-                event.target.closest(".remove-song");
-
-            if (removeButton) {
-
-                const card =
-                    removeButton.closest(".mass-part");
-
-                const rows =
-                    card.querySelector(".music-rows");
-
-                const row =
-                    removeButton.closest(".music-row");
 
                 if (
-                    rows.querySelectorAll(".music-row").length > 1
+                    !event.target
+                        .classList
+                        .contains(
+                            "music-search"
+                        )
                 ) {
-                    row.remove();
+                    return;
                 }
-                else {
-                    const input =
-                        row.querySelector(".music-search");
 
-                    input.value = "";
-                    input.dataset.musicId = "";
-                    const viewButton =
-                        row.querySelector(".view-music");
 
-                    viewButton.href = "#";
-                    viewButton.style.display = "none";
+                const input =
+                    event.target;
+
+
+                const picker =
+                    input.closest(
+                        ".music-picker"
+                    );
+
+
+                const results =
+                    picker.querySelector(
+                        ".music-results"
+                    );
+
+
+                const search =
+                    input.value
+                        .toLowerCase()
+                        .trim();
+
+
+                input.dataset
+                    .musicId =
+                    "";
+
+
+                input.classList
+                    .remove(
+                        "is-invalid"
+                    );
+
+
+                results.innerHTML =
+                    "";
+
+
+                if (
+                    !search
+                ) {
+
+                    results.style
+                        .display =
+                        "none";
+
+
+                    return;
                 }
-                updateSelectedSongCount();
-
-                return;
-            }
 
 
-            if (!event.target.closest(".music-picker")) {
-                document
-                    .querySelectorAll(".music-results")
-                    .forEach(results => {
-                        results.style.display = "none";
-                    });
-
-                document
-                    .querySelectorAll(".mass-part.has-open-results")
-                    .forEach(part => {
-                        part.classList.remove("has-open-results");
-                    });
-            }
-
-        });
+                const massPart =
+                    input
+                        .closest(
+                            ".mass-part"
+                        )
+                        .dataset
+                        .massPart;
 
 
-        form.addEventListener("submit", function (event) {
+                const matches =
+                    musicLibrary
+                        .filter(
+                            music => {
 
-            form.querySelectorAll(".generated-field")
-                .forEach(x => x.remove());
 
-            let index = 0;
-            let invalidMusic = false;
+                                const searchableText =
+                                    [
+                                        music.title,
+                                        music.composer,
+                                        music.arrangement,
+                                        music.suggestedPart,
+                                        music.key
+                                    ]
+                                        .join(" ")
+                                        .toLowerCase();
 
-            document
-                .querySelectorAll(".mass-part")
-                .forEach(card => {
 
-                    const massPart =
-                        card.dataset.massPart;
-
-                    card
-                        .querySelectorAll(".music-search")
-                        .forEach(input => {
-
-                            const title =
-                                input.value.trim();
-
-                            if (!title) {
-                                return;
+                                return searchableText
+                                    .includes(
+                                        search
+                                    );
                             }
+                        )
+                        .sort(
+                            (a, b) => {
 
-                            const musicId =
-                                input.dataset.musicId;
 
-                            if (!musicId) {
+                                const aExactTitle =
+                                    a.title
+                                        .toLowerCase() ===
+                                    search;
 
-                                input.classList.add("is-invalid");
 
-                                invalidMusic = true;
+                                const bExactTitle =
+                                    b.title
+                                        .toLowerCase() ===
+                                    search;
 
-                                return;
+
+                                if (
+                                    aExactTitle !==
+                                    bExactTitle
+                                ) {
+                                    return aExactTitle
+                                        ? -1
+                                        : 1;
+                                }
+
+
+                                const aTitleStarts =
+                                    a.title
+                                        .toLowerCase()
+                                        .startsWith(
+                                            search
+                                        );
+
+
+                                const bTitleStarts =
+                                    b.title
+                                        .toLowerCase()
+                                        .startsWith(
+                                            search
+                                        );
+
+
+                                if (
+                                    aTitleStarts !==
+                                    bTitleStarts
+                                ) {
+                                    return aTitleStarts
+                                        ? -1
+                                        : 1;
+                                }
+
+
+                                const aSuggested =
+                                    (
+                                        a.suggestedPart ||
+                                        ""
+                                    )
+                                        .toLowerCase() ===
+                                    massPart
+                                        .toLowerCase();
+
+
+                                const bSuggested =
+                                    (
+                                        b.suggestedPart ||
+                                        ""
+                                    )
+                                        .toLowerCase() ===
+                                    massPart
+                                        .toLowerCase();
+
+
+                                if (
+                                    aSuggested !==
+                                    bSuggested
+                                ) {
+                                    return aSuggested
+                                        ? -1
+                                        : 1;
+                                }
+
+
+                                return a.title
+                                    .localeCompare(
+                                        b.title
+                                    );
                             }
+                        )
+                        .slice(
+                            0,
+                            15
+                        );
 
-                            addHidden(
-                                `Selections[${index}].MassPart`,
-                                massPart
+
+                if (
+                    matches.length ===
+                    0
+                ) {
+
+                    results.style
+                        .display =
+                        "none";
+
+
+                    return;
+                }
+
+
+                matches.forEach(
+                    music => {
+
+
+                        const item =
+                            document
+                                .createElement(
+                                    "button"
+                                );
+
+
+                        item.type =
+                            "button";
+
+
+                        item.className =
+                            "list-group-item list-group-item-action";
+
+
+                        const title =
+                            document
+                                .createElement(
+                                    "div"
+                                );
+
+
+                        title.className =
+                            "fw-semibold";
+
+
+                        title.textContent =
+                            music.title;
+
+
+                        const details =
+                            document
+                                .createElement(
+                                    "div"
+                                );
+
+
+                        details.className =
+                            "small text-muted";
+
+
+                        const detailParts =
+                            [];
+
+
+                        if (
+                            music.composer
+                        ) {
+                            detailParts
+                                .push(
+                                    music.composer
+                                );
+                        }
+
+
+                        if (
+                            music.arrangement
+                        ) {
+                            detailParts
+                                .push(
+                                    `Arr: ${music.arrangement}`
+                                );
+                        }
+
+
+                        if (
+                            music.suggestedPart
+                        ) {
+                            detailParts
+                                .push(
+                                    music.suggestedPart
+                                );
+                        }
+
+
+                        if (
+                            music.key
+                        ) {
+                            detailParts
+                                .push(
+                                    `Key: ${music.key}`
+                                );
+                        }
+
+
+                        details.textContent =
+                            detailParts
+                                .join(
+                                    " • "
+                                );
+
+
+                        item.appendChild(
+                            title
+                        );
+
+
+                        if (
+                            detailParts.length >
+                            0
+                        ) {
+                            item.appendChild(
+                                details
                             );
+                        }
 
-                            addHidden(
-                                `Selections[${index}].SongId`,
-                                musicId
+
+                        item.addEventListener(
+                            "click",
+                            function () {
+
+
+                                const selectedDetails =
+                                    [];
+
+
+                                selectedDetails
+                                    .push(
+                                        music.title
+                                    );
+
+
+                                if (
+                                    music.composer
+                                ) {
+                                    selectedDetails
+                                        .push(
+                                            music.composer
+                                        );
+                                }
+
+
+                                if (
+                                    music.arrangement
+                                ) {
+                                    selectedDetails
+                                        .push(
+                                            `Arr: ${music.arrangement}`
+                                        );
+                                }
+
+
+                                if (
+                                    music.suggestedPart
+                                ) {
+                                    selectedDetails
+                                        .push(
+                                            music.suggestedPart
+                                        );
+                                }
+
+
+                                if (
+                                    music.key
+                                ) {
+                                    selectedDetails
+                                        .push(
+                                            `Key: ${music.key}`
+                                        );
+                                }
+
+
+                                input.value =
+                                    selectedDetails
+                                        .join(
+                                            " — "
+                                        );
+
+
+                                input.dataset
+                                    .musicId =
+                                    music.id;
+
+
+                                const row =
+                                    input.closest(
+                                        ".music-row"
+                                    );
+
+
+                                const viewButton =
+                                    row.querySelector(
+                                        ".view-music"
+                                    );
+
+
+                                viewButton.href =
+                                    `/MusicLibrary/View/${music.id}`;
+
+
+                                viewButton.style
+                                    .display =
+                                    "";
+
+
+                                results.style
+                                    .display =
+                                    "none";
+
+
+                                updateSelectedSongCount();
+                            }
+                        );
+
+
+                        results
+                            .appendChild(
+                                item
                             );
-
-                            addHidden(
-                                `Selections[${index}].DisplayOrder`,
-                                index + 1
-                            );
-
-                            index++;
-                        });
-
-                });
-
-
-            if (invalidMusic) {
-
-                event.preventDefault();
-
-                alert(
-                    "Please select music from the search results."
+                    }
                 );
+
+
+                results.style
+                    .display =
+                    "block";
+
+
+                const parentPart =
+                    input.closest(
+                        ".mass-part"
+                    );
+
+
+                if (
+                    parentPart
+                ) {
+
+                    parentPart
+                        .classList
+                        .add(
+                            "has-open-results"
+                        );
+                }
             }
+        );
 
-        });
+
+        /* =================================================
+           MUSIC ADD / REMOVE
+           ================================================= */
+
+        document.addEventListener(
+            "click",
+            function (
+                event
+            ) {
 
 
-        function addHidden(name, value) {
+                const addButton =
+                    event.target
+                        .closest(
+                            ".add-song"
+                        );
+
+
+                if (
+                    addButton
+                ) {
+
+
+                    const card =
+                        addButton
+                            .closest(
+                                ".mass-part"
+                            );
+
+
+                    const rows =
+                        card.querySelector(
+                            ".music-rows"
+                        );
+
+
+                    const newRow =
+                        createMusicRow();
+
+
+                    rows.appendChild(
+                        newRow
+                    );
+
+
+                    newRow
+                        .querySelector(
+                            ".music-search"
+                        )
+                        .focus();
+
+
+                    return;
+                }
+
+
+                const removeButton =
+                    event.target
+                        .closest(
+                            ".remove-song"
+                        );
+
+
+                if (
+                    removeButton
+                ) {
+
+
+                    const card =
+                        removeButton
+                            .closest(
+                                ".mass-part"
+                            );
+
+
+                    const rows =
+                        card.querySelector(
+                            ".music-rows"
+                        );
+
+
+                    const row =
+                        removeButton
+                            .closest(
+                                ".music-row"
+                            );
+
+
+                    if (
+                        rows
+                            .querySelectorAll(
+                                ".music-row"
+                            )
+                            .length >
+                        1
+                    ) {
+
+                        row.remove();
+                    }
+                    else {
+
+
+                        const input =
+                            row.querySelector(
+                                ".music-search"
+                            );
+
+
+                        input.value =
+                            "";
+
+
+                        input.dataset
+                            .musicId =
+                            "";
+
+
+                        const viewButton =
+                            row.querySelector(
+                                ".view-music"
+                            );
+
+
+                        viewButton.href =
+                            "#";
+
+
+                        viewButton.style
+                            .display =
+                            "none";
+                    }
+
+
+                    updateSelectedSongCount();
+
+
+                    return;
+                }
+
+
+                if (
+                    !event.target
+                        .closest(
+                            ".music-picker"
+                        )
+                ) {
+
+                    document
+                        .querySelectorAll(
+                            ".music-results"
+                        )
+                        .forEach(
+                            results => {
+
+                                results.style
+                                    .display =
+                                    "none";
+                            }
+                        );
+
+
+                    document
+                        .querySelectorAll(
+                            ".mass-part.has-open-results"
+                        )
+                        .forEach(
+                            part => {
+
+                                part.classList
+                                    .remove(
+                                        "has-open-results"
+                                    );
+                            }
+                        );
+                }
+            }
+        );
+
+
+        /* =================================================
+           SAVE MUSIC PLAN
+           ================================================= */
+
+        if (
+            form
+        ) {
+
+            form.addEventListener(
+                "submit",
+                function (
+                    event
+                ) {
+
+
+                    form
+                        .querySelectorAll(
+                            ".generated-field"
+                        )
+                        .forEach(
+                            x =>
+                                x.remove()
+                        );
+
+
+                    let index =
+                        0;
+
+
+                    let invalidMusic =
+                        false;
+
+
+                    document
+                        .querySelectorAll(
+                            ".mass-part"
+                        )
+                        .forEach(
+                            card => {
+
+
+                                const massPart =
+                                    card.dataset
+                                        .massPart;
+
+
+                                card
+                                    .querySelectorAll(
+                                        ".music-search"
+                                    )
+                                    .forEach(
+                                        input => {
+
+
+                                            const title =
+                                                input.value
+                                                    .trim();
+
+
+                                            if (
+                                                !title
+                                            ) {
+                                                return;
+                                            }
+
+
+                                            const musicId =
+                                                input.dataset
+                                                    .musicId;
+
+
+                                            if (
+                                                !musicId
+                                            ) {
+
+
+                                                input
+                                                    .classList
+                                                    .add(
+                                                        "is-invalid"
+                                                    );
+
+
+                                                invalidMusic =
+                                                    true;
+
+
+                                                return;
+                                            }
+
+
+                                            addHidden(
+                                                `Selections[${index}].MassPart`,
+                                                massPart
+                                            );
+
+
+                                            addHidden(
+                                                `Selections[${index}].SongId`,
+                                                musicId
+                                            );
+
+
+                                            addHidden(
+                                                `Selections[${index}].DisplayOrder`,
+                                                index + 1
+                                            );
+
+
+                                            index++;
+                                        }
+                                    );
+                            }
+                        );
+
+
+                    if (
+                        invalidMusic
+                    ) {
+
+
+                        event.preventDefault();
+
+
+                        alert(
+                            "Please select music from the search results."
+                        );
+
+
+                        return;
+                    }
+
+
+                    sessionStorage
+                        .setItem(
+                            "massPlanActiveTab",
+                            "musicPlanTab"
+                        );
+                }
+            );
+        }
+
+
+        function addHidden(
+            name,
+            value
+        ) {
+
 
             const input =
-                document.createElement("input");
+                document
+                    .createElement(
+                        "input"
+                    );
 
-            input.type = "hidden";
-            input.name = name;
-            input.value = value;
-            input.className = "generated-field";
 
-            form.appendChild(input);
-        }
-        const massPlanList = document.getElementById('massPlanList');
+            input.type =
+                "hidden";
 
-        if (massPlanList) {
-            let draggedPlanItem = null;
 
-            massPlanList.addEventListener('dragstart', function (event) {
-                const row = event.target.closest('.mass-plan-item');
+            input.name =
+                name;
 
-                if (!row) {
-                    return;
-                }
 
-                if (event.target.closest('button, a, form')) {
-                    event.preventDefault();
-                    return;
-                }
+            input.value =
+                value;
 
-                draggedPlanItem = row;
-                row.classList.add('is-dragging');
 
-                if (event.dataTransfer) {
-                    event.dataTransfer.effectAllowed = 'move';
-                    event.dataTransfer.setData('text/plain', row.dataset.planItemId || '');
-                }
-            });
+            input.className =
+                "generated-field";
 
-            massPlanList.addEventListener('dragover', function (event) {
-                if (!draggedPlanItem) {
-                    return;
-                }
 
-                event.preventDefault();
-
-                const target = event.target.closest('.mass-plan-item');
-
-                document.querySelectorAll('#massPlanList .drag-over')
-                    .forEach(row => row.classList.remove('drag-over'));
-
-                if (!target || target === draggedPlanItem) {
-                    return;
-                }
-
-                target.classList.add('drag-over');
-
-                const rect = target.getBoundingClientRect();
-                const insertAfter = event.clientY > rect.top + (rect.height / 2);
-
-                if (insertAfter) {
-                    massPlanList.insertBefore(draggedPlanItem, target.nextSibling);
-                } else {
-                    massPlanList.insertBefore(draggedPlanItem, target);
-                }
-
-                updatePlanNumbers();
-            });
-
-            massPlanList.addEventListener('drop', async function (event) {
-                if (!draggedPlanItem) {
-                    return;
-                }
-
-                event.preventDefault();
-                await savePlanOrder();
-            });
-
-            massPlanList.addEventListener('dragend', function () {
-                if (draggedPlanItem) {
-                    draggedPlanItem.classList.remove('is-dragging');
-                }
-
-                document.querySelectorAll('#massPlanList .drag-over')
-                    .forEach(row => row.classList.remove('drag-over'));
-
-                draggedPlanItem = null;
-                updatePlanNumbers();
-            });
-
-            massPlanList.addEventListener('click', async function (event) {
-                const upButton = event.target.closest('.move-up');
-                const downButton = event.target.closest('.move-down');
-
-                if (!upButton && !downButton) {
-                    return;
-                }
-
-                const row = event.target.closest('.mass-plan-item');
-
-                if (!row) {
-                    return;
-                }
-
-                if (upButton) {
-                    const previous = row.previousElementSibling;
-
-                    if (!previous) {
-                        return;
-                    }
-
-                    massPlanList.insertBefore(row, previous);
-                }
-
-                if (downButton) {
-                    const next = row.nextElementSibling;
-
-                    if (!next) {
-                        return;
-                    }
-
-                    massPlanList.insertBefore(next, row);
-                }
-
-                updatePlanNumbers();
-                await savePlanOrder();
-            });
+            form.appendChild(
+                input
+            );
         }
 
-        function updatePlanNumbers() {
-            const rows = document.querySelectorAll(
-                '#massPlanList .mass-plan-item'
+
+        /* =================================================
+           PRESENTATION ORDER
+           ================================================= */
+
+        const massPlanList =
+            document.getElementById(
+                "massPlanList"
             );
 
-            rows.forEach((row, index) => {
-                const number = row.querySelector('.plan-item-number');
 
-                if (number) {
-                    number.textContent = index + 1;
-                }
-            });
-        }
+        if (
+            massPlanList
+        ) {
 
-        async function savePlanOrder() {
-            const rows =
-                massPlanList.querySelectorAll(
-                    ".mass-plan-item"
+
+            let draggedPlanItem =
+                null;
+
+
+            massPlanList
+                .addEventListener(
+                    "dragstart",
+                    function (
+                        event
+                    ) {
+
+
+                        const row =
+                            event.target
+                                .closest(
+                                    ".mass-plan-item"
+                                );
+
+
+                        if (
+                            !row
+                        ) {
+                            return;
+                        }
+
+
+                        if (
+                            event.target
+                                .closest(
+                                    "button, a, form"
+                                )
+                        ) {
+
+                            event.preventDefault();
+
+                            return;
+                        }
+
+
+                        draggedPlanItem =
+                            row;
+
+
+                        row.classList
+                            .add(
+                                "is-dragging"
+                            );
+
+
+                        if (
+                            event.dataTransfer
+                        ) {
+
+
+                            event.dataTransfer
+                                .effectAllowed =
+                                "move";
+
+
+                            event.dataTransfer
+                                .setData(
+                                    "text/plain",
+                                    row.dataset
+                                        .planItemId ||
+                                    ""
+                                );
+                        }
+                    }
                 );
 
-            const formData = new FormData();
+
+            massPlanList
+                .addEventListener(
+                    "dragover",
+                    function (
+                        event
+                    ) {
+
+
+                        if (
+                            !draggedPlanItem
+                        ) {
+                            return;
+                        }
+
+
+                        event.preventDefault();
+
+
+                        const target =
+                            event.target
+                                .closest(
+                                    ".mass-plan-item"
+                                );
+
+
+                        document
+                            .querySelectorAll(
+                                "#massPlanList .drag-over"
+                            )
+                            .forEach(
+                                row =>
+                                    row.classList
+                                        .remove(
+                                            "drag-over"
+                                        )
+                            );
+
+
+                        if (
+                            !target ||
+                            target ===
+                            draggedPlanItem
+                        ) {
+                            return;
+                        }
+
+
+                        target.classList
+                            .add(
+                                "drag-over"
+                            );
+
+
+                        const rect =
+                            target
+                                .getBoundingClientRect();
+
+
+                        const insertAfter =
+                            event.clientY >
+                            rect.top +
+                            (
+                                rect.height /
+                                2
+                            );
+
+
+                        if (
+                            insertAfter
+                        ) {
+
+
+                            massPlanList
+                                .insertBefore(
+                                    draggedPlanItem,
+                                    target
+                                        .nextSibling
+                                );
+                        }
+                        else {
+
+
+                            massPlanList
+                                .insertBefore(
+                                    draggedPlanItem,
+                                    target
+                                );
+                        }
+
+
+                        updatePlanNumbers();
+                    }
+                );
+
+
+            massPlanList
+                .addEventListener(
+                    "drop",
+                    async function (
+                        event
+                    ) {
+
+
+                        if (
+                            !draggedPlanItem
+                        ) {
+                            return;
+                        }
+
+
+                        event.preventDefault();
+
+
+                        await savePlanOrder();
+                    }
+                );
+
+
+            massPlanList
+                .addEventListener(
+                    "dragend",
+                    function () {
+
+
+                        if (
+                            draggedPlanItem
+                        ) {
+
+
+                            draggedPlanItem
+                                .classList
+                                .remove(
+                                    "is-dragging"
+                                );
+                        }
+
+
+                        document
+                            .querySelectorAll(
+                                "#massPlanList .drag-over"
+                            )
+                            .forEach(
+                                row =>
+                                    row.classList
+                                        .remove(
+                                            "drag-over"
+                                        )
+                            );
+
+
+                        draggedPlanItem =
+                            null;
+
+
+                        updatePlanNumbers();
+                    }
+                );
+
+
+            massPlanList
+                .addEventListener(
+                    "click",
+                    async function (
+                        event
+                    ) {
+
+
+                        const upButton =
+                            event.target
+                                .closest(
+                                    ".move-up"
+                                );
+
+
+                        const downButton =
+                            event.target
+                                .closest(
+                                    ".move-down"
+                                );
+
+
+                        if (
+                            !upButton &&
+                            !downButton
+                        ) {
+                            return;
+                        }
+
+
+                        const row =
+                            event.target
+                                .closest(
+                                    ".mass-plan-item"
+                                );
+
+
+                        if (
+                            !row
+                        ) {
+                            return;
+                        }
+
+
+                        if (
+                            upButton
+                        ) {
+
+
+                            const previous =
+                                row
+                                    .previousElementSibling;
+
+
+                            if (
+                                !previous
+                            ) {
+                                return;
+                            }
+
+
+                            massPlanList
+                                .insertBefore(
+                                    row,
+                                    previous
+                                );
+                        }
+
+
+                        if (
+                            downButton
+                        ) {
+
+
+                            const next =
+                                row
+                                    .nextElementSibling;
+
+
+                            if (
+                                !next
+                            ) {
+                                return;
+                            }
+
+
+                            massPlanList
+                                .insertBefore(
+                                    next,
+                                    row
+                                );
+                        }
+
+
+                        updatePlanNumbers();
+
+
+                        await savePlanOrder();
+                    }
+                );
+        }
+
+
+        function updatePlanNumbers() {
+
+
+            const rows =
+                document
+                    .querySelectorAll(
+                        "#massPlanList .mass-plan-item"
+                    );
+
+
+            rows.forEach(
+                (
+                    row,
+                    index
+                ) => {
+
+
+                    const number =
+                        row.querySelector(
+                            ".plan-item-number"
+                        );
+
+
+                    if (
+                        number
+                    ) {
+
+
+                        number.textContent =
+                            index + 1;
+                    }
+                }
+            );
+        }
+
+
+        async function savePlanOrder() {
+
+
+            if (
+                !massPlanList
+            ) {
+                return false;
+            }
+
+
+            const rows =
+                massPlanList
+                    .querySelectorAll(
+                        ".mass-plan-item"
+                    );
+
+
+            const formData =
+                new FormData();
+
 
             formData.append(
                 "id",
                 "@Model.Mass.Id"
             );
 
-            rows.forEach(row => {
-                formData.append(
-                    "itemIds",
-                    row.dataset.planItemId
-                );
-            });
+
+            rows.forEach(
+                row => {
+
+
+                    formData.append(
+                        "itemIds",
+                        row.dataset
+                            .planItemId
+                    );
+                }
+            );
+
 
             const token =
-                document.querySelector(
-                    'input[name="__RequestVerificationToken"]'
-                );
+                document
+                    .querySelector(
+                        'input[name="__RequestVerificationToken"]'
+                    );
 
-            if (token) {
+
+            if (
+                token
+            ) {
+
+
                 formData.append(
                     "__RequestVerificationToken",
                     token.value
                 );
             }
 
-            try {
-                const response = await fetch(
-                    "?handler=SavePlanOrder",
-                    {
-                        method: "POST",
-                        body: formData
-                    }
-                );
 
-                if (!response.ok) {
+            try {
+
+
+                const response =
+                    await fetch(
+                        "?handler=SavePlanOrder",
+                        {
+                            method:
+                                "POST",
+
+                            body:
+                                formData
+                        }
+                    );
+
+
+                if (
+                    !response.ok
+                ) {
+
+
                     console.error(
                         "SavePlanOrder failed:",
                         response.status,
                         await response.text()
                     );
 
+
                     alert(
                         "Unable to save presentation order."
                     );
 
+
                     return false;
                 }
 
+
                 return true;
             }
-            catch (error) {
+            catch (
+            error
+            ) {
+
+
                 console.error(
                     "SavePlanOrder error:",
                     error
                 );
 
+
                 alert(
                     "Unable to save presentation order."
                 );
+
 
                 return false;
             }
         }
 
-                                                                                                                                                                                        });
+                    }
+                );
+
     </script>
 }

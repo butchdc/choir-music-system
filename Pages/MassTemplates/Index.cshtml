@@ -7,21 +7,25 @@
 
 <div class="mass-templates-page">
 
-    <div class="presentation-library-header">
+    <!-- HEADER -->
 
-        <div class="presentation-library-heading">
+    <div class="mass-template-header">
 
-            <div class="presentation-library-icon">
+        <div class="mass-template-heading">
+
+            <div class="mass-template-header-icon">
                 <i class="bi bi-layers"></i>
             </div>
 
             <div>
 
-                <div class="presentation-library-kicker">
+                <div class="mass-template-kicker">
                     Reusable Plans
                 </div>
 
-                <h1>Mass Templates</h1>
+                <h1>
+                    Mass Templates
+                </h1>
 
                 <p>
                     Reusable Mass plans with default songs
@@ -32,15 +36,17 @@
 
         </div>
 
+        <div class="mass-template-header-actions">
 
-        <div class="presentation-library-header-actions">
-
-            <span class="presentation-library-count">
+            <span class="mass-template-count">
                 @Model.Templates.Count
-                @(Model.Templates.Count == 1 ? "Template" : "Templates")
+                @(Model.Templates.Count == 1
+                    ? "Template"
+                    : "Templates")
             </span>
 
-            <a asp-page="./Create" class="btn btn-warning presentation-library-add">
+            <a asp-page="./Create"
+               class="btn btn-warning mass-template-add">
 
                 <i class="bi bi-plus-lg me-1"></i>
                 Add Mass Template
@@ -54,20 +60,25 @@
 
     @if (Model.Templates.Count == 0)
     {
+        <!-- EMPTY STATE -->
+
         <div class="presentation-library-empty">
 
             <div class="presentation-library-empty-icon">
                 <i class="bi bi-layers"></i>
             </div>
 
-            <h3>No Mass Templates Yet</h3>
+            <h3>
+                No Mass Templates Yet
+            </h3>
 
             <p>
                 Create a reusable Mass structure so future
                 Mass plans can be prepared more quickly.
             </p>
 
-            <a asp-page="./Create" class="btn btn-warning">
+            <a asp-page="./Create"
+               class="btn btn-warning">
 
                 <i class="bi bi-plus-lg me-1"></i>
                 Create First Template
@@ -78,23 +89,30 @@
     }
     else
     {
+        <!-- TOOLBAR -->
+
         <div class="presentation-library-toolbar">
 
             <div class="presentation-library-search">
 
                 <i class="bi bi-search"></i>
 
-                <input type="text" id="massTemplateSearch" class="form-control" placeholder="Search templates..."
+                <input type="text"
+                       id="massTemplateSearch"
+                       class="form-control"
+                       placeholder="Search templates..."
                        autocomplete="off" />
 
-                <button type="button" id="massTemplateClear" class="presentation-library-clear" title="Clear search">
+                <button type="button"
+                        id="massTemplateClear"
+                        class="presentation-library-clear"
+                        title="Clear search">
 
                     <i class="bi bi-x-lg"></i>
 
                 </button>
 
             </div>
-
 
             <div class="presentation-library-toolbar-info">
 
@@ -107,6 +125,8 @@
         </div>
 
 
+        <!-- TABLE -->
+
         <div class="presentation-library-table-card">
 
             <div class="table-responsive">
@@ -114,6 +134,7 @@
                 <table class="table align-middle presentation-library-table js-sortable-table">
 
                     <thead>
+
                         <tr>
 
                             <th data-sort="text">
@@ -129,8 +150,8 @@
                             </th>
 
                         </tr>
-                    </thead>
 
+                    </thead>
 
                     <tbody id="massTemplateTableBody">
 
@@ -139,19 +160,21 @@
                             <tr class="mass-template-row"
                                 data-search="@($"{template.Name} {template.Notes}".ToLowerInvariant())">
 
+                                <!-- TEMPLATE -->
+
                                 <td>
 
                                     <div class="presentation-item-title">
 
                                         <div class="presentation-item-mark mass-template-mark">
-
                                             <i class="bi bi-layers"></i>
-
                                         </div>
 
                                         <div>
 
-                                            <a asp-page="./Plan" asp-route-id="@template.Id" class="presentation-item-name">
+                                            <a asp-page="./Plan"
+                                               asp-route-id="@template.Id"
+                                               class="presentation-item-name">
 
                                                 @template.Name
 
@@ -171,6 +194,8 @@
                                 </td>
 
 
+                                <!-- NOTES -->
+
                                 <td>
 
                                     @if (!string.IsNullOrWhiteSpace(template.Notes))
@@ -189,32 +214,38 @@
                                 </td>
 
 
+                                <!-- ACTIONS -->
+
                                 <td class="text-end">
 
                                     <div class="d-inline-flex gap-2">
 
-                                        <a asp-page="./Plan" asp-route-id="@template.Id"
-                                           class="btn btn-sm btn-outline-primary table-action" title="Plan Template"
+                                        <a asp-page="./Plan"
+                                           asp-route-id="@template.Id"
+                                           class="btn btn-sm btn-outline-primary table-action"
+                                           title="Plan Template"
                                            data-bs-toggle="tooltip">
 
                                             <i class="bi bi-music-note-list"></i>
 
                                         </a>
 
-
-                                        <a asp-page="./Edit" asp-route-id="@template.Id"
+                                        <a asp-page="./Edit"
+                                           asp-route-id="@template.Id"
                                            asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                           class="btn btn-sm btn-outline-secondary table-action" title="Edit"
+                                           class="btn btn-sm btn-outline-secondary table-action"
+                                           title="Edit"
                                            data-bs-toggle="tooltip">
 
                                             <i class="bi bi-pencil"></i>
 
                                         </a>
 
-
-                                        <a asp-page="./Delete" asp-route-id="@template.Id"
+                                        <a asp-page="./Delete"
+                                           asp-route-id="@template.Id"
                                            asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                           class="btn btn-sm btn-outline-danger table-action" title="Delete"
+                                           class="btn btn-sm btn-outline-danger table-action"
+                                           title="Delete"
                                            data-bs-toggle="tooltip">
 
                                             <i class="bi bi-trash"></i>
@@ -235,11 +266,17 @@
             </div>
 
 
-            <div id="massTemplateNoResults" class="presentation-library-no-results" style="display:none;">
+            <!-- NO SEARCH RESULTS -->
+
+            <div id="massTemplateNoResults"
+                 class="presentation-library-no-results"
+                 style="display:none;">
 
                 <i class="bi bi-search"></i>
 
-                <strong>No templates found</strong>
+                <strong>
+                    No templates found
+                </strong>
 
                 <span>
                     Try a different search.
@@ -256,6 +293,7 @@
 @section Scripts
 {
     <script>
+
         document.addEventListener(
             "DOMContentLoaded",
             function () {
@@ -287,11 +325,9 @@
                         )
                     );
 
-
                 if (!search) {
                     return;
                 }
-
 
                 function filterTemplates() {
 
@@ -300,9 +336,7 @@
                             .trim()
                             .toLowerCase();
 
-
                     let visibleCount = 0;
-
 
                     rows.forEach(
                         function (row) {
@@ -315,7 +349,9 @@
                                 value.includes(query);
 
                             row.style.display =
-                                visible ? "" : "none";
+                                visible
+                                    ? ""
+                                    : "none";
 
                             if (visible) {
                                 visibleCount++;
@@ -324,34 +360,37 @@
                         }
                     );
 
-
                     if (resultCount) {
+
                         resultCount.textContent =
                             `${visibleCount} shown`;
-                    }
 
+                    }
 
                     if (clear) {
+
                         clear.style.display =
-                            query ? "inline-flex" : "none";
+                            query
+                                ? "inline-flex"
+                                : "none";
+
                     }
 
-
                     if (noResults) {
+
                         noResults.style.display =
                             visibleCount === 0
                                 ? "flex"
                                 : "none";
+
                     }
 
                 }
-
 
                 search.addEventListener(
                     "input",
                     filterTemplates
                 );
-
 
                 if (clear) {
 
@@ -370,10 +409,10 @@
 
                 }
 
-
                 filterTemplates();
 
             }
         );
+
     </script>
 }

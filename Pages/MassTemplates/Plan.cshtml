@@ -38,8 +38,7 @@
 
     <div class="template-plan-header">
 
-        <a asp-page="./Index"
-           class="template-plan-back">
+        <a asp-page="./Index" class="template-plan-back">
 
             <i class="bi bi-arrow-left"></i>
             Mass Templates
@@ -73,9 +72,7 @@
             </div>
 
 
-            <a asp-page="./Edit"
-               asp-route-id="@Model.Template.Id"
-               class="btn btn-outline-secondary">
+            <a asp-page="./Edit" asp-route-id="@Model.Template.Id" class="btn btn-outline-secondary">
 
                 <i class="bi bi-pencil me-1"></i>
                 Template Details
@@ -178,8 +175,7 @@
 
         @if (Model.PlanItems.Count > 0)
         {
-            <div id="templatePlanList"
-                 class="template-order-list">
+            <div id="templatePlanList" class="template-order-list">
 
                 @for (var i = 0;
                       i < Model.PlanItems.Count;
@@ -195,455 +191,445 @@
                         item.ItemType == "Presentation" &&
                         item.PresentationItem is not null;
 
-
-                    <div class="template-plan-item template-order-item @(isSong ? "song" : "presentation")"
-                         data-item-id="@item.Id">
-
-
-                        <div class="template-order-number">
-
-                            <span class="plan-number">
-                                @(i + 1)
-                            </span>
-
-                        </div>
+                    var isMassTitle =
+                        item.ItemType == "MassTitle";
 
 
-                        <div class="template-order-type">
+                    <div class="template-plan-item template-order-item @(isSong
+                                                                                                                                     ? "song"
+                                                                                                                                     : isMassTitle
+                                                                                                                                         ? "mass-title"
+                                                                                                                                         : "presentation")"
+                 data-item-id="@item.Id" draggable="true">
 
-                            @if (isSong)
-                            {
-                                <i class="bi bi-music-note-beamed"></i>
-                            }
-                            else
-                            {
-                                <i class="bi bi-easel2"></i>
-                            }
-
-                        </div>
-
-
-                        <div class="template-order-content">
-
-                            @if (isSong)
-                            {
-                                <div class="template-order-title">
-                                    @item.Song!.Title
-                                </div>
-
-                                <div class="template-order-meta">
-
-                                    @if (!string.IsNullOrWhiteSpace(item.MassPart))
-                                    {
-                                        <span class="template-order-part">
-                                            @item.MassPart
-                                        </span>
-                                    }
-
-                                    @if (!string.IsNullOrWhiteSpace(item.Song.Composer))
-                                    {
-                                        <span>
-                                            <i class="bi bi-person"></i>
-                                            @item.Song.Composer
-                                        </span>
-                                    }
-
-                                    @if (!string.IsNullOrWhiteSpace(item.Song.Key))
-                                    {
-                                        <span>
-                                            Key @item.Song.Key
-                                        </span>
-                                    }
-
-                                </div>
-                            }
-                            else if (isPresentation)
-                            {
-                                <div class="template-order-title">
-                                    @item.PresentationItem!.Title
-                                </div>
-
-                                <div class="template-order-meta">
-
-                                    @if (!string.IsNullOrWhiteSpace(item.MassPart))
-                                    {
-                                        <span class="template-order-part">
-                                            @item.MassPart
-                                        </span>
-                                    }
-
-                                    @if (!string.IsNullOrWhiteSpace(
-                                        item.PresentationItem.Type))
-                                    {
-                                        <span>
-                                            @item.PresentationItem.Type
-                                        </span>
-                                    }
-
-                                    @if (!string.IsNullOrWhiteSpace(
-                                        item.PresentationItem.Language))
-                                    {
-                                        <span>
-                                            <i class="bi bi-translate"></i>
-                                            @item.PresentationItem.Language
-                                        </span>
-                                    }
-
-                                </div>
-                            }
-
-                        </div>
-
-
-                        <div class="template-order-actions">
-
-                            <button type="button"
-                                    class="btn btn-sm btn-outline-secondary move-up"
-                                    title="Move up"
-                                    data-bs-toggle="tooltip">
-
-                                <i class="bi bi-chevron-up"></i>
-
-                            </button>
-
-
-                            <button type="button"
-                                    class="btn btn-sm btn-outline-secondary move-down"
-                                    title="Move down"
-                                    data-bs-toggle="tooltip">
-
-                                <i class="bi bi-chevron-down"></i>
-
-                            </button>
-
-
-                            <form method="post"
-                                  asp-page-handler="Remove">
-
-                                <input type="hidden"
-                                       name="id"
-                                       value="@Model.Template.Id" />
-
-                                <input type="hidden"
-                                       name="itemId"
-                                       value="@item.Id" />
-
-                                <button type="submit"
-                                        class="btn btn-sm btn-outline-danger table-action"
-                                        title="Remove"
-                                        data-bs-toggle="tooltip">
-
-                                    <i class="bi bi-trash"></i>
-
-                                </button>
-
-                            </form>
-
-                        </div>
-
-                    </div>
-                }
-
-            </div>
-        }
-        else
-        {
-            <div class="template-order-empty">
-
-                <div class="template-order-empty-icon">
-                    <i class="bi bi-music-note-list"></i>
+                <div class="template-drag-handle" title="Drag to reorder" aria-label="Drag to reorder">
+                    <i class="bi bi-grip-vertical"></i>
                 </div>
 
-                <strong>
-                    Start building this template
-                </strong>
 
-                <p>
-                    Add songs or presentation items below.
-                    They will appear here in Mass order.
-                </p>
+                <div class="template-order-number">
+
+                    <span class="plan-number">
+                        @(i + 1)
+                    </span>
+
+                </div>
+
+
+                <div class="template-order-type">
+
+                    @if (isSong)
+                    {
+                        <i class="bi bi-music-note-beamed"></i>
+                    }
+                    else if (isMassTitle)
+                    {
+                        <i class="bi bi-card-heading"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-easel2"></i>
+                    }
+
+                </div>
+
+
+                <div class="template-order-content">
+
+                    @if (isMassTitle)
+                    {
+                        <div class="template-order-title">
+                            Mass Title
+                        </div>
+
+                        <div class="template-order-meta">
+                            <span>
+                                <i class="bi bi-card-heading"></i>
+                                System Slide
+                            </span>
+                        </div>
+                    }
+                    else if (isSong)
+                    {
+                        <div class="template-order-title">
+                            @item.Song!.Title
+                        </div>
+
+                        <div class="template-order-meta">
+
+                            @if (!string.IsNullOrWhiteSpace(item.MassPart))
+                            {
+                                <span class="template-order-part">
+                                    @item.MassPart
+                                </span>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(item.Song.Composer))
+                            {
+                                <span>
+                                    <i class="bi bi-person"></i>
+                                    @item.Song.Composer
+                                </span>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(item.Song.Key))
+                            {
+                                <span>
+                                    Key @item.Song.Key
+                                </span>
+                            }
+
+                        </div>
+                    }
+                    else if (isPresentation)
+                    {
+                        <div class="template-order-title">
+                            @item.PresentationItem!.Title
+                        </div>
+
+                        <div class="template-order-meta">
+
+                            @if (!string.IsNullOrWhiteSpace(item.MassPart))
+                            {
+                                <span class="template-order-part">
+                                    @item.MassPart
+                                </span>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                item.PresentationItem.Type))
+                            {
+                                <span>
+                                    @item.PresentationItem.Type
+                                </span>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                item.PresentationItem.Language))
+                            {
+                                <span>
+                                    <i class="bi bi-translate"></i>
+                                    @item.PresentationItem.Language
+                                </span>
+                            }
+
+                        </div>
+                    }
+
+                </div>
+
+
+                <div class="template-order-actions">
+
+                    <button type="button" class="btn btn-sm btn-outline-secondary move-up" title="Move up"
+                            data-bs-toggle="tooltip">
+
+                        <i class="bi bi-chevron-up"></i>
+
+                    </button>
+
+
+                    <button type="button" class="btn btn-sm btn-outline-secondary move-down" title="Move down"
+                            data-bs-toggle="tooltip">
+
+                        <i class="bi bi-chevron-down"></i>
+
+                    </button>
+
+
+                    @if (!isMassTitle)
+                    {
+                        <form method="post" asp-page-handler="Remove">
+
+                            <input type="hidden" name="id" value="@Model.Template.Id" />
+
+                            <input type="hidden" name="itemId" value="@item.Id" />
+
+                            <button type="submit" class="btn btn-sm btn-outline-danger table-action" title="Remove"
+                                    data-bs-toggle="tooltip">
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+
+                        </form>
+                    }
+
+                </div>
 
             </div>
         }
+
+    </div>
+}
+        else
+{
+    <div class="template-order-empty">
+
+        <div class="template-order-empty-icon">
+            <i class="bi bi-music-note-list"></i>
+        </div>
+
+        <strong>
+            Start building this template
+        </strong>
+
+        <p>
+            Add songs or presentation items below.
+            They will appear here in Mass order.
+        </p>
+
+    </div>
+}
+
+</section>
+
+
+
+<!-- ADD ITEMS -->
+
+<div class="template-add-heading">
+
+    <div>
+
+        <div class="template-order-kicker">
+            Build Template
+        </div>
+
+        <h2>Add Items</h2>
+
+        <p>
+            Add reusable songs and presentation content
+            to this template.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="template-add-grid">
+
+
+    <!-- ADD SONG -->
+
+    <section class="template-add-card song">
+
+        <div class="template-add-card-header">
+
+            <div class="template-add-card-icon">
+                <i class="bi bi-music-note-beamed"></i>
+            </div>
+
+            <div>
+                <h3>Add Song</h3>
+                <p>Choose from the Music Library.</p>
+            </div>
+
+        </div>
+
+
+        <form method="post" asp-page-handler="AddSong" id="addTemplateSongForm">
+
+            <input type="hidden" name="id" value="@Model.Template.Id" />
+
+            <input type="hidden" name="songId" id="templateSongId" />
+
+
+            <div class="template-add-field">
+
+                <label class="form-label">
+                    Song
+                </label>
+
+
+                <div class="music-picker position-relative">
+
+                    <div class="template-search-wrap">
+
+                        <i class="bi bi-search"></i>
+
+                        <input type="text" id="templateSongSearch" class="form-control"
+                               placeholder="Search title, composer, part or key..." autocomplete="off" />
+
+                    </div>
+
+
+                    <div id="templateSongResults"
+                         class="music-results list-group position-absolute w-100 shadow template-search-results"
+                         style="display:none;">
+                    </div>
+
+                </div>
+
+
+                <div id="templateSongDetails" class="template-selected-details">
+                </div>
+
+            </div>
+
+
+            <div class="template-add-field">
+
+                <label class="form-label">
+                    Mass Part
+                </label>
+
+                <select name="massPart" id="templateMassPart" class="form-select">
+
+                    <option value="">
+                        Not specified
+                    </option>
+
+                    @foreach (var part in massParts)
+                    {
+                        <option value="@part">
+                            @part
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div class="template-add-actions">
+
+                <button type="submit" class="btn btn-primary">
+
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Add Song
+
+                </button>
+
+
+                <a id="templateViewSong" class="btn btn-outline-secondary" href="#" target="_blank"
+                   rel="noopener noreferrer" style="display:none;">
+
+                    <i class="bi bi-file-earmark-pdf me-1"></i>
+                    View PDF
+
+                </a>
+
+            </div>
+
+        </form>
 
     </section>
 
 
 
-    <!-- ADD ITEMS -->
+    <!-- ADD PRESENTATION -->
 
-    <div class="template-add-heading">
+    <section class="template-add-card presentation">
 
-        <div>
+        <div class="template-add-card-header">
 
-            <div class="template-order-kicker">
-                Build Template
+            <div class="template-add-card-icon">
+                <i class="bi bi-easel2"></i>
             </div>
 
-            <h2>Add Items</h2>
-
-            <p>
-                Add reusable songs and presentation content
-                to this template.
-            </p>
+            <div>
+                <h3>Add Presentation Item</h3>
+                <p>Choose from the Presentation Library.</p>
+            </div>
 
         </div>
 
-    </div>
+
+        <form method="post" asp-page-handler="AddPresentation" id="addTemplatePresentationForm">
+
+            <input type="hidden" name="id" value="@Model.Template.Id" />
+
+            <input type="hidden" name="presentationItemId" id="templatePresentationId" />
 
 
-    <div class="template-add-grid">
+            <div class="template-add-field">
+
+                <label class="form-label">
+                    Presentation Item
+                </label>
 
 
-        <!-- ADD SONG -->
+                <div class="presentation-picker position-relative">
 
-        <section class="template-add-card song">
+                    <div class="template-search-wrap">
 
-            <div class="template-add-card-header">
+                        <i class="bi bi-search"></i>
 
-                <div class="template-add-card-icon">
-                    <i class="bi bi-music-note-beamed"></i>
+                        <input type="text" id="templatePresentationSearch" class="form-control"
+                               placeholder="Search title, type or language..." autocomplete="off" />
+
+                    </div>
+
+
+                    <div id="templatePresentationResults"
+                         class="list-group position-absolute w-100 shadow template-search-results"
+                         style="display:none;">
+                    </div>
+
                 </div>
 
-                <div>
-                    <h3>Add Song</h3>
-                    <p>Choose from the Music Library.</p>
+
+                <div id="templatePresentationDetails" class="template-selected-details">
                 </div>
 
             </div>
 
 
-            <form method="post"
-                  asp-page-handler="AddSong"
-                  id="addTemplateSongForm">
+            <div class="template-add-field">
 
-                <input type="hidden"
-                       name="id"
-                       value="@Model.Template.Id" />
+                <label class="form-label">
+                    Mass Part
+                </label>
 
-                <input type="hidden"
-                       name="songId"
-                       id="templateSongId" />
+                <select name="massPart" id="templatePresentationMassPart" class="form-select">
 
+                    <option value="">
+                        Not specified
+                    </option>
 
-                <div class="template-add-field">
-
-                    <label class="form-label">
-                        Song
-                    </label>
-
-
-                    <div class="music-picker position-relative">
-
-                        <div class="template-search-wrap">
-
-                            <i class="bi bi-search"></i>
-
-                            <input type="text"
-                                   id="templateSongSearch"
-                                   class="form-control"
-                                   placeholder="Search title, composer, part or key..."
-                                   autocomplete="off" />
-
-                        </div>
-
-
-                        <div id="templateSongResults"
-                             class="music-results list-group position-absolute w-100 shadow template-search-results"
-                             style="display:none;">
-                        </div>
-
-                    </div>
-
-
-                    <div id="templateSongDetails"
-                         class="template-selected-details">
-                    </div>
-
-                </div>
-
-
-                <div class="template-add-field">
-
-                    <label class="form-label">
-                        Mass Part
-                    </label>
-
-                    <select name="massPart"
-                            id="templateMassPart"
-                            class="form-select">
-
-                        <option value="">
-                            Not specified
+                    @foreach (var part in massParts)
+                    {
+                        <option value="@part">
+                            @part
                         </option>
+                    }
 
-                        @foreach (var part in massParts)
-                        {
-                            <option value="@part">
-                                @part
-                            </option>
-                        }
-
-                    </select>
-
-                </div>
-
-
-                <div class="template-add-actions">
-
-                    <button type="submit"
-                            class="btn btn-primary">
-
-                        <i class="bi bi-plus-lg me-1"></i>
-                        Add Song
-
-                    </button>
-
-
-                    <a id="templateViewSong"
-                       class="btn btn-outline-secondary"
-                       href="#"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       style="display:none;">
-
-                        <i class="bi bi-file-earmark-pdf me-1"></i>
-                        View PDF
-
-                    </a>
-
-                </div>
-
-            </form>
-
-        </section>
-
-
-
-        <!-- ADD PRESENTATION -->
-
-        <section class="template-add-card presentation">
-
-            <div class="template-add-card-header">
-
-                <div class="template-add-card-icon">
-                    <i class="bi bi-easel2"></i>
-                </div>
-
-                <div>
-                    <h3>Add Presentation Item</h3>
-                    <p>Choose from the Presentation Library.</p>
-                </div>
+                </select>
 
             </div>
 
 
-            <form method="post"
-                  asp-page-handler="AddPresentation"
-                  id="addTemplatePresentationForm">
+            <div class="template-add-actions">
 
-                <input type="hidden"
-                       name="id"
-                       value="@Model.Template.Id" />
+                <button type="submit" class="btn btn-template-presentation">
 
-                <input type="hidden"
-                       name="presentationItemId"
-                       id="templatePresentationId" />
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Add Presentation Item
 
+                </button>
 
-                <div class="template-add-field">
+            </div>
 
-                    <label class="form-label">
-                        Presentation Item
-                    </label>
+        </form>
+
+    </section>
+
+</div>
 
 
-                    <div class="presentation-picker position-relative">
+<div class="template-plan-footer">
 
-                        <div class="template-search-wrap">
+    <i class="bi bi-info-circle"></i>
 
-                            <i class="bi bi-search"></i>
+    <span>
+        Changes to the order are saved automatically.
+        This template will be copied when selected
+        while creating a Mass.
+    </span>
 
-                            <input type="text"
-                                   id="templatePresentationSearch"
-                                   class="form-control"
-                                   placeholder="Search title, type or language..."
-                                   autocomplete="off" />
-
-                        </div>
-
-
-                        <div id="templatePresentationResults"
-                             class="list-group position-absolute w-100 shadow template-search-results"
-                             style="display:none;">
-                        </div>
-
-                    </div>
-
-
-                    <div id="templatePresentationDetails"
-                         class="template-selected-details">
-                    </div>
-
-                </div>
-
-
-                <div class="template-add-field">
-
-                    <label class="form-label">
-                        Mass Part
-                    </label>
-
-                    <select name="massPart"
-                            id="templatePresentationMassPart"
-                            class="form-select">
-
-                        <option value="">
-                            Not specified
-                        </option>
-
-                        @foreach (var part in massParts)
-                        {
-                            <option value="@part">
-                                @part
-                            </option>
-                        }
-
-                    </select>
-
-                </div>
-
-
-                <div class="template-add-actions">
-
-                    <button type="submit"
-                            class="btn btn-template-presentation">
-
-                        <i class="bi bi-plus-lg me-1"></i>
-                        Add Presentation Item
-
-                    </button>
-
-                </div>
-
-            </form>
-
-        </section>
-
-    </div>
-
-
-    <div class="template-plan-footer">
-
-        <i class="bi bi-info-circle"></i>
-
-        <span>
-            Changes to the order are saved automatically.
-            This template will be copied when selected
-            while creating a Mass.
-        </span>
-
-    </div>
+</div>
 
 </div>
 
@@ -664,6 +650,8 @@
                     document.getElementById(
                         "templatePlanList"
                     );
+
+                let draggedTemplateItem = null;
 
 
                 if (templatePlanList) {
@@ -728,6 +716,144 @@
                                 }
                             }
 
+
+                            updateNumbers();
+
+                            await saveOrder();
+                        }
+                    );
+
+                    templatePlanList.addEventListener(
+                        "dragstart",
+                        function (event) {
+
+                            const row =
+                                event.target.closest(
+                                    ".template-plan-item"
+                                );
+
+                            if (!row) {
+                                return;
+                            }
+
+                            draggedTemplateItem = row;
+
+                            row.classList.add(
+                                "is-dragging"
+                            );
+
+                            event.dataTransfer.effectAllowed =
+                                "move";
+
+                            event.dataTransfer.setData(
+                                "text/plain",
+                                row.dataset.itemId
+                            );
+                        }
+                    );
+
+
+                    templatePlanList.addEventListener(
+                        "dragover",
+                        function (event) {
+
+                            event.preventDefault();
+
+                            if (!draggedTemplateItem) {
+                                return;
+                            }
+
+                            const target =
+                                event.target.closest(
+                                    ".template-plan-item"
+                                );
+
+                            if (
+                                !target ||
+                                target === draggedTemplateItem
+                            ) {
+                                return;
+                            }
+
+                            templatePlanList
+                                .querySelectorAll(
+                                    ".template-plan-item"
+                                )
+                                .forEach(row => {
+                                    row.classList.remove(
+                                        "drag-over"
+                                    );
+                                });
+
+                            target.classList.add(
+                                "drag-over"
+                            );
+
+                            const rect =
+                                target.getBoundingClientRect();
+
+                            const insertAfter =
+                                event.clientY >
+                                rect.top + rect.height / 2;
+
+                            if (insertAfter) {
+                                templatePlanList.insertBefore(
+                                    draggedTemplateItem,
+                                    target.nextSibling
+                                );
+                            }
+                            else {
+                                templatePlanList.insertBefore(
+                                    draggedTemplateItem,
+                                    target
+                                );
+                            }
+                        }
+                    );
+
+
+                    templatePlanList.addEventListener(
+                        "drop",
+                        function (event) {
+
+                            event.preventDefault();
+
+                            templatePlanList
+                                .querySelectorAll(
+                                    ".template-plan-item"
+                                )
+                                .forEach(row => {
+                                    row.classList.remove(
+                                        "drag-over"
+                                    );
+                                });
+                        }
+                    );
+
+
+                    templatePlanList.addEventListener(
+                        "dragend",
+                        async function () {
+
+                            if (draggedTemplateItem) {
+                                draggedTemplateItem
+                                    .classList
+                                    .remove(
+                                        "is-dragging"
+                                    );
+                            }
+
+                            templatePlanList
+                                .querySelectorAll(
+                                    ".template-plan-item"
+                                )
+                                .forEach(row => {
+                                    row.classList.remove(
+                                        "drag-over"
+                                    );
+                                });
+
+                            draggedTemplateItem = null;
 
                             updateNumbers();
 
@@ -853,806 +979,806 @@
 
                 const musicLibrary = [
 
-                    @foreach (var music in Model.Songs)
+                                                @foreach (var music in Model.Songs)
                     {
                         @:{
-                            @:id: @music.Id,
-                            @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
-                            @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
-                            @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
-                            @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
-                            @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
-                        @:},
-                    }
+                                                                                    @:id: @music.Id,
+                        @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
+                        @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
+                        @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
+                        @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
+                        @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
+                                                                                @:},
+            }
 
-                ];
-
-
-                const songSearch =
-                    document.getElementById(
-                        "templateSongSearch"
-                    );
-
-                const songResults =
-                    document.getElementById(
-                        "templateSongResults"
-                    );
-
-                const songId =
-                    document.getElementById(
-                        "templateSongId"
-                    );
-
-                const songMassPart =
-                    document.getElementById(
-                        "templateMassPart"
-                    );
-
-                const songDetails =
-                    document.getElementById(
-                        "templateSongDetails"
-                    );
-
-                const viewSong =
-                    document.getElementById(
-                        "templateViewSong"
-                    );
-
-
-                if (songSearch) {
-
-                    songSearch.addEventListener(
-                        "input",
-                        function () {
-
-                            const search =
-                                this.value
-                                    .toLowerCase()
-                                    .trim();
-
-
-                            songId.value = "";
-
-                            songDetails.textContent = "";
-
-                            songSearch.classList.remove(
-                                "is-invalid"
-                            );
-
-                            viewSong.href = "#";
-
-                            viewSong.style.display =
-                                "none";
-
-                            songResults.innerHTML = "";
-
-
-                            if (!search) {
-
-                                songResults.style.display =
-                                    "none";
-
-                                return;
-                            }
-
-
-                            const selectedPart =
-                                songMassPart.value
-                                    .toLowerCase();
-
-
-                            const matches =
-                                musicLibrary
-                                    .filter(song => {
-
-                                        const searchableText = [
-                                            song.title,
-                                            song.composer,
-                                            song.arrangement,
-                                            song.suggestedPart,
-                                            song.key
-                                        ]
-                                            .join(" ")
-                                            .toLowerCase();
-
-                                        return searchableText
-                                            .includes(search);
-                                    })
-                                    .sort((a, b) => {
-
-                                        const aTitle =
-                                            a.title
-                                                .toLowerCase();
-
-                                        const bTitle =
-                                            b.title
-                                                .toLowerCase();
-
-
-                                        const aExact =
-                                            aTitle === search;
-
-                                        const bExact =
-                                            bTitle === search;
-
-                                        if (
-                                            aExact !==
-                                            bExact
-                                        ) {
-                                            return aExact
-                                                ? -1
-                                                : 1;
-                                        }
-
-
-                                        const aStarts =
-                                            aTitle
-                                                .startsWith(
-                                                    search
-                                                );
-
-                                        const bStarts =
-                                            bTitle
-                                                .startsWith(
-                                                    search
-                                                );
-
-                                        if (
-                                            aStarts !==
-                                            bStarts
-                                        ) {
-                                            return aStarts
-                                                ? -1
-                                                : 1;
-                                        }
-
-
-                                        const aSuggested =
-                                            selectedPart &&
-                                            songPartMatches(
-                                                a.suggestedPart,
-                                                selectedPart
-                                            );
-
-                                        const bSuggested =
-                                            selectedPart &&
-                                            songPartMatches(
-                                                b.suggestedPart,
-                                                selectedPart
-                                            );
-
-                                        if (
-                                            aSuggested !==
-                                            bSuggested
-                                        ) {
-                                            return aSuggested
-                                                ? -1
-                                                : 1;
-                                        }
-
-
-                                        return a.title
-                                            .localeCompare(
-                                                b.title
-                                            );
-                                    })
-                                    .slice(0, 15);
-
-
-                            if (
-                                matches.length === 0
-                            ) {
-
-                                songResults.style.display =
-                                    "none";
-
-                                return;
-                            }
-
-
-                            matches.forEach(song => {
-
-                                const result =
-                                    document.createElement(
-                                        "button"
-                                    );
-
-                                result.type =
-                                    "button";
-
-                                result.className =
-                                    "list-group-item list-group-item-action";
-
-
-                                const title =
-                                    document.createElement(
-                                        "div"
-                                    );
-
-                                title.className =
-                                    "fw-semibold";
-
-                                title.textContent =
-                                    song.title;
-
-                                result.appendChild(
-                                    title
-                                );
-
-
-                                const details =
-                                    buildSongDetails(
-                                        song
-                                    );
-
-
-                                if (
-                                    details.length > 0
-                                ) {
-
-                                    const detail =
-                                        document
-                                            .createElement(
-                                                "div"
-                                            );
-
-                                    detail.className =
-                                        "small text-muted";
-
-                                    detail.textContent =
-                                        details.join(
-                                            " • "
-                                        );
-
-                                    result.appendChild(
-                                        detail
-                                    );
-                                }
-
-
-                                result.addEventListener(
-                                    "click",
-                                    function () {
-
-                                        const selectedDetails =
-                                            [
-                                                song.title
                                             ];
 
 
-                                        if (song.composer) {
-                                            selectedDetails
-                                                .push(
-                                                    song.composer
-                                                );
-                                        }
+        const songSearch =
+            document.getElementById(
+                "templateSongSearch"
+            );
 
-                                        if (
-                                            song.arrangement
-                                        ) {
-                                            selectedDetails
-                                                .push(
-                                                    `Arr: ${song.arrangement}`
-                                                );
-                                        }
+        const songResults =
+            document.getElementById(
+                "templateSongResults"
+            );
 
-                                        if (
-                                            song.suggestedPart
-                                        ) {
-                                            selectedDetails
-                                                .push(
-                                                    song.suggestedPart
-                                                );
-                                        }
+        const songId =
+            document.getElementById(
+                "templateSongId"
+            );
 
-                                        if (song.key) {
-                                            selectedDetails
-                                                .push(
-                                                    `Key: ${song.key}`
-                                                );
-                                        }
+        const songMassPart =
+            document.getElementById(
+                "templateMassPart"
+            );
+
+        const songDetails =
+            document.getElementById(
+                "templateSongDetails"
+            );
+
+        const viewSong =
+            document.getElementById(
+                "templateViewSong"
+            );
 
 
-                                        songSearch.value =
-                                            selectedDetails
-                                                .join(
-                                                    " — "
-                                                );
+        if (songSearch) {
 
-                                        songId.value =
-                                            song.id;
+            songSearch.addEventListener(
+                "input",
+                function () {
 
-                                        songDetails
-                                            .textContent =
-                                            details.join(
-                                                " • "
-                                            );
-
-                                        viewSong.href =
-                                            `/MusicLibrary/View/${song.id}`;
-
-                                        viewSong.style
-                                            .display = "";
-
-                                        songResults.style
-                                            .display =
-                                            "none";
+                    const search =
+                        this.value
+                            .toLowerCase()
+                            .trim();
 
 
-                                        if (
-                                            !songMassPart
-                                                .value &&
-                                            song.suggestedPart
-                                        ) {
-                                            songMassPart.value =
-                                                song.suggestedPart;
-                                        }
-                                    }
-                                );
+                    songId.value = "";
 
+                    songDetails.textContent = "";
 
-                                songResults.appendChild(
-                                    result
-                                );
-                            });
-
-
-                            songResults.style.display =
-                                "block";
-                        }
-                    );
-                }
-
-
-                function buildSongDetails(song) {
-
-                    const details = [];
-
-                    if (song.composer) {
-                        details.push(
-                            song.composer
-                        );
-                    }
-
-                    if (song.arrangement) {
-                        details.push(
-                            `Arr: ${song.arrangement}`
-                        );
-                    }
-
-                    if (song.suggestedPart) {
-                        details.push(
-                            song.suggestedPart
-                        );
-                    }
-
-                    if (song.key) {
-                        details.push(
-                            `Key: ${song.key}`
-                        );
-                    }
-
-                    return details;
-                }
-
-
-                function songPartMatches(
-                    suggestedPart,
-                    selectedPart
-                ) {
-
-                    return (
-                        suggestedPart ||
-                        ""
-                    )
-                        .toLowerCase() ===
-                        selectedPart;
-                }
-
-
-
-                /*
-                 * PRESENTATION SEARCH
-                 */
-
-                const presentationLibrary = [
-
-                    @foreach (var item in Model.PresentationLibrary)
-                    {
-                        @:{
-                            @:id: @item.Id,
-                            @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Title))",
-                            @:type: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Type ?? ""))",
-                            @:language: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Language ?? ""))"
-                        @:},
-                    }
-
-                ];
-
-
-                const presentationSearch =
-                    document.getElementById(
-                        "templatePresentationSearch"
+                    songSearch.classList.remove(
+                        "is-invalid"
                     );
 
-                const presentationResults =
-                    document.getElementById(
-                        "templatePresentationResults"
-                    );
+                    viewSong.href = "#";
 
-                const presentationId =
-                    document.getElementById(
-                        "templatePresentationId"
-                    );
+                    viewSong.style.display =
+                        "none";
 
-                const presentationDetails =
-                    document.getElementById(
-                        "templatePresentationDetails"
-                    );
+                    songResults.innerHTML = "";
 
 
-                if (presentationSearch) {
+                    if (!search) {
 
-                    presentationSearch.addEventListener(
-                        "input",
-                        function () {
+                        songResults.style.display =
+                            "none";
 
-                            const search =
-                                this.value
-                                    .toLowerCase()
-                                    .trim();
+                        return;
+                    }
 
 
-                            presentationId.value =
-                                "";
-
-                            presentationDetails
-                                .textContent = "";
-
-                            presentationSearch
-                                .classList
-                                .remove(
-                                    "is-invalid"
-                                );
-
-                            presentationResults
-                                .innerHTML = "";
+                    const selectedPart =
+                        songMassPart.value
+                            .toLowerCase();
 
 
-                            if (!search) {
+                    const matches =
+                        musicLibrary
+                            .filter(song => {
 
-                                presentationResults
-                                    .style
-                                    .display =
-                                    "none";
+                                const searchableText = [
+                                    song.title,
+                                    song.composer,
+                                    song.arrangement,
+                                    song.suggestedPart,
+                                    song.key
+                                ]
+                                    .join(" ")
+                                    .toLowerCase();
 
-                                return;
-                            }
+                                return searchableText
+                                    .includes(search);
+                            })
+                            .sort((a, b) => {
 
+                                const aTitle =
+                                    a.title
+                                        .toLowerCase();
 
-                            const matches =
-                                presentationLibrary
-                                    .filter(item => {
-
-                                        const searchableText = [
-                                            item.title,
-                                            item.type,
-                                            item.language
-                                        ]
-                                            .join(" ")
-                                            .toLowerCase();
-
-                                        return searchableText
-                                            .includes(search);
-                                    })
-                                    .sort((a, b) => {
-
-                                        const aTitle =
-                                            a.title
-                                                .toLowerCase();
-
-                                        const bTitle =
-                                            b.title
-                                                .toLowerCase();
+                                const bTitle =
+                                    b.title
+                                        .toLowerCase();
 
 
-                                        const aExact =
-                                            aTitle ===
-                                            search;
+                                const aExact =
+                                    aTitle === search;
 
-                                        const bExact =
-                                            bTitle ===
-                                            search;
+                                const bExact =
+                                    bTitle === search;
 
-                                        if (
-                                            aExact !==
-                                            bExact
-                                        ) {
-                                            return aExact
-                                                ? -1
-                                                : 1;
-                                        }
+                                if (
+                                    aExact !==
+                                    bExact
+                                ) {
+                                    return aExact
+                                        ? -1
+                                        : 1;
+                                }
 
 
-                                        const aStarts =
-                                            aTitle
-                                                .startsWith(
-                                                    search
-                                                );
+                                const aStarts =
+                                    aTitle
+                                        .startsWith(
+                                            search
+                                        );
 
-                                        const bStarts =
-                                            bTitle
-                                                .startsWith(
-                                                    search
-                                                );
+                                const bStarts =
+                                    bTitle
+                                        .startsWith(
+                                            search
+                                        );
 
-                                        if (
-                                            aStarts !==
-                                            bStarts
-                                        ) {
-                                            return aStarts
-                                                ? -1
-                                                : 1;
-                                        }
-
-
-                                        return a.title
-                                            .localeCompare(
-                                                b.title
-                                            );
-                                    })
-                                    .slice(0, 15);
+                                if (
+                                    aStarts !==
+                                    bStarts
+                                ) {
+                                    return aStarts
+                                        ? -1
+                                        : 1;
+                                }
 
 
-                            if (
-                                matches.length === 0
-                            ) {
-
-                                presentationResults
-                                    .style
-                                    .display =
-                                    "none";
-
-                                return;
-                            }
-
-
-                            matches.forEach(item => {
-
-                                const result =
-                                    document.createElement(
-                                        "button"
+                                const aSuggested =
+                                    selectedPart &&
+                                    songPartMatches(
+                                        a.suggestedPart,
+                                        selectedPart
                                     );
 
-                                result.type =
-                                    "button";
+                                const bSuggested =
+                                    selectedPart &&
+                                    songPartMatches(
+                                        b.suggestedPart,
+                                        selectedPart
+                                    );
 
-                                result.className =
-                                    "list-group-item list-group-item-action";
+                                if (
+                                    aSuggested !==
+                                    bSuggested
+                                ) {
+                                    return aSuggested
+                                        ? -1
+                                        : 1;
+                                }
 
 
-                                const title =
-                                    document.createElement(
+                                return a.title
+                                    .localeCompare(
+                                        b.title
+                                    );
+                            })
+                            .slice(0, 15);
+
+
+                    if (
+                        matches.length === 0
+                    ) {
+
+                        songResults.style.display =
+                            "none";
+
+                        return;
+                    }
+
+
+                    matches.forEach(song => {
+
+                        const result =
+                            document.createElement(
+                                "button"
+                            );
+
+                        result.type =
+                            "button";
+
+                        result.className =
+                            "list-group-item list-group-item-action";
+
+
+                        const title =
+                            document.createElement(
+                                "div"
+                            );
+
+                        title.className =
+                            "fw-semibold";
+
+                        title.textContent =
+                            song.title;
+
+                        result.appendChild(
+                            title
+                        );
+
+
+                        const details =
+                            buildSongDetails(
+                                song
+                            );
+
+
+                        if (
+                            details.length > 0
+                        ) {
+
+                            const detail =
+                                document
+                                    .createElement(
                                         "div"
                                     );
 
-                                title.className =
-                                    "fw-semibold";
+                            detail.className =
+                                "small text-muted";
 
-                                title.textContent =
-                                    item.title;
-
-                                result.appendChild(
-                                    title
+                            detail.textContent =
+                                details.join(
+                                    " • "
                                 );
 
+                            result.appendChild(
+                                detail
+                            );
+                        }
 
-                                const details = [];
+
+                        result.addEventListener(
+                            "click",
+                            function () {
+
+                                const selectedDetails =
+                                    [
+                                        song.title
+                                    ];
+
+
+                                if (song.composer) {
+                                    selectedDetails
+                                        .push(
+                                            song.composer
+                                        );
+                                }
+
+                                if (
+                                    song.arrangement
+                                ) {
+                                    selectedDetails
+                                        .push(
+                                            `Arr: ${song.arrangement}`
+                                        );
+                                }
+
+                                if (
+                                    song.suggestedPart
+                                ) {
+                                    selectedDetails
+                                        .push(
+                                            song.suggestedPart
+                                        );
+                                }
+
+                                if (song.key) {
+                                    selectedDetails
+                                        .push(
+                                            `Key: ${song.key}`
+                                        );
+                                }
+
+
+                                songSearch.value =
+                                    selectedDetails
+                                        .join(
+                                            " — "
+                                        );
+
+                                songId.value =
+                                    song.id;
+
+                                songDetails
+                                    .textContent =
+                                    details.join(
+                                        " • "
+                                    );
+
+                                viewSong.href =
+                                    `/MusicLibrary/View/${song.id}`;
+
+                                viewSong.style
+                                    .display = "";
+
+                                songResults.style
+                                    .display =
+                                    "none";
+
+
+                                if (
+                                    !songMassPart
+                                        .value &&
+                                    song.suggestedPart
+                                ) {
+                                    songMassPart.value =
+                                        song.suggestedPart;
+                                }
+                            }
+                        );
+
+
+                        songResults.appendChild(
+                            result
+                        );
+                    });
+
+
+                    songResults.style.display =
+                        "block";
+                }
+            );
+        }
+
+
+        function buildSongDetails(song) {
+
+            const details = [];
+
+            if (song.composer) {
+                details.push(
+                    song.composer
+                );
+            }
+
+            if (song.arrangement) {
+                details.push(
+                    `Arr: ${song.arrangement}`
+                );
+            }
+
+            if (song.suggestedPart) {
+                details.push(
+                    song.suggestedPart
+                );
+            }
+
+            if (song.key) {
+                details.push(
+                    `Key: ${song.key}`
+                );
+            }
+
+            return details;
+        }
+
+
+        function songPartMatches(
+            suggestedPart,
+            selectedPart
+        ) {
+
+            return (
+                suggestedPart ||
+                ""
+            )
+                .toLowerCase() ===
+                selectedPart;
+        }
+
+
+
+        /*
+         * PRESENTATION SEARCH
+         */
+
+        const presentationLibrary = [
+
+                                                @foreach (var item in Model.PresentationLibrary)
+            {
+                @:{
+                                                                                    @:id: @item.Id,
+                @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Title))",
+                @:type: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Type ?? ""))",
+                @:language: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Language ?? ""))"
+                                                                                @:},
+        }
+
+                                            ];
+
+
+        const presentationSearch =
+            document.getElementById(
+                "templatePresentationSearch"
+            );
+
+        const presentationResults =
+            document.getElementById(
+                "templatePresentationResults"
+            );
+
+        const presentationId =
+            document.getElementById(
+                "templatePresentationId"
+            );
+
+        const presentationDetails =
+            document.getElementById(
+                "templatePresentationDetails"
+            );
+
+
+        if (presentationSearch) {
+
+            presentationSearch.addEventListener(
+                "input",
+                function () {
+
+                    const search =
+                        this.value
+                            .toLowerCase()
+                            .trim();
+
+
+                    presentationId.value =
+                        "";
+
+                    presentationDetails
+                        .textContent = "";
+
+                    presentationSearch
+                        .classList
+                        .remove(
+                            "is-invalid"
+                        );
+
+                    presentationResults
+                        .innerHTML = "";
+
+
+                    if (!search) {
+
+                        presentationResults
+                            .style
+                            .display =
+                            "none";
+
+                        return;
+                    }
+
+
+                    const matches =
+                        presentationLibrary
+                            .filter(item => {
+
+                                const searchableText = [
+                                    item.title,
+                                    item.type,
+                                    item.language
+                                ]
+                                    .join(" ")
+                                    .toLowerCase();
+
+                                return searchableText
+                                    .includes(search);
+                            })
+                            .sort((a, b) => {
+
+                                const aTitle =
+                                    a.title
+                                        .toLowerCase();
+
+                                const bTitle =
+                                    b.title
+                                        .toLowerCase();
+
+
+                                const aExact =
+                                    aTitle ===
+                                    search;
+
+                                const bExact =
+                                    bTitle ===
+                                    search;
+
+                                if (
+                                    aExact !==
+                                    bExact
+                                ) {
+                                    return aExact
+                                        ? -1
+                                        : 1;
+                                }
+
+
+                                const aStarts =
+                                    aTitle
+                                        .startsWith(
+                                            search
+                                        );
+
+                                const bStarts =
+                                    bTitle
+                                        .startsWith(
+                                            search
+                                        );
+
+                                if (
+                                    aStarts !==
+                                    bStarts
+                                ) {
+                                    return aStarts
+                                        ? -1
+                                        : 1;
+                                }
+
+
+                                return a.title
+                                    .localeCompare(
+                                        b.title
+                                    );
+                            })
+                            .slice(0, 15);
+
+
+                    if (
+                        matches.length === 0
+                    ) {
+
+                        presentationResults
+                            .style
+                            .display =
+                            "none";
+
+                        return;
+                    }
+
+
+                    matches.forEach(item => {
+
+                        const result =
+                            document.createElement(
+                                "button"
+                            );
+
+                        result.type =
+                            "button";
+
+                        result.className =
+                            "list-group-item list-group-item-action";
+
+
+                        const title =
+                            document.createElement(
+                                "div"
+                            );
+
+                        title.className =
+                            "fw-semibold";
+
+                        title.textContent =
+                            item.title;
+
+                        result.appendChild(
+                            title
+                        );
+
+
+                        const details = [];
+
+                        if (item.type) {
+                            details.push(
+                                item.type
+                            );
+                        }
+
+                        if (item.language) {
+                            details.push(
+                                item.language
+                            );
+                        }
+
+
+                        if (
+                            details.length > 0
+                        ) {
+
+                            const detail =
+                                document
+                                    .createElement(
+                                        "div"
+                                    );
+
+                            detail.className =
+                                "small text-muted";
+
+                            detail.textContent =
+                                details.join(
+                                    " • "
+                                );
+
+                            result.appendChild(
+                                detail
+                            );
+                        }
+
+
+                        result.addEventListener(
+                            "click",
+                            function () {
+
+                                const selected = [
+                                    item.title
+                                ];
 
                                 if (item.type) {
-                                    details.push(
+                                    selected.push(
                                         item.type
                                     );
                                 }
 
-                                if (item.language) {
-                                    details.push(
+                                if (
+                                    item.language
+                                ) {
+                                    selected.push(
                                         item.language
                                     );
                                 }
 
 
-                                if (
-                                    details.length > 0
-                                ) {
-
-                                    const detail =
-                                        document
-                                            .createElement(
-                                                "div"
-                                            );
-
-                                    detail.className =
-                                        "small text-muted";
-
-                                    detail.textContent =
-                                        details.join(
-                                            " • "
-                                        );
-
-                                    result.appendChild(
-                                        detail
+                                presentationSearch
+                                    .value =
+                                    selected.join(
+                                        " — "
                                     );
-                                }
 
+                                presentationId
+                                    .value =
+                                    item.id;
 
-                                result.addEventListener(
-                                    "click",
-                                    function () {
-
-                                        const selected = [
-                                            item.title
-                                        ];
-
-                                        if (item.type) {
-                                            selected.push(
-                                                item.type
-                                            );
-                                        }
-
-                                        if (
-                                            item.language
-                                        ) {
-                                            selected.push(
-                                                item.language
-                                            );
-                                        }
-
-
-                                        presentationSearch
-                                            .value =
-                                            selected.join(
-                                                " — "
-                                            );
-
-                                        presentationId
-                                            .value =
-                                            item.id;
-
-                                        presentationDetails
-                                            .textContent =
-                                            details.join(
-                                                " • "
-                                            );
-
-                                        presentationResults
-                                            .style
-                                            .display =
-                                            "none";
-                                    }
-                                );
-
+                                presentationDetails
+                                    .textContent =
+                                    details.join(
+                                        " • "
+                                    );
 
                                 presentationResults
-                                    .appendChild(
-                                        result
-                                    );
-                            });
-
-
-                            presentationResults
-                                .style
-                                .display =
-                                "block";
-                        }
-                    );
-                }
-
-
-
-                /*
-                 * CLOSE SEARCH RESULTS
-                 */
-
-                document.addEventListener(
-                    "click",
-                    function (event) {
-
-                        if (
-                            songResults &&
-                            !event.target.closest(
-                                ".music-picker"
-                            )
-                        ) {
-                            songResults.style.display =
-                                "none";
-                        }
-
-
-                        if (
-                            presentationResults &&
-                            !event.target.closest(
-                                ".presentation-picker"
-                            )
-                        ) {
-                            presentationResults
-                                .style
-                                .display =
-                                "none";
-                        }
-                    }
-                );
-
-
-
-                /*
-                 * VALIDATION
-                 */
-
-                const songForm =
-                    document.getElementById(
-                        "addTemplateSongForm"
-                    );
-
-                if (songForm) {
-
-                    songForm.addEventListener(
-                        "submit",
-                        function (event) {
-
-                            if (!songId.value) {
-
-                                event.preventDefault();
-
-                                songSearch
-                                    .classList
-                                    .add(
-                                        "is-invalid"
-                                    );
-
-                                alert(
-                                    "Please select a song from the search results."
-                                );
+                                    .style
+                                    .display =
+                                    "none";
                             }
-                        }
-                    );
+                        );
+
+
+                        presentationResults
+                            .appendChild(
+                                result
+                            );
+                    });
+
+
+                    presentationResults
+                        .style
+                        .display =
+                        "block";
+                }
+            );
+        }
+
+
+
+        /*
+         * CLOSE SEARCH RESULTS
+         */
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    songResults &&
+                    !event.target.closest(
+                        ".music-picker"
+                    )
+                ) {
+                    songResults.style.display =
+                        "none";
                 }
 
 
-                const presentationForm =
-                    document.getElementById(
-                        "addTemplatePresentationForm"
-                    );
-
-                if (presentationForm) {
-
-                    presentationForm.addEventListener(
-                        "submit",
-                        function (event) {
-
-                            if (
-                                !presentationId.value
-                            ) {
-
-                                event.preventDefault();
-
-                                presentationSearch
-                                    .classList
-                                    .add(
-                                        "is-invalid"
-                                    );
-
-                                alert(
-                                    "Please select a presentation item from the search results."
-                                );
-                            }
-                        }
-                    );
+                if (
+                    presentationResults &&
+                    !event.target.closest(
+                        ".presentation-picker"
+                    )
+                ) {
+                    presentationResults
+                        .style
+                        .display =
+                        "none";
                 }
-
-
             }
         );
+
+
+
+        /*
+         * VALIDATION
+         */
+
+        const songForm =
+            document.getElementById(
+                "addTemplateSongForm"
+            );
+
+        if (songForm) {
+
+            songForm.addEventListener(
+                "submit",
+                function (event) {
+
+                    if (!songId.value) {
+
+                        event.preventDefault();
+
+                        songSearch
+                            .classList
+                            .add(
+                                "is-invalid"
+                            );
+
+                        alert(
+                            "Please select a song from the search results."
+                        );
+                    }
+                }
+            );
+        }
+
+
+        const presentationForm =
+            document.getElementById(
+                "addTemplatePresentationForm"
+            );
+
+        if (presentationForm) {
+
+            presentationForm.addEventListener(
+                "submit",
+                function (event) {
+
+                    if (
+                        !presentationId.value
+                    ) {
+
+                        event.preventDefault();
+
+                        presentationSearch
+                            .classList
+                            .add(
+                                "is-invalid"
+                            );
+
+                        alert(
+                            "Please select a presentation item from the search results."
+                        );
+                    }
+                }
+            );
+        }
+
+
+                                        }
+                                    );
 
     </script>
 }

@@ -20,6 +20,12 @@ public class PlanModel : PageModel
     public IList<Song> Songs { get; set; }
         = new List<Song>();
 
+    public IList<PresentationItem> PresentationLibrary { get; set; }
+        = new List<PresentationItem>();
+
+    public IList<MassPlanItem> PlanItems { get; set; }
+        = new List<MassPlanItem>();
+
     [BindProperty]
     public List<MassPartSelection> Selections { get; set; }
         = new();
@@ -37,6 +43,7 @@ public class PlanModel : PageModel
         Mass = mass;
 
         await EnsureSongPlanItemsAsync(id);
+        await EnsureMassTitlePlanItemAsync(id);
 
         Songs = await _context.Songs
             .Where(x => x.IsActive)
@@ -112,7 +119,10 @@ public class PlanModel : PageModel
             .Where(x => x.SongId.HasValue)
             .ToList();
 
-        // Keep MassSongs in sync for Music Pack / existing workflows.
+        // ---------------------------------------------------------
+        // Keep MassSongs for Music Pack / existing workflows.
+        // ---------------------------------------------------------
+
         var existingMassSongs = await _context.MassSongs
             .Where(x => x.MassId == id)
             .ToListAsync();
@@ -132,25 +142,52 @@ public class PlanModel : PageModel
             });
         }
 
-        // Load the current unified presentation plan.
+        // ---------------------------------------------------------
+        // Keep the existing Presentation Order.
+        //
+        // Saving Mass Parts must not rebuild MassPlanItems because
+        // the user may have manually arranged:
+        //
+        // HC Safety
+        // Prelude Song
+        // Mass Title
+        // Entrance
+        //
+        // Existing plan items keep their DisplayOrder. We only
+        // reconcile songs that were added or removed.
+        // ---------------------------------------------------------
+
         var existingPlanItems = await _context.MassPlanItems
             .Where(x => x.MassId == id)
             .OrderBy(x => x.DisplayOrder)
             .ToListAsync();
 
-        var existingSongItems = existingPlanItems
-            .Where(x => x.ItemType == "Song")
+        var existingSongPlanItems = existingPlanItems
+            .Where(x =>
+                string.Equals(
+                    x.ItemType,
+                    "Song",
+                    StringComparison.OrdinalIgnoreCase))
+            .OrderBy(x => x.DisplayOrder)
             .ToList();
 
-        // Track which existing song rows have been reused.
-        var usedSongItemIds = new HashSet<int>();
+        // ---------------------------------------------------------
+        // Match the selected songs against existing Song plan items.
+        //
+        // Matching includes SongId + MassPart and supports the same
+        // song appearing more than once.
+        // ---------------------------------------------------------
+
+        var unmatchedExistingSongs =
+            new List<MassPlanItem>(existingSongPlanItems);
+
+        var newSongSelections =
+            new List<MassPartSelection>();
 
         foreach (var selection in songSelections)
         {
-            // Try to reuse an existing matching Song plan item first.
-            var existingItem = existingSongItems
-                .FirstOrDefault(x =>
-                    !usedSongItemIds.Contains(x.Id) &&
+            var existingItem =
+                unmatchedExistingSongs.FirstOrDefault(x =>
                     x.SongId == selection.SongId &&
                     string.Equals(
                         x.MassPart,
@@ -159,36 +196,54 @@ public class PlanModel : PageModel
 
             if (existingItem is not null)
             {
-                usedSongItemIds.Add(existingItem.Id);
-                continue;
+                // Song already exists in Presentation Order.
+                // Keep its exact DisplayOrder.
+                unmatchedExistingSongs.Remove(existingItem);
             }
+            else
+            {
+                // Newly selected song.
+                newSongSelections.Add(selection);
+            }
+        }
 
-            // This is a newly added song.
-            // Put it at the end of the current presentation order.
-            var nextOrder = existingPlanItems.Count == 0
+        // ---------------------------------------------------------
+        // Remove songs that are no longer selected.
+        // ---------------------------------------------------------
+
+        if (unmatchedExistingSongs.Count > 0)
+        {
+            _context.MassPlanItems.RemoveRange(
+                unmatchedExistingSongs);
+        }
+
+        // ---------------------------------------------------------
+        // Add newly selected songs.
+        //
+        // New songs are added after the current Presentation Order.
+        // They can then be positioned using the normal ordering
+        // controls without disturbing anything already arranged.
+        // ---------------------------------------------------------
+
+        var nextPlanOrder =
+            existingPlanItems.Count == 0
                 ? 10
                 : existingPlanItems.Max(x => x.DisplayOrder) + 10;
 
-            var newItem = new MassPlanItem
-            {
-                MassId = id,
-                ItemType = "Song",
-                SongId = selection.SongId!.Value,
-                MassPart = selection.MassPart,
-                DisplayOrder = nextOrder
-            };
+        foreach (var selection in newSongSelections)
+        {
+            _context.MassPlanItems.Add(
+                new MassPlanItem
+                {
+                    MassId = id,
+                    ItemType = "Song",
+                    SongId = selection.SongId!.Value,
+                    MassPart = selection.MassPart,
+                    DisplayOrder = nextPlanOrder
+                });
 
-            _context.MassPlanItems.Add(newItem);
-
-            existingPlanItems.Add(newItem);
+            nextPlanOrder += 10;
         }
-
-        // Remove Song plan items that are no longer selected.
-        var removedSongItems = existingSongItems
-            .Where(x => !usedSongItemIds.Contains(x.Id))
-            .ToList();
-
-        _context.MassPlanItems.RemoveRange(removedSongItems);
 
         mass.UpdatedDate = DateTime.UtcNow;
 
@@ -196,6 +251,7 @@ public class PlanModel : PageModel
 
         return RedirectToPage(new { id });
     }
+
     public async Task<IActionResult> OnPostAddPresentationAsync(
         int id,
         int presentationItemId,
@@ -222,7 +278,7 @@ public class PlanModel : PageModel
             ItemType = "Presentation",
             PresentationItemId = presentationItemId,
             MassPart = massPart,
-            DisplayOrder = nextOrder + 1
+            DisplayOrder = nextOrder + 10
         });
 
         await _context.SaveChangesAsync();
@@ -230,118 +286,32 @@ public class PlanModel : PageModel
         return RedirectToPage(new { id });
     }
 
-    private static List<string> GetMassParts()
-    {
-        return new List<string>
-    {
-        "Entrance",
-        "Kyrie",
-        "Gloria",
-        "Psalm",
-        "Alleluia",
-        "Offertory",
-        "Holy",
-        "Memorial Acclamation",
-        "Amen",
-        "Our Father",
-        "Lamb of God",
-        "Communion",
-        "Recessional"
-    };
-    }
-
     public async Task<IActionResult> OnPostRemovePlanItemAsync(
-    int id,
-    int planItemId)
+        int id,
+        int planItemId)
     {
         var item = await _context.MassPlanItems
             .FirstOrDefaultAsync(x =>
                 x.Id == planItemId &&
                 x.MassId == id);
 
-        if (item is not null)
+        if (item is not null &&
+            !string.Equals(
+                item.ItemType,
+                "MassTitle",
+                StringComparison.OrdinalIgnoreCase))
         {
             _context.MassPlanItems.Remove(item);
+
             await _context.SaveChangesAsync();
         }
 
         return RedirectToPage(new { id });
     }
 
-    public class MassPartSelection
-    {
-        public string MassPart { get; set; } = string.Empty;
-
-        public int? SongId { get; set; }
-
-        public int DisplayOrder { get; set; }
-    }
-
-    public IList<PresentationItem> PresentationLibrary { get; set; }
-    = new List<PresentationItem>();
-
-    public IList<MassPlanItem> PlanItems { get; set; }
-        = new List<MassPlanItem>();
-
-    private async Task EnsureSongPlanItemsAsync(int massId)
-    {
-        var alreadyMigrated = await _context.MassPlanItems
-            .AnyAsync(x =>
-                x.MassId == massId &&
-                x.ItemType == "Song");
-
-        if (alreadyMigrated)
-        {
-            return;
-        }
-
-        var songs = await _context.MassSongs
-            .Where(x => x.MassId == massId)
-            .OrderBy(x => x.DisplayOrder)
-            .ToListAsync();
-
-        if (songs.Count == 0)
-        {
-            return;
-        }
-
-        var order = 10;
-
-        foreach (var song in songs)
-        {
-            _context.MassPlanItems.Add(new MassPlanItem
-            {
-                MassId = massId,
-                ItemType = "Song",
-                SongId = song.SongId,
-                MassPart = song.MassPart,
-                DisplayOrder = order
-            });
-
-            order += 10;
-        }
-
-        // Any presentation items that were already added
-        // are temporarily placed after the existing songs.
-        var presentationItems = await _context.MassPlanItems
-            .Where(x =>
-                x.MassId == massId &&
-                x.ItemType == "Presentation")
-            .OrderBy(x => x.DisplayOrder)
-            .ToListAsync();
-
-        foreach (var item in presentationItems)
-        {
-            item.DisplayOrder = order;
-            order += 10;
-        }
-
-        await _context.SaveChangesAsync();
-    }
-
     public async Task<IActionResult> OnPostSavePlanOrderAsync(
-    int id,
-    List<int> itemIds)
+        int id,
+        [FromForm] List<int> itemIds)
     {
         var items = await _context.MassPlanItems
             .Where(x => x.MassId == id)
@@ -366,5 +336,130 @@ public class PlanModel : PageModel
         {
             success = true
         });
+    }
+
+    private async Task EnsureSongPlanItemsAsync(int massId)
+    {
+        var alreadyMigrated = await _context.MassPlanItems
+            .AnyAsync(x =>
+                x.MassId == massId &&
+                x.ItemType == "Song");
+
+        if (alreadyMigrated)
+        {
+            return;
+        }
+
+        var songs = await _context.MassSongs
+            .Where(x => x.MassId == massId)
+            .OrderBy(x => x.DisplayOrder)
+            .ToListAsync();
+
+        if (songs.Count == 0)
+        {
+            return;
+        }
+
+        var existingNonSongItems =
+            await _context.MassPlanItems
+                .Where(x =>
+                    x.MassId == massId &&
+                    x.ItemType != "Song")
+                .OrderBy(x => x.DisplayOrder)
+                .ToListAsync();
+
+        var order = 10;
+
+        foreach (var song in songs)
+        {
+            _context.MassPlanItems.Add(
+                new MassPlanItem
+                {
+                    MassId = massId,
+                    ItemType = "Song",
+                    SongId = song.SongId,
+                    MassPart = song.MassPart,
+                    DisplayOrder = order
+                });
+
+            order += 10;
+        }
+
+        foreach (var item in existingNonSongItems)
+        {
+            item.DisplayOrder = order;
+            order += 10;
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+    private async Task EnsureMassTitlePlanItemAsync(int massId)
+    {
+        var existingTitle =
+            await _context.MassPlanItems
+                .FirstOrDefaultAsync(x =>
+                    x.MassId == massId &&
+                    x.ItemType == "MassTitle");
+
+        if (existingTitle is not null)
+        {
+            return;
+        }
+
+        var existingItems =
+            await _context.MassPlanItems
+                .Where(x => x.MassId == massId)
+                .OrderBy(x => x.DisplayOrder)
+                .ToListAsync();
+
+        // Existing Masses historically generated the title first.
+        // Preserve that behaviour when introducing the new
+        // draggable title item.
+        foreach (var item in existingItems)
+        {
+            item.DisplayOrder += 10;
+        }
+
+        _context.MassPlanItems.Add(
+            new MassPlanItem
+            {
+                MassId = massId,
+                ItemType = "MassTitle",
+                MassPart = null,
+                DisplayOrder = 10
+            });
+
+        await _context.SaveChangesAsync();
+    }
+
+    private static List<string> GetMassParts()
+    {
+        return new List<string>
+        {
+            "Entrance",
+            "Kyrie",
+            "Gloria",
+            "Psalm",
+            "Alleluia",
+            "Offertory",
+            "Holy",
+            "Memorial Acclamation",
+            "Amen",
+            "Our Father",
+            "Lamb of God",
+            "Communion",
+            "Recessional"
+        };
+    }
+
+    public class MassPartSelection
+    {
+        public string MassPart { get; set; }
+            = string.Empty;
+
+        public int? SongId { get; set; }
+
+        public int DisplayOrder { get; set; }
     }
 }

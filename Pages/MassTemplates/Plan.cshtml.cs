@@ -40,6 +40,10 @@ public class PlanModel : PageModel
 
         Template = template;
 
+        // Ensure every Mass Template contains exactly one
+        // draggable Mass Title system item.
+        await EnsureMassTitleAsync(id);
+
         Songs = await _context.Songs
             .Where(x => x.IsActive)
             .OrderBy(x => x.Title)
@@ -69,6 +73,17 @@ public class PlanModel : PageModel
         int songId,
         string? massPart)
     {
+        var templateExists =
+            await _context.MassTemplates
+                .AnyAsync(x =>
+                    x.Id == id &&
+                    x.IsActive);
+
+        if (!templateExists)
+        {
+            return NotFound();
+        }
+
         var exists = await _context.Songs
             .AnyAsync(x =>
                 x.Id == songId &&
@@ -78,6 +93,8 @@ public class PlanModel : PageModel
         {
             return NotFound();
         }
+
+        await EnsureMassTitleAsync(id);
 
         var nextOrder =
             await GetNextOrderAsync(id);
@@ -103,6 +120,17 @@ public class PlanModel : PageModel
             int presentationItemId,
             string? massPart)
     {
+        var templateExists =
+            await _context.MassTemplates
+                .AnyAsync(x =>
+                    x.Id == id &&
+                    x.IsActive);
+
+        if (!templateExists)
+        {
+            return NotFound();
+        }
+
         var exists =
             await _context.PresentationItems
                 .AnyAsync(x =>
@@ -113,6 +141,8 @@ public class PlanModel : PageModel
         {
             return NotFound();
         }
+
+        await EnsureMassTitleAsync(id);
 
         var nextOrder =
             await GetNextOrderAsync(id);
@@ -144,11 +174,24 @@ public class PlanModel : PageModel
                     x.Id == itemId &&
                     x.MassTemplateId == id);
 
-        if (item is not null)
+        if (item is null)
         {
-            _context.MassTemplateItems.Remove(item);
-            await _context.SaveChangesAsync();
+            return RedirectToPage(new { id });
         }
+
+        // Mass Title is a required system item.
+        // It can be reordered but not deleted.
+        if (string.Equals(
+                item.ItemType,
+                "MassTitle",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return RedirectToPage(new { id });
+        }
+
+        _context.MassTemplateItems.Remove(item);
+
+        await _context.SaveChangesAsync();
 
         return RedirectToPage(new { id });
     }
@@ -172,8 +215,8 @@ public class PlanModel : PageModel
         foreach (var itemId in itemIds)
         {
             if (lookup.TryGetValue(
-                itemId,
-                out var item))
+                    itemId,
+                    out var item))
             {
                 item.DisplayOrder = order;
                 order += 10;
@@ -186,6 +229,66 @@ public class PlanModel : PageModel
         {
             success = true
         });
+    }
+
+    private async Task EnsureMassTitleAsync(
+        int templateId)
+    {
+        var existingTitles =
+            await _context.MassTemplateItems
+                .Where(x =>
+                    x.MassTemplateId == templateId &&
+                    x.ItemType == "MassTitle")
+                .OrderBy(x => x.DisplayOrder)
+                .ToListAsync();
+
+        // Already has one.
+        if (existingTitles.Count == 1)
+        {
+            return;
+        }
+
+        // Defensive cleanup in case duplicates ever exist.
+        if (existingTitles.Count > 1)
+        {
+            var duplicates =
+                existingTitles.Skip(1).ToList();
+
+            _context.MassTemplateItems
+                .RemoveRange(duplicates);
+
+            await _context.SaveChangesAsync();
+
+            return;
+        }
+
+        var existingItems =
+            await _context.MassTemplateItems
+                .Where(x =>
+                    x.MassTemplateId == templateId)
+                .OrderBy(x => x.DisplayOrder)
+                .ToListAsync();
+
+        // Existing templates historically had no Mass Title
+        // system item, so insert it at the beginning while
+        // preserving the order of everything already there.
+        foreach (var item in existingItems)
+        {
+            item.DisplayOrder += 10;
+        }
+
+        _context.MassTemplateItems.Add(
+            new MassTemplateItem
+            {
+                MassTemplateId = templateId,
+                ItemType = "MassTitle",
+                SongId = null,
+                PresentationItemId = null,
+                MassPart = null,
+                DisplayOrder = 10
+            });
+
+        await _context.SaveChangesAsync();
     }
 
     private async Task<int> GetNextOrderAsync(
