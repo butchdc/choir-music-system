@@ -895,11 +895,11 @@
             <div class="progress">
 
                 <div class="progress-bar" role="progressbar" style="width: @(totalMassParts == 0
-                                                                                        ? 0
-                                                                                        : (int)Math.Round(
-                                                                                            (double)plannedPartCount /
-                                                                                            totalMassParts * 100
-                                                                                        ))%">
+                                                                                                             ? 0
+                                                                                                             : (int)Math.Round(
+                                                                                                                 (double)plannedPartCount /
+                                                                                                                 totalMassParts * 100
+                                                                                                             ))%">
                 </div>
 
             </div>
@@ -1006,8 +1006,8 @@
 
 
                     <div class="mass-part @(hasPlannedSong
-                                                                                                       ? "is-planned"
-                                                                                                       : "is-unplanned")"
+                                                                                                                                ? "is-planned"
+                                                                                                                                : "is-unplanned")"
                          data-mass-part="@part">
 
 
@@ -1176,10 +1176,12 @@
 
                                                         @if (!string.IsNullOrWhiteSpace(song.OneLicenseNumber))
                                                         {
-                                                            <span class="badge text-bg-success ms-2">
-                                                                <i class="bi bi-check-circle me-1"></i>
+                                                            <button type="button" class="badge text-bg-success border-0 ms-2"
+                                                                    title="Click to copy OneLicense number"
+                                                                    onclick="copyOneLicense('@song.OneLicenseNumber', this)">
+                                                                <i class="bi bi-clipboard me-1"></i>
                                                                 @song.OneLicenseNumber
-                                                            </span>
+                                                            </button>
                                                         }
                                                         else
                                                         {
@@ -1262,22 +1264,22 @@
                                                                " — ",
                                                                new[]
                                                                {
-                                                                                            selectedMusic.Title,
-                                                                                            selectedMusic.Composer,
-                                                                                            string.IsNullOrWhiteSpace(
-                                                                                                selectedMusic.Arrangement)
-                                                                                                ? null
-                                                                                                : $"Arr: {selectedMusic.Arrangement}",
-                                                                                            selectedMusic.SuggestedMassPart,
-                                                                                            string.IsNullOrWhiteSpace(
-                                                                                                selectedMusic.Key)
-                                                                                                ? null
-                                                                                                : $"Key: {selectedMusic.Key}"
+                                                                                                   selectedMusic.Title,
+                                                                                                   selectedMusic.Composer,
+                                                                                                   string.IsNullOrWhiteSpace(
+                                                                                                       selectedMusic.Arrangement)
+                                                                                                       ? null
+                                                                                                       : $"Arr: {selectedMusic.Arrangement}",
+                                                                                                   selectedMusic.SuggestedMassPart,
+                                                                                                   string.IsNullOrWhiteSpace(
+                                                                                                       selectedMusic.Key)
+                                                                                                       ? null
+                                                                                                       : $"Key: {selectedMusic.Key}"
                                                                }
                                                                .Where(x =>
                                                                    !string.IsNullOrWhiteSpace(x))
                                                            )
-                                                                                                                                                                                                                )"
+                                                                                                                                                                                                                                                                   )"
                                                        data-music-id="@selectedMusic?.Id" placeholder="Search music..."
                                                        autocomplete="off" />
 
@@ -1302,12 +1304,12 @@
 
                                             <a class="btn view-music"
                                                href="@(selectedMusic is null
-                                                                                                                                                                                                ? "#"
-                                                                                                                                                                                                : $"/MusicLibrary/View/{selectedMusic.Id}")"
+                                                                                                                                                                                                                                               ? "#"
+                                                                                                                                                                                                                                               : $"/MusicLibrary/View/{selectedMusic.Id}")"
                                                target="_blank" rel="noopener noreferrer"
                                                style="@(selectedMusic is null
-                                                                                                                                                                                                ? "display:none;"
-                                                                                                                                                                                                : "")"
+                                                                                                                                                                                                                                               ? "display:none;"
+                                                                                                                                                                                                                                               : "")"
                                                title="View music sheet" data-bs-toggle="tooltip">
 
                                                 <i class="bi bi-file-earmark-pdf"></i>
@@ -1369,8 +1371,8 @@
                     </strong>
 
                     song@(plannedSongCount == 1
-                                                                                    ? ""
-                                                                                    : "s")
+                                                                                                        ? ""
+                                                                                                        : "s")
                     selected
 
                 </span>
@@ -1657,8 +1659,8 @@
 
 
                                 item@(Model.PlanItems.Count == 1
-                                                                                                                                    ? ""
-                                                                                                                                    : "s")
+                                                                                                                                                                    ? ""
+                                                                                                                                                                    : "s")
 
                             </div>
                         }
@@ -1721,10 +1723,10 @@
                                 <div class="mass-plan-item
                                     presentation-timeline-item
                                     @(planItem.ItemType == "Song"
-                                           ? "is-song"
-                                           : planItem.ItemType == "MassTitle"
-                                               ? "is-mass-title"
-                                               : "is-presentation")" data-plan-item-id="@planItem.Id" draggable="true">
+                                            ? "is-song"
+                                            : planItem.ItemType == "MassTitle"
+                                                ? "is-mass-title"
+                                                : "is-presentation")" data-plan-item-id="@planItem.Id" draggable="true">
 
 
                                     <!-- DRAG -->
@@ -2309,40 +2311,40 @@
 
                 const presentationLibrary = [
 
-                                @foreach (
+                                    @foreach (
             var item
             in Model.PresentationLibrary
-                                                                                                .OrderBy(x => x.Type)
-                                                                                                .ThenBy(x => x.Title))
+                                                                                                                                                                    .OrderBy(x => x.Type)
+                                                                                                                                                                    .ThenBy(x => x.Title))
                     {
                         @:{
-                                                @:id: @item.Id,
+                                                        @:id: @item.Id,
                         @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Title))",
                         @:type: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Type ?? ""))",
                         @:language: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Language ?? ""))"
-                                                @:},
+                                                        @:},
             }
 
-                            ];
+                                ];
 
 
         const musicLibrary = [
 
-                                @foreach (
+                                    @foreach (
     var music
     in Model.Songs)
             {
                 @:{
-                                                @:id: @music.Id,
+                                                        @:id: @music.Id,
                 @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
                 @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
                 @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
                 @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
                 @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
-                                                @:},
+                                                        @:},
         }
 
-                            ];
+                                ];
 
 
         /* =================================================
@@ -2508,9 +2510,9 @@
 
 
                 empty.innerHTML = `
-                                        <i class="bi bi-search"></i>
-                                        <span>No presentation items found</span>
-                                    `;
+                                            <i class="bi bi-search"></i>
+                                            <span>No presentation items found</span>
+                                        `;
 
 
                 presentationResults
@@ -2866,57 +2868,57 @@
 
 
             row.innerHTML = `
-                                    <div class="music-picker position-relative">
+                                        <div class="music-picker position-relative">
 
-                                        <div class="mass-song-search-wrap">
+                                            <div class="mass-song-search-wrap">
 
-                                            <i class="bi bi-search"></i>
+                                                <i class="bi bi-search"></i>
 
-                                            <input type="text"
-                                                   class="form-control music-search"
-                                                   data-music-id=""
-                                                   placeholder="Search music..."
-                                                   autocomplete="off" />
+                                                <input type="text"
+                                                       class="form-control music-search"
+                                                       data-music-id=""
+                                                       placeholder="Search music..."
+                                                       autocomplete="off" />
+
+                                            </div>
+
+                                            <div class="music-results
+                                                        list-group
+                                                        position-absolute
+                                                        w-100
+                                                        shadow"
+                                                 style="
+                                                     z-index:1000;
+                                                     max-height:250px;
+                                                     overflow-y:auto;
+                                                     display:none;">
+                                            </div>
 
                                         </div>
 
-                                        <div class="music-results
-                                                    list-group
-                                                    position-absolute
-                                                    w-100
-                                                    shadow"
-                                             style="
-                                                 z-index:1000;
-                                                 max-height:250px;
-                                                 overflow-y:auto;
-                                                 display:none;">
+                                        <div class="mass-song-actions">
+
+                                            <a class="btn view-music"
+                                               href="#"
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               style="display:none;"
+                                               title="View music sheet">
+
+                                                <i class="bi bi-file-earmark-pdf"></i>
+
+                                            </a>
+
+                                            <button type="button"
+                                                    class="btn remove-song"
+                                                    title="Remove song">
+
+                                                <i class="bi bi-x-lg"></i>
+
+                                            </button>
+
                                         </div>
-
-                                    </div>
-
-                                    <div class="mass-song-actions">
-
-                                        <a class="btn view-music"
-                                           href="#"
-                                           target="_blank"
-                                           rel="noopener noreferrer"
-                                           style="display:none;"
-                                           title="View music sheet">
-
-                                            <i class="bi bi-file-earmark-pdf"></i>
-
-                                        </a>
-
-                                        <button type="button"
-                                                class="btn remove-song"
-                                                title="Remove song">
-
-                                            <i class="bi bi-x-lg"></i>
-
-                                        </button>
-
-                                    </div>
-                                `;
+                                    `;
 
 
             return row;
@@ -4277,8 +4279,21 @@
             }
         }
 
-                        }
-                    );
+                            }
+                        );
+
+        async function copyOneLicense(number, button) {
+            await navigator.clipboard.writeText(number);
+
+            const originalHtml = button.innerHTML;
+
+            button.innerHTML =
+                '<i class="bi bi-check-lg me-1"></i>Copied!';
+
+            setTimeout(() => {
+                button.innerHTML = originalHtml;
+            }, 1200);
+        }                    
 
     </script>
 }
