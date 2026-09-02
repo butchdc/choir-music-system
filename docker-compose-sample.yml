@@ -12,6 +12,13 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://0.0.0.0:8080
 
+      Authentication__Google__ClientId: ${GOOGLE_CLIENT_ID}
+      Authentication__Google__ClientSecret: ${GOOGLE_CLIENT_SECRET}
+
+      Security__BreakGlass__Enabled: ${BREAKGLASS_ENABLED}
+      Security__BreakGlass__Username: ${BREAKGLASS_USERNAME}
+      Security__BreakGlass__PasswordHash: ${BREAKGLASS_PASSWORD_HASH}
+
     ports:
       - "5105:8080"
 
