@@ -43,6 +43,10 @@ public class GoogleCallbackModel : PageModel
             externalResult.Principal.FindFirstValue(
                 ClaimTypes.Name);
 
+        var picture =
+            externalResult.Principal.FindFirstValue(
+                "urn:google:picture");
+
         if (string.IsNullOrWhiteSpace(email))
         {
             await HttpContext.SignOutAsync("External");
@@ -84,6 +88,14 @@ public class GoogleCallbackModel : PageModel
                 appUser.DisplayName ?? appUser.Email),
             new(ClaimTypes.Role, appUser.Role)
         };
+        
+        if (!string.IsNullOrWhiteSpace(picture))
+        {
+            claims.Add(
+                new Claim(
+                    "profile_picture",
+                    picture));
+        }
 
         var identity = new ClaimsIdentity(
             claims,

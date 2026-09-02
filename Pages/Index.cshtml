@@ -425,8 +425,18 @@
 
             <div class="next-mass-full-date">
 
+                <i class="bi bi-calendar3 me-1"></i>
+
                 @Model.NextMass.MassDate.ToString(
                     "dddd, d MMMM yyyy"
+                )
+
+                <span class="mx-2">•</span>
+
+                <i class="bi bi-clock me-1"></i>
+
+                @Model.NextMass.MassDate.ToString(
+                    "h:mm tt"
                 )
 
             </div>
@@ -794,7 +804,15 @@ else
 
                                     </div>
                                 }
+                                <div class="dashboard-mass-time">
 
+                                    <i class="bi bi-clock"></i>
+
+                                    <span>
+                                        @mass.MassDate.ToString("h:mm tt")
+                                    </span>
+
+                                </div>
 
                                 <div class="dashboard-list-meta">
 

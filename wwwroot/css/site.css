@@ -55,15 +55,7 @@ body {
     background: var(--app-bg);
     color: var(--text);
 
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
-        sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     -webkit-font-smoothing: antialiased;
 }
@@ -244,10 +236,7 @@ p {
 .brand-name {
     color: #0f2f66;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 1.15rem;
     font-weight: 700;
@@ -1419,10 +1408,7 @@ a.metric-card:hover {
 .footer-tagline {
     color: #b2812c;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 0.78rem;
 
@@ -1522,10 +1508,7 @@ a.metric-card:hover {
 
     color: #ffffff;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: clamp(2rem,
             4vw,
@@ -2237,10 +2220,7 @@ a.metric-card:hover {
 
     color: #153d79;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 2rem;
     font-weight: 700;
@@ -2295,10 +2275,7 @@ a.metric-card:hover {
 
     color: #15345f;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 1.45rem;
 
@@ -2797,10 +2774,7 @@ a.metric-card:hover {
 .dashboard-mass-item .dashboard-date-day {
     color: #173f7d;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 1.1rem;
 }
@@ -2993,10 +2967,7 @@ a.metric-card:hover {
 
     color: rgba(255, 255, 255, 0.045);
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 12rem;
 
@@ -3062,10 +3033,7 @@ a.metric-card:hover {
 
     color: #ffffff;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 1.75rem;
     font-weight: 700;
@@ -4038,10 +4006,7 @@ a.metric-card:hover {
 
     color: rgba(255, 255, 255, 0.045);
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 11rem;
 
@@ -4104,10 +4069,7 @@ a.metric-card:hover {
 
     color: #ffffff;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 1.75rem;
     font-weight: 700;
@@ -4455,10 +4417,7 @@ a.metric-card:hover {
 
     color: #153763;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 2rem;
     font-weight: 700;
@@ -4511,10 +4470,7 @@ a.metric-card:hover {
 .mass-list-title {
     color: #17385f;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 1.05rem;
     font-weight: 700;
@@ -4921,10 +4877,7 @@ a.metric-card:hover {
 
     color: #203b60;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 1rem;
 }
@@ -5037,10 +4990,7 @@ a.metric-card:hover {
 
     color: rgba(255, 255, 255, 0.045);
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 12rem;
 
@@ -5127,10 +5077,7 @@ a.metric-card:hover {
 
     color: #ffffff;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 1.55rem;
     font-weight: 700;
@@ -5505,10 +5452,7 @@ a.metric-card:hover {
 .mass-part-title {
     color: #203b60;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 0.82rem;
     font-weight: 700;
@@ -5891,10 +5835,7 @@ a.metric-card:hover {
 
     color: #18385f;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 1.2rem;
     font-weight: 700;
@@ -6442,10 +6383,7 @@ a.presentation-item-title:hover {
 
     color: #263f60;
 
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
+    font-family: "Roboto", Arial, sans-serif;
 
     font-size: 0.9rem;
     font-weight: 700;
@@ -8113,7 +8051,7 @@ a.presentation-item-title:hover {
     border-radius: 4px;
     background: rgba(255, 255, 255, .12);
     color: #fde68a;
-    font-family: monospace;
+    font-family: "Roboto", Arial, sans-serif;
     font-size: .56rem;
 }
 
@@ -11471,4 +11409,61 @@ a.presentation-item-title:hover {
     display: inline-flex;
     align-items: center;
     gap: 0.7rem;
+}
+/* =========================================================
+   Login Page
+   ========================================================= */
+
+.login-card,
+.public-masses-card {
+    border: 0;
+    border-radius: 18px;
+}
+
+.login-logo {
+    display: block;
+    width: 270px;
+    max-width: 90%;
+    height: auto;
+    margin: 0 auto 1.5rem;
+}
+
+.google-signin-button {
+    width: 100%;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    padding: 0 18px;
+
+    color: #202124;
+    background: #ffffff;
+
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+
+    font-family: "Roboto", Arial, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.google-signin-button:hover {
+    background: #f8f9fa;
+    border-color: #c6c8ca;
+}
+
+.google-signin-icon {
+    width: 20px !important;
+    height: 20px !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
+
+    object-fit: contain;
+    flex: 0 0 20px;
 }

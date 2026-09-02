@@ -1,0 +1,117 @@
+@page
+@model choir_music_system.Pages.Admin.BreakGlassHashModel
+@{
+    ViewData["Title"] = "Break-Glass Password Hash";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h1 class="h3 mb-1">
+            Break-Glass Password Hash
+        </h1>
+
+        <p class="text-muted mb-0">
+            Generate a secure password hash for emergency administrator configuration.
+        </p>
+    </div>
+
+    <div class="alert alert-warning">
+        This tool does not change the current break-glass password.
+        It only generates a hash that you can copy into your secure server configuration.
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+
+                    <label asp-for="Password"
+                           class="form-label">
+                        New Break-Glass Password
+                    </label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           autocomplete="new-password" />
+
+                    <span asp-validation-for="Password"
+                          class="text-danger"></span>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    <i class="bi bi-shield-lock me-1"></i>
+                    Generate Hash
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.GeneratedHash))
+    {
+        <div class="card shadow-sm mt-4">
+
+            <div class="card-body">
+
+                <h2 class="h5">
+                    Generated Hash
+                </h2>
+
+                <p class="text-muted">
+                    Copy this value into your secure configuration.
+                </p>
+
+                <div class="input-group">
+
+                    <textarea id="generatedHash"
+                              class="form-control font-monospace"
+                              rows="4"
+                              readonly>@Model.GeneratedHash</textarea>
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            onclick="copyHash(this)">
+
+                        <i class="bi bi-clipboard"></i>
+                        Copy
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+<script>
+    async function copyHash(button) {
+        const field =
+            document.getElementById("generatedHash");
+
+        await navigator.clipboard.writeText(
+            field.value);
+
+        const original =
+            button.innerHTML;
+
+        button.innerHTML =
+            '<i class="bi bi-check-lg"></i> Copied';
+
+        setTimeout(() => {
+            button.innerHTML = original;
+        }, 1200);
+    }
+</script>

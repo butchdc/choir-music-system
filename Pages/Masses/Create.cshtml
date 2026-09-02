@@ -96,26 +96,25 @@
 
 
                         <div class="create-mass-field">
-
                             <label asp-for="Mass.MassDate"
-                                   class="form-label">
-                                Mass Date
+                                class="form-label">
+                                Mass Date &amp; Time
                             </label>
 
                             <div class="create-mass-input-icon">
 
-                                <i class="bi bi-calendar3"></i>
+                                <i class="bi bi-calendar-event"></i>
 
                                 <input asp-for="Mass.MassDate"
-                                       type="date"
-                                       class="form-control" />
+                                    type="datetime-local"
+                                    class="form-control"
+                                    step="900" />
 
                             </div>
 
                             <span asp-validation-for="Mass.MassDate"
-                                  class="text-danger">
+                                class="text-danger">
                             </span>
-
                         </div>
 
 
