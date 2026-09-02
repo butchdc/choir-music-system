@@ -11467,3 +11467,113 @@ a.presentation-item-title:hover {
     object-fit: contain;
     flex: 0 0 20px;
 }
+
+/* =========================================================
+   PUBLIC UPCOMING MASSES
+   ========================================================= */
+
+.public-masses-card {
+    border: 0;
+    border-radius: 18px;
+}
+
+.public-mass-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.public-mass-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.public-mass-item:first-child {
+    padding-top: 0;
+}
+
+.public-mass-item:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.public-mass-date {
+    width: 64px;
+    min-width: 64px;
+    height: 64px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #dee2e6;
+    border-radius: 14px;
+
+    background: #f8f9fa;
+}
+
+.public-mass-day {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.public-mass-month {
+    margin-top: 0.3rem;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.public-mass-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.public-mass-name {
+    margin-bottom: 0.25rem;
+
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.public-mass-full-date,
+.public-mass-time,
+.public-mass-venue {
+    margin-top: 0.2rem;
+
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.public-mass-time {
+    font-weight: 500;
+    color: #495057;
+}
+
+@media (max-width: 575.98px) {
+
+    .public-mass-item {
+        align-items: flex-start;
+    }
+
+    .public-mass-date {
+        width: 56px;
+        min-width: 56px;
+        height: 56px;
+    }
+
+    .public-mass-day {
+        font-size: 1.2rem;
+    }
+
+    .login-logo {
+        width: 240px;
+    }
+}
