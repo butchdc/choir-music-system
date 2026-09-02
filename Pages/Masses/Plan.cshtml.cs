@@ -218,29 +218,160 @@ public class PlanModel : PageModel
         }
 
         // ---------------------------------------------------------
-        // Add newly selected songs.
+        // Insert newly selected songs into the Presentation Order.
         //
-        // New songs are added after the current Presentation Order.
-        // They can then be positioned using the normal ordering
-        // controls without disturbing anything already arranged.
+        // Existing items keep their relative order. A new song is
+        // placed after the last song for the same Mass Part.
+        //
+        // If that Mass Part does not yet exist, place the song
+        // before the first song belonging to a later Mass Part.
         // ---------------------------------------------------------
 
-        var nextPlanOrder =
-            existingPlanItems.Count == 0
-                ? 10
-                : existingPlanItems.Max(x => x.DisplayOrder) + 10;
+        var orderedPlanItems = existingPlanItems
+            .Where(x => !unmatchedExistingSongs.Contains(x))
+            .OrderBy(x => x.DisplayOrder)
+            .ToList();
+
+        var massParts = GetMassParts();
 
         foreach (var selection in newSongSelections)
         {
-            _context.MassPlanItems.Add(
-                new MassPlanItem
+            var newItem = new MassPlanItem
+            {
+                MassId = id,
+                ItemType = "Song",
+                SongId = selection.SongId!.Value,
+                MassPart = selection.MassPart
+            };
+
+            // -----------------------------------------------------
+            // First preference:
+            // after the last existing song for the same Mass Part.
+            // -----------------------------------------------------
+
+            var lastSamePartIndex =
+                orderedPlanItems.FindLastIndex(x =>
+                    string.Equals(
+                        x.ItemType,
+                        "Song",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(
+                        x.MassPart,
+                        selection.MassPart,
+                        StringComparison.OrdinalIgnoreCase));
+
+            if (lastSamePartIndex >= 0)
+            {
+                orderedPlanItems.Insert(
+                    lastSamePartIndex + 1,
+                    newItem);
+            }
+            else
+            {
+                // -------------------------------------------------
+                // No song for this Mass Part exists yet.
+                //
+                // Find the first song belonging to a later
+                // Mass Part and insert immediately before it.
+                // -------------------------------------------------
+
+                var selectedPartIndex =
+                    massParts.FindIndex(x =>
+                        string.Equals(
+                            x,
+                            selection.MassPart,
+                            StringComparison.OrdinalIgnoreCase));
+
+                var insertIndex = -1;
+
+                if (selectedPartIndex >= 0)
                 {
-                    MassId = id,
-                    ItemType = "Song",
-                    SongId = selection.SongId!.Value,
-                    MassPart = selection.MassPart,
-                    DisplayOrder = nextPlanOrder
-                });
+                    for (var i = 0;
+                         i < orderedPlanItems.Count;
+                         i++)
+                    {
+                        var existingItem =
+                            orderedPlanItems[i];
+
+                        if (!string.Equals(
+                                existingItem.ItemType,
+                                "Song",
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+
+                        var existingPartIndex =
+                            massParts.FindIndex(x =>
+                                string.Equals(
+                                    x,
+                                    existingItem.MassPart,
+                                    StringComparison.OrdinalIgnoreCase));
+
+                        if (existingPartIndex >
+                            selectedPartIndex)
+                        {
+                            insertIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (insertIndex >= 0)
+                {
+                    orderedPlanItems.Insert(
+                        insertIndex,
+                        newItem);
+                }
+                else
+                {
+                    // ---------------------------------------------
+                    // No later Mass Part exists.
+                    //
+                    // Put the new song immediately after the final
+                    // song instead of after Presentation/System
+                    // items at the bottom.
+                    // ---------------------------------------------
+
+                    var lastSongIndex =
+                        orderedPlanItems.FindLastIndex(x =>
+                            string.Equals(
+                                x.ItemType,
+                                "Song",
+                                StringComparison.OrdinalIgnoreCase));
+
+                    if (lastSongIndex >= 0)
+                    {
+                        orderedPlanItems.Insert(
+                            lastSongIndex + 1,
+                            newItem);
+                    }
+                    else
+                    {
+                        orderedPlanItems.Add(
+                            newItem);
+                    }
+                }
+            }
+
+            _context.MassPlanItems.Add(
+                newItem);
+        }
+
+
+        // ---------------------------------------------------------
+        // Renumber the Presentation Order.
+        //
+        // This does not change the relative order of the existing
+        // items. It simply creates clean DisplayOrder gaps again.
+        // ---------------------------------------------------------
+
+        var nextPlanOrder = 10;
+
+        foreach (var item in orderedPlanItems)
+        {
+            item.DisplayOrder =
+                nextPlanOrder;
 
             nextPlanOrder += 10;
         }

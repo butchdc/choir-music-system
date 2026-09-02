@@ -77,18 +77,24 @@ public class IndexModel : PageModel
                 .ReadAllBytesAsync(filePath);
 
 
-        var fileName =
-            Path.GetFileName(filePath);
+        var safeVenue =
+            MakeSafeFileName(
+                string.IsNullOrWhiteSpace(mass.Venue)
+                    ? "Venue"
+                    : mass.Venue);
 
+        var safeMassName =
+            MakeSafeFileName(mass.Name);
+
+        var downloadFileName =
+            $"{safeVenue}-{safeMassName}-{mass.MassDate:yyyyMMdd}.pptx";
 
         System.IO.File.Delete(filePath);
-
 
         return File(
             fileBytes,
             "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-            fileName
-        );
+            downloadFileName);
     }
 
 
@@ -570,5 +576,28 @@ public class IndexModel : PageModel
                 id = newMass.Id
             }
         );
+    }
+    private static string MakeSafeFileName(string value)
+    {
+        var invalidChars =
+            Path.GetInvalidFileNameChars();
+
+        var cleaned =
+            new string(
+                value
+                    .Trim()
+                    .Select(ch =>
+                        invalidChars.Contains(ch)
+                            ? '-'
+                            : ch)
+                    .ToArray());
+
+        while (cleaned.Contains("--"))
+        {
+            cleaned =
+                cleaned.Replace("--", "-");
+        }
+
+        return cleaned.Trim('-', ' ');
     }
 }

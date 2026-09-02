@@ -36,14 +36,16 @@
 
         <div class="dashboard-hero-actions">
 
-            <a asp-page="/Masses/Create" class="btn dashboard-hero-primary">
+            <a asp-page="/Masses/Create"
+               class="btn dashboard-hero-primary">
 
                 <i class="bi bi-calendar-plus"></i>
                 Create Mass
 
             </a>
 
-            <a asp-page="/MusicLibrary/Index" class="btn dashboard-hero-secondary">
+            <a asp-page="/MusicLibrary/Index"
+               class="btn dashboard-hero-secondary">
 
                 <i class="bi bi-music-note-list"></i>
                 Browse Music
@@ -55,43 +57,53 @@
     </div>
 
 
-    <div class="dashboard-hero-graphic" aria-hidden="true">
+    <div class="dashboard-hero-graphic"
+         aria-hidden="true">
 
         <div class="hero-music-circle">
 
             <svg viewBox="0 0 240 240">
 
-                <circle cx="120" cy="120" r="94" class="hero-circle-ring" />
+                <circle cx="120"
+                        cy="120"
+                        r="94"
+                        class="hero-circle-ring" />
 
-                <circle cx="120" cy="120" r="75" class="hero-circle-inner" />
+                <circle cx="120"
+                        cy="120"
+                        r="75"
+                        class="hero-circle-inner" />
 
                 <!-- music staff -->
 
-                <path class="hero-staff" d="M55 105h130
-                M55 119h130
-                M55 133h130
-                M55 147h130" />
+                <path class="hero-staff"
+                      d="M55 105h130
+                      M55 119h130
+                      M55 133h130
+                      M55 147h130" />
 
                 <!-- main musical note -->
 
-                <path class="hero-note" d="M119 61v73
-                c-8-5-20-4-28 2
-                c-10 7-12 18-5 24
-                c7 7 21 6 31-1
-                c8-6 11-13 11-22
-                V86
-                l45-12
-                v47
-                c-8-5-20-4-28 2
-                c-10 7-12 18-5 24
-                c7 7 21 6 31-1
-                c8-6 11-13 11-22
-                V57
-                z" />
+                <path class="hero-note"
+                      d="M119 61v73
+                      c-8-5-20-4-28 2
+                      c-10 7-12 18-5 24
+                      c7 7 21 6 31-1
+                      c8-6 11-13 11-22
+                      V86
+                      l45-12
+                      v47
+                      c-8-5-20-4-28 2
+                      c-10 7-12 18-5 24
+                      c7 7 21 6 31-1
+                      c8-6 11-13 11-22
+                      V57
+                      z" />
 
                 <!-- small cross -->
 
-                <path class="hero-cross" d="M75 64v27M64 75h22" />
+                <path class="hero-cross"
+                      d="M75 64v27M64 75h22" />
 
             </svg>
 
@@ -107,9 +119,12 @@
 <div class="row g-3 mb-4">
 
     <div class="col-6 col-lg-3">
-        <a asp-page="/MusicLibrary/Index" class="metric-card metric-card-music">
+
+        <a asp-page="/MusicLibrary/Index"
+           class="metric-card metric-card-music">
 
             <div>
+
                 <div class="metric-label">
                     Songs
                 </div>
@@ -121,6 +136,7 @@
                 <div class="small text-muted mt-1">
                     Music Library
                 </div>
+
             </div>
 
             <div class="metric-icon">
@@ -134,7 +150,9 @@
 
     <div class="col-6 col-lg-3">
 
-        <a asp-page="/Masses/Index" asp-route-filter="upcoming" class="metric-card metric-card-mass">
+        <a asp-page="/Masses/Index"
+           asp-route-filter="upcoming"
+           class="metric-card metric-card-mass">
 
             <div>
 
@@ -176,7 +194,8 @@
 
     <div class="col-6 col-lg-3">
 
-        <a asp-page="/MassTemplates/Index" class="metric-card metric-card-template">
+        <a asp-page="/MassTemplates/Index"
+           class="metric-card metric-card-template">
 
             <div>
 
@@ -205,7 +224,9 @@
 
     <div class="col-6 col-lg-3">
 
-        <a asp-page="/MusicLibrary/Index" asp-route-filter="needs-attention" class="metric-card metric-card-attention">
+        <a asp-page="/MusicLibrary/Index"
+           asp-route-filter="needs-attention"
+           class="metric-card metric-card-attention">
 
             <div>
 
@@ -250,7 +271,8 @@
 
     <div class="col-md-4">
 
-        <a asp-page="/Masses/Create" class="quick-action quick-action-mass">
+        <a asp-page="/Masses/Create"
+           class="quick-action quick-action-mass">
 
             <span class="quick-action-icon">
                 <i class="bi bi-calendar-plus"></i>
@@ -277,7 +299,8 @@
 
     <div class="col-md-4">
 
-        <a asp-page="/MusicLibrary/Create" class="quick-action quick-action-song">
+        <a asp-page="/MusicLibrary/Create"
+           class="quick-action quick-action-song">
 
             <span class="quick-action-icon">
                 <i class="bi bi-music-note-beamed"></i>
@@ -304,7 +327,8 @@
 
     <div class="col-md-4">
 
-        <a asp-page="/MassTemplates/Create" class="quick-action quick-action-template">
+        <a asp-page="/MassTemplates/Create"
+           class="quick-action quick-action-template">
 
             <span class="quick-action-icon">
                 <i class="bi bi-layers"></i>
@@ -373,9 +397,37 @@
             </h2>
 
 
+            @if (!string.IsNullOrWhiteSpace(Model.NextMass.Venue))
+            {
+                <div class="next-mass-venue">
+
+                    <i class="bi bi-geo-alt-fill"></i>
+
+                    <span>
+                        @Model.NextMass.Venue
+                    </span>
+
+                </div>
+            }
+            else
+            {
+                <div class="next-mass-venue is-missing">
+
+                    <i class="bi bi-geo-alt"></i>
+
+                    <span>
+                        Venue not set
+                    </span>
+
+                </div>
+            }
+
+
             <div class="next-mass-full-date">
 
-                @Model.NextMass.MassDate.ToString("dddd, d MMMM yyyy")
+                @Model.NextMass.MassDate.ToString(
+                    "dddd, d MMMM yyyy"
+                )
 
             </div>
 
@@ -408,9 +460,13 @@
                 </span>
 
 
-                <span class="@(Model.NextMass.HasBackground ? "is-ready" : "is-missing")">
+                <span class="@(Model.NextMass.HasBackground
+                    ? "is-ready"
+                    : "is-missing")">
 
-                    <i class="bi @(Model.NextMass.HasBackground ? "bi-check-circle" : "bi-image")"></i>
+                    <i class="bi @(Model.NextMass.HasBackground
+                        ? "bi-check-circle"
+                        : "bi-image")"></i>
 
                     @(Model.NextMass.HasBackground
                         ? "Background ready"
@@ -425,7 +481,9 @@
 
         <div class="next-mass-actions">
 
-            <a asp-page="/Masses/Plan" asp-route-id="@Model.NextMass.Id" class="btn btn-primary">
+            <a asp-page="/Masses/Plan"
+               asp-route-id="@Model.NextMass.Id"
+               class="btn btn-primary">
 
                 <i class="bi bi-music-note-list"></i>
 
@@ -436,8 +494,11 @@
 
             @if (Model.NextMass.MusicCount > 0)
             {
-                <a asp-page="/Masses/MusicPack" asp-route-id="@Model.NextMass.Id" class="btn btn-outline-secondary"
-                   title="Generate Music Pack" data-bs-toggle="tooltip">
+                <a asp-page="/Masses/MusicPack"
+                   asp-route-id="@Model.NextMass.Id"
+                   class="btn btn-outline-secondary"
+                   title="Generate Music Pack"
+                   data-bs-toggle="tooltip">
 
                     <i class="bi bi-file-earmark-pdf"></i>
 
@@ -448,8 +509,12 @@
                 </a>
 
 
-                <a asp-page="/Masses/Index" asp-page-handler="GeneratePpt" asp-route-id="@Model.NextMass.Id"
-                   class="btn btn-outline-secondary" title="Generate PowerPoint" data-bs-toggle="tooltip">
+                <a asp-page="/Masses/Index"
+                   asp-page-handler="GeneratePpt"
+                   asp-route-id="@Model.NextMass.Id"
+                   class="btn btn-outline-secondary"
+                   title="Generate PowerPoint"
+                   data-bs-toggle="tooltip">
 
                     <i class="bi bi-file-earmark-slides"></i>
 
@@ -463,7 +528,8 @@
         </div>
 
 
-        <div class="next-mass-watermark" aria-hidden="true">
+        <div class="next-mass-watermark"
+             aria-hidden="true">
 
             <i class="bi bi-music-note-beamed"></i>
 
@@ -491,7 +557,8 @@ else
 
         </div>
 
-        <a asp-page="/Masses/Create" class="btn btn-primary ms-lg-auto">
+        <a asp-page="/Masses/Create"
+           class="btn btn-primary ms-lg-auto">
 
             <i class="bi bi-plus-lg me-1"></i>
 
@@ -529,7 +596,8 @@ else
                 </div>
 
 
-                <a asp-page="/MusicLibrary/Index" class="dashboard-panel-link">
+                <a asp-page="/MusicLibrary/Index"
+                   class="dashboard-panel-link">
 
                     Review
 
@@ -541,9 +609,7 @@ else
             <div class="p-4">
 
                 <div style="height: 320px;">
-
                     <canvas id="libraryReadinessChart"></canvas>
-
                 </div>
 
             </div>
@@ -574,7 +640,8 @@ else
                 </div>
 
 
-                <a asp-page="/MusicLibrary/Index" class="dashboard-panel-link">
+                <a asp-page="/MusicLibrary/Index"
+                   class="dashboard-panel-link">
 
                     Library
 
@@ -586,9 +653,7 @@ else
             <div class="p-4">
 
                 <div style="height: 320px;">
-
                     <canvas id="massPartChart"></canvas>
-
                 </div>
 
             </div>
@@ -629,11 +694,15 @@ else
                     </span>
 
                     <div>
-                        <h5>Upcoming Masses</h5>
+
+                        <h5>
+                            Upcoming Masses
+                        </h5>
 
                         <span>
                             Scheduled Masses and planning progress
                         </span>
+
                     </div>
 
                 </div>
@@ -699,6 +768,32 @@ else
                                     @mass.Name
 
                                 </a>
+
+
+                                @if (!string.IsNullOrWhiteSpace(mass.Venue))
+                                {
+                                    <div class="dashboard-mass-venue">
+
+                                        <i class="bi bi-geo-alt-fill"></i>
+
+                                        <span>
+                                            @mass.Venue
+                                        </span>
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="dashboard-mass-venue is-missing">
+
+                                        <i class="bi bi-geo-alt"></i>
+
+                                        <span>
+                                            Venue not set
+                                        </span>
+
+                                    </div>
+                                }
 
 
                                 <div class="dashboard-list-meta">
@@ -915,407 +1010,501 @@ else
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
 
-            const songCount = @Model.SongCount;
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const songCount =
+                    @Model.SongCount;
 
 
-            /*
-             * LIBRARY READINESS
-             */
+                /*
+                 * LIBRARY READINESS
+                 */
 
-            const readinessCanvas =
-                document.getElementById("libraryReadinessChart");
+                const readinessCanvas =
+                    document.getElementById(
+                        "libraryReadinessChart"
+                    );
 
-            if (readinessCanvas) {
 
-                new Chart(
-                    readinessCanvas,
-                    {
-                        type: "bar",
+                if (readinessCanvas) {
 
-                        data: {
-                            labels: [
-                                "Presentation Lyrics",
-                                "PDF Sheet",
-                                "One License",
-                                "Composer"
-                            ],
+                    new Chart(
+                        readinessCanvas,
+                        {
+                            type: "bar",
 
-                            datasets: [
-                                {
-                                    label: "Ready",
+                            data: {
 
-                                    data: [
-                                        @Model.SongsWithLyricsCount,
-                                        @Model.SongsWithPdfCount,
-                                        @Model.SongsWithOneLicenseCount,
-                                        @Model.SongsWithComposerCount
-                                    ],
+                                labels: [
+                                    "Presentation Lyrics",
+                                    "PDF Sheet",
+                                    "One License",
+                                    "Composer"
+                                ],
 
-                                    backgroundColor: [
-                                        "rgba(37, 99, 235, 0.82)",
-                                        "rgba(15, 138, 112, 0.82)",
-                                        "rgba(217, 162, 56, 0.86)",
-                                        "rgba(124, 92, 196, 0.82)"
-                                    ],
+                                datasets: [
+                                    {
+                                        label: "Ready",
 
-                                    borderColor: [
-                                        "rgb(37, 99, 235)",
-                                        "rgb(15, 138, 112)",
-                                        "rgb(217, 162, 56)",
-                                        "rgb(124, 92, 196)"
-                                    ],
+                                        data: [
+                                            @Model.SongsWithLyricsCount,
+                                            @Model.SongsWithPdfCount,
+                                            @Model.SongsWithOneLicenseCount,
+                                            @Model.SongsWithComposerCount
+                                        ],
 
-                                    borderWidth: 1,
-                                    borderRadius: 8,
-                                    borderSkipped: false,
-                                    barThickness: 26
-                                }
-                            ]
-                        },
+                                        backgroundColor: [
+                                            "rgba(37, 99, 235, 0.82)",
+                                            "rgba(15, 138, 112, 0.82)",
+                                            "rgba(217, 162, 56, 0.86)",
+                                            "rgba(124, 92, 196, 0.82)"
+                                        ],
 
-                        options: {
-                            indexAxis: "y",
-                            responsive: true,
-                            maintainAspectRatio: false,
+                                        borderColor: [
+                                            "rgb(37, 99, 235)",
+                                            "rgb(15, 138, 112)",
+                                            "rgb(217, 162, 56)",
+                                            "rgb(124, 92, 196)"
+                                        ],
 
-                            animation: {
-                                duration: 700
+                                        borderWidth: 1,
+                                        borderRadius: 8,
+                                        borderSkipped: false,
+                                        barThickness: 26
+                                    }
+                                ]
                             },
 
-                            onHover: function (event, elements) {
+                            options: {
 
-                                if (event.native &&
-                                    event.native.target) {
+                                indexAxis: "y",
 
-                                    event.native.target.style.cursor =
-                                        elements.length > 0
-                                            ? "pointer"
-                                            : "default";
-                                }
-                            },
+                                responsive: true,
 
-                            onClick: function (event, elements) {
+                                maintainAspectRatio: false,
 
-                                if (elements.length === 0) {
-                                    return;
-                                }
 
-                                const index =
-                                    elements[0].index;
-
-                                const filters = [
-                                    "missing-lyrics",
-                                    "missing-pdf",
-                                    "missing-one-license",
-                                    "missing-composer"
-                                ];
-
-                                window.location.href =
-                                    `/MusicLibrary?filter=${encodeURIComponent(filters[index])}`;
-                            },
-
-                            interaction: {
-                                intersect: false,
-                                mode: "nearest"
-                            },
-
-                            plugins: {
-
-                                legend: {
-                                    display: false
+                                animation: {
+                                    duration: 700
                                 },
 
-                                tooltip: {
-                                    displayColors: false,
 
-                                    backgroundColor:
-                                        "rgba(15, 47, 102, 0.96)",
+                                onHover: function (
+                                    event,
+                                    elements
+                                ) {
 
-                                    titleColor:
-                                        "#ffffff",
+                                    if (
+                                        event.native &&
+                                        event.native.target
+                                    ) {
 
-                                    bodyColor:
-                                        "#e8eef8",
+                                        event.native.target
+                                            .style.cursor =
+                                            elements.length > 0
+                                                ? "pointer"
+                                                : "default";
+                                    }
+                                },
 
-                                    padding: 12,
-                                    cornerRadius: 8,
 
-                                    callbacks: {
+                                onClick: function (
+                                    event,
+                                    elements
+                                ) {
 
-                                        label: function (context) {
+                                    if (
+                                        elements.length === 0
+                                    ) {
+                                        return;
+                                    }
 
-                                            const value =
-                                                Number(context.raw ?? 0);
+                                    const index =
+                                        elements[0].index;
 
-                                            const missing =
-                                                Math.max(
-                                                    songCount - value,
-                                                    0
-                                                );
+                                    const filters = [
+                                        "missing-lyrics",
+                                        "missing-pdf",
+                                        "missing-one-license",
+                                        "missing-composer"
+                                    ];
 
-                                            const percentage =
-                                                songCount === 0
-                                                    ? 0
-                                                    : Math.round(
-                                                        value /
-                                                        songCount *
-                                                        100
+                                    window.location.href =
+                                        `/MusicLibrary?filter=${encodeURIComponent(filters[index])}`;
+                                },
+
+
+                                interaction: {
+                                    intersect: false,
+                                    mode: "nearest"
+                                },
+
+
+                                plugins: {
+
+                                    legend: {
+                                        display: false
+                                    },
+
+
+                                    tooltip: {
+
+                                        displayColors: false,
+
+                                        backgroundColor:
+                                            "rgba(15, 47, 102, 0.96)",
+
+                                        titleColor:
+                                            "#ffffff",
+
+                                        bodyColor:
+                                            "#e8eef8",
+
+                                        padding: 12,
+
+                                        cornerRadius: 8,
+
+
+                                        callbacks: {
+
+                                            label: function (
+                                                context
+                                            ) {
+
+                                                const value =
+                                                    Number(
+                                                        context.raw ??
+                                                        0
                                                     );
 
-                                            return [
-                                                `${value} of ${songCount} ready`,
-                                                `${percentage}% complete`,
-                                                `${missing} missing — click to review`
-                                            ];
+                                                const missing =
+                                                    Math.max(
+                                                        songCount -
+                                                        value,
+                                                        0
+                                                    );
+
+                                                const percentage =
+                                                    songCount === 0
+                                                        ? 0
+                                                        : Math.round(
+                                                            value /
+                                                            songCount *
+                                                            100
+                                                        );
+
+                                                return [
+                                                    `${value} of ${songCount} ready`,
+                                                    `${percentage}% complete`,
+                                                    `${missing} missing — click to review`
+                                                ];
+                                            }
                                         }
-                                    }
-                                }
-                            },
-
-                            scales: {
-
-                                x: {
-                                    beginAtZero: true,
-
-                                    suggestedMax:
-                                        Math.max(songCount, 1),
-
-                                    ticks: {
-                                        precision: 0,
-                                        color: "#8190a5",
-
-                                        font: {
-                                            size: 11
-                                        }
-                                    },
-
-                                    grid: {
-                                        color:
-                                            "rgba(100, 116, 139, 0.10)",
-
-                                        drawTicks: false
-                                    },
-
-                                    border: {
-                                        display: false
                                     }
                                 },
 
-                                y: {
-                                    ticks: {
-                                        color: "#42546d",
 
-                                        font: {
-                                            size: 11,
-                                            weight: "600"
+                                scales: {
+
+                                    x: {
+
+                                        beginAtZero: true,
+
+                                        suggestedMax:
+                                            Math.max(
+                                                songCount,
+                                                1
+                                            ),
+
+                                        ticks: {
+
+                                            precision: 0,
+
+                                            color: "#8190a5",
+
+                                            font: {
+                                                size: 11
+                                            }
+                                        },
+
+                                        grid: {
+
+                                            color:
+                                                "rgba(100, 116, 139, 0.10)",
+
+                                            drawTicks: false
+                                        },
+
+                                        border: {
+                                            display: false
                                         }
                                     },
 
-                                    grid: {
-                                        display: false
-                                    },
 
-                                    border: {
-                                        display: false
+                                    y: {
+
+                                        ticks: {
+
+                                            color: "#42546d",
+
+                                            font: {
+                                                size: 11,
+                                                weight: "600"
+                                            }
+                                        },
+
+                                        grid: {
+                                            display: false
+                                        },
+
+                                        border: {
+                                            display: false
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                );
-            }
+                    );
+                }
 
 
-            /*
-             * SONGS BY MASS PART
-             */
+                /*
+                 * SONGS BY MASS PART
+                 */
 
-            const massPartCanvas =
-                document.getElementById("massPartChart");
-
-            if (massPartCanvas) {
-
-                const massPartLabels = [
-
-                    @foreach (var item in Model.LibraryBreakdown)
-                    {
-                        @: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(item.Name)),
-                    }
-
-                ];
+                const massPartCanvas =
+                    document.getElementById(
+                        "massPartChart"
+                    );
 
 
-                const massPartValues = [
+                if (massPartCanvas) {
 
-                    @foreach (var item in Model.LibraryBreakdown)
-                    {
-                        @: @item.Count,
-                    }
+                    const massPartLabels = [
 
-                ];
+                        @foreach (var item in Model.LibraryBreakdown)
+                        {
+                            @: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(item.Name)),
+                        }
+
+                    ];
 
 
-                new Chart(
-                    massPartCanvas,
-                    {
-                        type: "bar",
+                    const massPartValues = [
 
-                        data: {
-                            labels:
-                                massPartLabels,
+                        @foreach (var item in Model.LibraryBreakdown)
+                        {
+                            @: @item.Count,
+                        }
 
-                            datasets: [
-                                {
-                                    label: "Songs",
+                    ];
 
-                                    data:
-                                        massPartValues,
 
-                                    backgroundColor:
-                                        "rgba(124, 92, 196, 0.78)",
+                    new Chart(
+                        massPartCanvas,
+                        {
+                            type: "bar",
 
-                                    borderColor:
-                                        "rgb(124, 92, 196)",
+                            data: {
 
-                                    borderWidth: 1,
-                                    borderRadius: 8,
-                                    borderSkipped: false,
-                                    barThickness: 18
-                                }
-                            ]
-                        },
+                                labels:
+                                    massPartLabels,
 
-                        options: {
-                            indexAxis: "y",
-                            responsive: true,
-                            maintainAspectRatio: false,
+                                datasets: [
+                                    {
+                                        label: "Songs",
 
-                            animation: {
-                                duration: 700
+                                        data:
+                                            massPartValues,
+
+                                        backgroundColor:
+                                            "rgba(124, 92, 196, 0.78)",
+
+                                        borderColor:
+                                            "rgb(124, 92, 196)",
+
+                                        borderWidth: 1,
+
+                                        borderRadius: 8,
+
+                                        borderSkipped: false,
+
+                                        barThickness: 18
+                                    }
+                                ]
                             },
 
-                            onHover: function (event, elements) {
 
-                                if (event.native &&
-                                    event.native.target) {
+                            options: {
 
-                                    event.native.target.style.cursor =
-                                        elements.length > 0
-                                            ? "pointer"
-                                            : "default";
-                                }
-                            },
+                                indexAxis: "y",
 
-                            onClick: function (event, elements) {
+                                responsive: true,
 
-                                if (elements.length === 0) {
-                                    return;
-                                }
+                                maintainAspectRatio: false,
 
-                                const index =
-                                    elements[0].index;
 
-                                const massPart =
-                                    massPartLabels[index];
-
-                                window.location.href =
-                                    `/MusicLibrary?part=${encodeURIComponent(massPart)}`;
-                            },
-
-                            interaction: {
-                                intersect: false,
-                                mode: "nearest"
-                            },
-
-                            plugins: {
-
-                                legend: {
-                                    display: false
+                                animation: {
+                                    duration: 700
                                 },
 
-                                tooltip: {
-                                    displayColors: false,
 
-                                    backgroundColor:
-                                        "rgba(53, 35, 92, 0.96)",
+                                onHover: function (
+                                    event,
+                                    elements
+                                ) {
 
-                                    titleColor:
-                                        "#ffffff",
+                                    if (
+                                        event.native &&
+                                        event.native.target
+                                    ) {
 
-                                    bodyColor:
-                                        "#efeafd",
-
-                                    padding: 12,
-                                    cornerRadius: 8,
-
-                                    callbacks: {
-
-                                        label: function (context) {
-
-                                            const value =
-                                                Number(context.raw ?? 0);
-
-                                            return [
-                                                `${value} song${value === 1 ? "" : "s"}`,
-                                                "Click to view in Music Library"
-                                            ];
-                                        }
-                                    }
-                                }
-                            },
-
-                            scales: {
-
-                                x: {
-                                    beginAtZero: true,
-
-                                    ticks: {
-                                        precision: 0,
-                                        color: "#8190a5",
-
-                                        font: {
-                                            size: 11
-                                        }
-                                    },
-
-                                    grid: {
-                                        color:
-                                            "rgba(100, 116, 139, 0.10)",
-
-                                        drawTicks: false
-                                    },
-
-                                    border: {
-                                        display: false
+                                        event.native.target
+                                            .style.cursor =
+                                            elements.length > 0
+                                                ? "pointer"
+                                                : "default";
                                     }
                                 },
 
-                                y: {
-                                    ticks: {
-                                        color: "#42546d",
 
-                                        font: {
-                                            size: 11,
-                                            weight: "600"
+                                onClick: function (
+                                    event,
+                                    elements
+                                ) {
+
+                                    if (
+                                        elements.length === 0
+                                    ) {
+                                        return;
+                                    }
+
+                                    const index =
+                                        elements[0].index;
+
+                                    const massPart =
+                                        massPartLabels[index];
+
+                                    window.location.href =
+                                        `/MusicLibrary?part=${encodeURIComponent(massPart)}`;
+                                },
+
+
+                                interaction: {
+                                    intersect: false,
+                                    mode: "nearest"
+                                },
+
+
+                                plugins: {
+
+                                    legend: {
+                                        display: false
+                                    },
+
+
+                                    tooltip: {
+
+                                        displayColors: false,
+
+                                        backgroundColor:
+                                            "rgba(53, 35, 92, 0.96)",
+
+                                        titleColor:
+                                            "#ffffff",
+
+                                        bodyColor:
+                                            "#efeafd",
+
+                                        padding: 12,
+
+                                        cornerRadius: 8,
+
+
+                                        callbacks: {
+
+                                            label: function (
+                                                context
+                                            ) {
+
+                                                const value =
+                                                    Number(
+                                                        context.raw ??
+                                                        0
+                                                    );
+
+                                                return [
+                                                    `${value} song${value === 1 ? "" : "s"}`,
+                                                    "Click to view in Music Library"
+                                                ];
+                                            }
+                                        }
+                                    }
+                                },
+
+
+                                scales: {
+
+                                    x: {
+
+                                        beginAtZero: true,
+
+                                        ticks: {
+
+                                            precision: 0,
+
+                                            color: "#8190a5",
+
+                                            font: {
+                                                size: 11
+                                            }
+                                        },
+
+                                        grid: {
+
+                                            color:
+                                                "rgba(100, 116, 139, 0.10)",
+
+                                            drawTicks: false
+                                        },
+
+                                        border: {
+                                            display: false
                                         }
                                     },
 
-                                    grid: {
-                                        display: false
-                                    },
 
-                                    border: {
-                                        display: false
+                                    y: {
+
+                                        ticks: {
+
+                                            color: "#42546d",
+
+                                            font: {
+                                                size: 11,
+                                                weight: "600"
+                                            }
+                                        },
+
+                                        grid: {
+                                            display: false
+                                        },
+
+                                        border: {
+                                            display: false
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                );
-            }
+                    );
+                }
 
-        });
+            }
+        );
+
     </script>
 }

@@ -134,7 +134,7 @@ public class IndexModel : PageModel
                 Id = x.Id,
 
                 Name = x.Name,
-
+                Venue = x.Venue,
                 MassDate = x.MassDate,
 
                 MusicCount = _context.MassSongs
@@ -186,6 +186,8 @@ public class IndexModel : PageModel
 
         public string Name { get; set; }
             = string.Empty;
+
+        public string? Venue { get; set; }
 
         public DateTime MassDate { get; set; }
 

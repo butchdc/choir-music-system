@@ -198,16 +198,26 @@ public class IndexModel : PageModel
         var filePath =
             _powerPointService.GenerateSongPresentation(song);
 
-        var bytes =
-            await System.IO.File.ReadAllBytesAsync(filePath);
+        try
+        {
+            var bytes =
+                await System.IO.File.ReadAllBytesAsync(filePath);
 
-        var safeFileName = string.Join(
-            "_",
-            song.Title.Split(Path.GetInvalidFileNameChars()));
+            var safeFileName = string.Join(
+                "_",
+                song.Title.Split(Path.GetInvalidFileNameChars()));
 
-        return File(
-            bytes,
-            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-            $"{safeFileName}.pptx");
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                $"{safeFileName}.pptx");
+        }
+        finally
+        {
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
     }
 }

@@ -11336,3 +11336,115 @@ a.presentation-item-title:hover {
         flex: 1;
     }
 }
+
+/* =========================================================
+   DASHBOARD MASS VENUE
+   ========================================================= */
+
+/* Next Mass */
+
+.next-mass-venue {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+
+    width: fit-content;
+
+    margin-top: .25rem;
+    margin-bottom: .3rem;
+
+    padding: .26rem .55rem;
+
+    color: #315d8a;
+    background: #eef5fc;
+
+    border: 1px solid #d9e8f7;
+    border-radius: 7px;
+
+    font-size: .7rem;
+    font-weight: 750;
+    line-height: 1.2;
+}
+
+.next-mass-venue i {
+    flex: 0 0 auto;
+
+    color: #bf8426;
+
+    font-size: .72rem;
+}
+
+.next-mass-venue.is-missing {
+    color: #8795a8;
+    background: #f4f6f8;
+
+    border-color: #e4e8ed;
+
+    font-weight: 600;
+}
+
+.next-mass-venue.is-missing i {
+    color: #a8b2bf;
+}
+
+
+/* Upcoming Mass list */
+
+.dashboard-mass-venue {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+
+    width: fit-content;
+
+    margin-top: .15rem;
+    margin-bottom: .25rem;
+
+    color: #42678d;
+
+    font-size: .65rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.dashboard-mass-venue i {
+    flex: 0 0 auto;
+
+    color: #bf8426;
+
+    font-size: .67rem;
+}
+
+.dashboard-mass-venue.is-missing {
+    color: #98a4b3;
+
+    font-weight: 600;
+}
+
+.dashboard-mass-venue.is-missing i {
+    color: #a8b2bf;
+}
+
+
+/* Keep long venue names tidy */
+
+.next-mass-venue span,
+.dashboard-mass-venue span {
+    overflow: hidden;
+
+    max-width: 320px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* Mobile */
+
+@media (max-width: 640px) {
+
+    .next-mass-venue span,
+    .dashboard-mass-venue span {
+        max-width: 210px;
+    }
+}
