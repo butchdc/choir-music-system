@@ -163,7 +163,8 @@ app.UseAuthorization();
 
 app.UseRateLimiter();
 
-app.MapStaticAssets();
+app.MapStaticAssets()
+   .AllowAnonymous();
 
 app.MapRazorPages()
    .WithStaticAssets();
