@@ -12,10 +12,6 @@
 
                     <img src="~/images/choir-logo.png" alt="Choir Music System" class="login-logo mb-4" />
 
-                    <p class="text-muted mb-4">
-                        Sign in with your invited Google account.
-                    </p>
-
                     @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
                     {
                         <div class="alert alert-danger text-start">
@@ -25,7 +21,7 @@
 
                     <form method="post" asp-page-handler="Google">
                         <button type="submit" class="btn btn-primary w-100">
-                            Continue with Google
+                            Sign in with Google
                         </button>
                     </form>
                 </div>
