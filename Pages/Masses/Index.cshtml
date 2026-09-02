@@ -454,13 +454,15 @@ else
 
                             </a>
 
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-page="Delete" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-danger table-action"
+                                title="Delete Mass" data-bs-toggle="tooltip">
 
-                            <a asp-page="Delete" asp-route-id="@mass.Id" class="btn btn-sm btn-outline-danger table-action"
-                               title="Delete Mass" data-bs-toggle="tooltip">
+                                    <i class="bi bi-trash"></i>
 
-                                <i class="bi bi-trash"></i>
-
-                            </a>
+                                </a>
+                            }
 
                         </div>
 

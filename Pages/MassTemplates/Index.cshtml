@@ -241,17 +241,19 @@
 
                                         </a>
 
-                                        <a asp-page="./Delete"
-                                           asp-route-id="@template.Id"
-                                           asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
-                                           class="btn btn-sm btn-outline-danger table-action"
-                                           title="Delete"
-                                           data-bs-toggle="tooltip">
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a asp-page="./Delete"
+                                            asp-route-id="@template.Id"
+                                            asp-route-returnUrl="@($"{Request.Path}{Request.QueryString}")"
+                                            class="btn btn-sm btn-outline-danger table-action"
+                                            title="Delete"
+                                            data-bs-toggle="tooltip">
 
-                                            <i class="bi bi-trash"></i>
+                                                <i class="bi bi-trash"></i>
 
-                                        </a>
-
+                                            </a>
+                                        }
                                     </div>
 
                                 </td>

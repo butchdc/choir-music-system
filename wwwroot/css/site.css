@@ -11448,3 +11448,27 @@ a.presentation-item-title:hover {
         max-width: 210px;
     }
 }
+/* Login branding */
+
+.login-logo {
+    display: block;
+    width: 270px;
+    max-width: 90%;
+    height: auto;
+    margin: 0 auto 1.75rem;
+}
+/* BC Choir logo */
+
+.navbar-logo {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 10px;
+}
+
+.app-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+}

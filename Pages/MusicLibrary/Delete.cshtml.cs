@@ -3,9 +3,11 @@ using choir_music_system.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace choir_music_system.Pages.MusicLibrary;
 
+[Authorize(Policy = "AdminOnly")]
 public class DeleteModel : PageModel
 {
     private readonly ChoirDbContext _context;

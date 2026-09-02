@@ -8,6 +8,10 @@
 
     <title>@ViewData["Title"] - Choir Music System</title>
 
+    <link rel="icon"
+      type="image/png"
+      href="~/images/choir-icon.png" />
+
     <script type="importmap"></script>
 
     <link rel="stylesheet"
@@ -32,48 +36,26 @@
                 <!-- BRAND -->
 
                 <a class="navbar-brand app-brand"
-                   asp-page="/Index">
+                    asp-page="/Index">
 
-                    <span class="brand-mark"
-                          aria-hidden="true">
+                        <img src="~/images/choir-icon.png"
+                            alt=""
+                            class="navbar-logo"
+                            aria-hidden="true" />
 
-                        <svg viewBox="0 0 64 64"
-                             role="img">
+                        <span class="brand-copy">
 
-                            <!-- outer arch -->
-                            <path class="brand-mark-arch"
-                                  d="M11 32C11 18.7 20.4 8 32 8s21 10.7 21 24" />
+                            <span class="brand-name">
+                                Choir
+                            </span>
 
-                            <!-- music stave -->
-                            <path class="brand-mark-staff"
-                                  d="M8 41h48M10 46h44M14 51h36" />
+                            <span class="brand-subtitle">
+                                Music System
+                            </span>
 
-                            <!-- note -->
-                            <path class="brand-mark-note"
-                                  d="M35 15v25.5c-2.2-1.2-5.4-1.1-7.8.3-3.2 1.9-4.5 5.2-2.8 7.4 1.7 2.2 5.7 2.5 8.9.6 2.6-1.5 3.7-3.8 3.7-6.4V24l12-3.2v14.5c-2.2-1.2-5.3-1-7.6.4-3.2 1.9-4.5 5.1-2.8 7.3 1.7 2.2 5.7 2.5 8.8.7 2.6-1.5 3.7-3.9 3.7-6.5V14.8L35 18.1z" />
-
-                            <!-- book -->
-                            <path class="brand-mark-book"
-                                  d="M9 52c7.5-1.7 15-.8 23 3.5C40 51.2 47.5 50.3 55 52v5c-7.2-1.4-14.5-.4-23 4-8.5-4.4-15.8-5.4-23-4z" />
-
-                        </svg>
-
-                    </span>
-
-
-                    <span class="brand-copy">
-
-                        <span class="brand-name">
-                            Choir
                         </span>
 
-                        <span class="brand-subtitle">
-                            Music System
-                        </span>
-
-                    </span>
-
-                </a>
+                    </a>
 
 
                 <!-- MOBILE NAV BUTTON -->
