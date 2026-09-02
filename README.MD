@@ -1,290 +1,128 @@
 # Choir Music System
 
-A cross-platform web application for managing choir music sheets, planning music for Mass, generating combined choir music-sheet PDFs, and eventually generating PowerPoint presentations.
+A cross-platform web application for managing choir music, planning music and presentation content for Mass, generating combined choir music-sheet PDFs, and generating PowerPoint presentations.
 
-The application is designed to be developed on both **macOS and Windows** using the same codebase.
+The system provides a central place for choir preparation across multiple churches and venues.
 
-## Project Goals
+The application is designed to be developed and operated using the same codebase across **macOS, Windows, and Linux/Docker environments**.
 
-The system will provide a central library for choir music and make preparing for Mass easier.
+---
 
-The initial focus is on PDF music sheets. PowerPoint functionality will be added as a later phase, but the application architecture should support it from the beginning.
+# Current Application Status
 
-The overall goal is:
+The core Choir Music System is now operational.
+
+```text
+Dashboard                         COMPLETE
+Music Library                     COMPLETE
+Mass Management                   COMPLETE
+Mass Planning                     COMPLETE
+Presentation Library              COMPLETE
+Presentation Planning             COMPLETE
+Mass Templates                    COMPLETE
+Music Pack Generation             COMPLETE
+PowerPoint Generation             COMPLETE
+Backup & Restore                  COMPLETE
+Multi-Church / Venue Support      IMPLEMENTED
+Docker Deployment                 IMPLEMENTED
+
+NEXT MAJOR PHASE
+
+Security & Public Deployment      PLANNED
+```
+
+The current focus is preparing the application for secure public-facing deployment.
+
+---
+
+# Project Goals
+
+The Choir Music System provides a central library for choir resources and simplifies preparation for Mass.
+
+The main workflow is:
 
 ```text
 Music Library
-      ↓
-Create Mass
-      ↓
-Select Music
-      ↓
- ┌────┴─────────┐
- ↓              ↓
-Music Pack    PowerPoint
-   PDF          PPTX
-Phase 1       Future
+      │
+      ├──────────────────────┐
+      │                      │
+      ▼                      ▼
+Presentation Library     Mass Templates
+      │                      │
+      └──────────┬───────────┘
+                 │
+                 ▼
+             Create Mass
+                 │
+                 ▼
+             Plan Mass
+                 │
+        ┌────────┴────────┐
+        │                 │
+        ▼                 ▼
+   Music Plan      Presentation Plan
+        │                 │
+        ▼                 ▼
+   Music Pack         PowerPoint
+      PDF                PPTX
 ```
+
+The system is designed so songs and presentation content are maintained once and reused across many Masses.
 
 ---
 
-# Phase 1 — Music Sheets
+# Core Features
 
-**Status: Core Music Library complete; Mass Planning and Music Pack generation in progress.**
+## Dashboard
 
-Phase 1 provides:
+The dashboard provides an overview of the current choir library and upcoming Mass preparation.
 
-* Upload PDF music sheets
-* Maintain the music library
-* Edit music information
-* Replace existing PDF files
+Current dashboard functionality includes:
+
+* Music Library statistics
+* Mass statistics
+* Mass Template statistics
+* Presentation Library statistics
+* Music readiness information
+* Upcoming Masses
+* Next Mass summary
+* Recent music
+* Quick access to common actions
+* Mass preparation status
+* Venue visibility for multi-church planning
+
+The dashboard is intended to provide a quick operational view of the choir's preparation work.
+
+---
+
+# Music Library
+
+The Music Library is the central repository for choir songs and music sheets.
+
+Current functionality includes:
+
+* Upload individual PDF music sheets
+* Bulk upload existing PDF music sheets
+* Automatic title detection from PDFs
+* Maintain song metadata
+* Edit song information
+* Replace existing PDFs
 * Archive music
 * Search the library
-* Preview music sheets
-* Create a Mass
-* Select music for each Mass part
-* Control the order of music
-* Generate one combined choir music pack PDF
-* Avoid duplicate PDFs in the generated music pack
+* Filter music by Mass part
+* Preview PDF music sheets
+* Maintain presentation lyrics
+* Generate an individual song PowerPoint
+* Reuse songs across multiple Masses
+* Identify songs with incomplete metadata
 
-For example, if one PDF contains the complete Mass setting and is selected for Kyrie, Gloria, Holy, Amen and Lamb of God, the PDF should only appear once in the generated music pack.
-
----
-
-# Future Phase — PowerPoint
-
-PowerPoint generation will be added after the music-sheet workflow is stable.
-
-The future PowerPoint functionality should support:
-
-* Maintaining song lyrics
-* Importing lyrics from existing PowerPoint files
-* Using an existing choir PowerPoint template
-* Maintaining PowerPoint templates
-* Uploading and maintaining background images
-* Selecting a background when creating a presentation
-* Applying the selected background to all slides
-* Applying an overlay to slides containing text
-* Configurable text-overlay opacity
-* Maintaining consistent fonts and positioning
-* Generating lyric slides automatically
-* Generating songs in Mass order
-* Exporting the completed presentation as `.pptx`
-
-The database and file-storage architecture should take these future requirements into account.
+PDF music sheets remain the source documents used for generated choir music packs.
 
 ---
 
-# Technology Stack
+# Song Information
 
-## Backend
-
-* ASP.NET Core 10
-* C#
-* Razor Pages
-
-## Database
-
-* Entity Framework Core
-* SQLite for initial development
-
-Future database options may include:
-
-* PostgreSQL
-* Microsoft SQL Server
-
-## Frontend
-
-* Razor Pages
-* HTML
-* CSS
-* Bootstrap
-* JavaScript where required
-
-A separate JavaScript framework such as React or Angular is not required for the initial application.
-
-## Documents
-
-Phase 1:
-
-* Cross-platform PDF processing library
-
-Future:
-
-* Open XML SDK or another suitable cross-platform PowerPoint library
-
-## Development
-
-* Visual Studio Code
-* Git
-* GitHub
-* .NET CLI
-
----
-
-# Supported Development Platforms
-
-Development should work on:
-
-* macOS
-* Windows
-
-The project should not contain code that depends unnecessarily on either operating system.
-
-Use cross-platform .NET functionality such as:
-
-```csharp
-Path.Combine(...)
-```
-
-instead of manually constructing Windows or macOS paths.
-
-Do not hard-code paths such as:
-
-```text
-C:\ChoirMusic\
-```
-
-or:
-
-```text
-/Users/username/ChoirMusic/
-```
-
----
-
-# Development Architecture
-
-The initial architecture should remain simple.
-
-```text
-Browser
-   ↓
-ASP.NET Core Razor Pages
-   ↓
-Application Services
-   ↓
-Entity Framework Core
-   ↓
-ChoirDbContext
-   ↓
-SQLite
-```
-
-File operations should be handled separately:
-
-```text
-Application Services
-        ↓
-   File Storage
-        ↓
-Storage/
-   ├── Songs/
-   ├── Templates/       Future
-   ├── Backgrounds/     Future
-   └── Generated/       Future
-```
-
-This separation will make it easier to move files to cloud storage in the future.
-
----
-
-# Database Portability
-
-SQLite will be used during initial development because it is lightweight, cross-platform, and does not require a separate database server.
-
-However, the application must not depend directly on SQLite-specific functionality.
-
-All normal database access should go through:
-
-```text
-Application
-     ↓
-Services
-     ↓
-ChoirDbContext
-     ↓
-Entity Framework Core
-     ↓
-Database Provider
-```
-
-This allows the provider to change later:
-
-```text
-Entity Framework Core
-        │
-        ├── SQLite
-        │      Initial
-        │
-        ├── PostgreSQL
-        │      Future option
-        │
-        └── SQL Server
-               Future option
-```
-
-Avoid database-specific SQL wherever practical.
-
-Connection strings must be stored in configuration and must not be hard-coded into application services.
-
-Initial example:
-
-```json
-{
-  "ConnectionStrings": {
-    "ChoirDatabase": "Data Source=Data/choir.db"
-  }
-}
-```
-
-Entity Framework Core migrations should be used to manage schema changes.
-
-Changing database provider in the future may require new provider-specific migrations, but the application's domain models and business services should remain largely unchanged.
-
----
-
-# File Storage
-
-PDF files should **not** be stored directly in the database.
-
-The database stores metadata about each music sheet and the location of its associated file.
-
-During development, files will be stored locally.
-
-Example:
-
-```text
-Storage/
-└── Songs/
-    ├── here-i-am-lord.pdf
-    ├── mass-of-creation.pdf
-    └── one-bread-one-body.pdf
-```
-
-Future files may include:
-
-```text
-Storage/
-├── Songs/
-├── PowerPointTemplates/
-├── Backgrounds/
-└── Generated/
-    ├── MusicPacks/
-    └── PowerPoints/
-```
-
-File-storage operations should eventually be accessed through a storage service so local storage can be replaced by cloud storage without redesigning the application.
-
----
-
-# Initial Data Model
-
-## Song
-
-Represents a music sheet maintained in the library.
-
-Initial fields may include:
+A Song may contain:
 
 ```text
 Id
@@ -296,47 +134,201 @@ Key
 PdfFileName
 PdfPath
 Notes
+OneLicenseNumber
+Publisher
+CopyrightText
+PresentationLyrics
 IsActive
 CreatedDate
 UpdatedDate
 ```
 
-## Mass
+Song information is stored in the database while the physical PDF is stored separately in file storage.
 
-Represents a Mass being planned.
+---
 
-Initial fields may include:
+# Presentation Lyrics
+
+Songs can contain lyrics specifically prepared for PowerPoint generation.
+
+Presentation lyrics use explicit slide markers.
+
+Example:
+
+```text
+[SLIDE:TITLED]
+Amazing grace,
+how sweet the sound...
+
+[SLIDE]
+I once was lost,
+but now am found...
+```
+
+The supported markers are:
+
+```text
+[SLIDE:TITLED]
+```
+
+Creates a slide using:
+
+```text
+Song - Title + Lyrics
+```
+
+and:
+
+```text
+[SLIDE]
+```
+
+Creates a continuation slide using:
+
+```text
+Song - Lyrics
+```
+
+This gives the choir direct control over where lyric slides are divided.
+
+Songs without presentation lyrics can still generate a titled song slide.
+
+---
+
+# Mass Management
+
+A Mass represents a planned church service.
+
+Current functionality includes:
+
+* Create a Mass
+* Edit a Mass
+* Delete a Mass
+* Duplicate an existing Mass
+* Plan music
+* Plan presentation content
+* Select a PowerPoint background
+* Generate a choir music pack
+* Generate a PowerPoint presentation
+* Save a Mass as a reusable Mass Template
+
+---
+
+# Mass Information
+
+A Mass contains information including:
 
 ```text
 Id
 Name
 MassDate
+Venue
+MassIntroduction
 Notes
+PresentationBackgroundPath
 CreatedDate
 UpdatedDate
 ```
 
-## MassSong
+## Mass Name
 
-Connects music from the library to a Mass.
+The Mass Name is the primary title of the Mass.
 
-Initial fields may include:
+It is also used as the PowerPoint title.
+
+Example:
 
 ```text
-Id
-MassId
-SongId
-MassPart
-DisplayOrder
+Sunday Mass
 ```
 
-This allows the same music sheet to be reused across many Masses.
+or:
+
+```text
+Feast of the Holy Cross
+```
+
+---
+
+# Multi-Church / Venue Support
+
+The Choir Music System is designed to support Masses across multiple churches and venues.
+
+Each Mass can therefore have a Venue.
+
+Example:
+
+```text
+Mass Name
+Sunday Mass
+
+Venue
+Holy Cross Church
+```
+
+Venue information is intentionally visible in important planning areas such as the dashboard and Mass listings so that similarly named Masses at different churches can be easily distinguished.
+
+Venue is informational and is not used to automatically change presentation behaviour.
+
+For example, the application must not contain presentation logic such as:
+
+```text
+If Venue = Holy Cross
+    automatically add Holy Cross Safety
+```
+
+Church-specific content should instead be managed through the Presentation Library and Mass Presentation Order.
+
+---
+
+# Mass Introduction
+
+Mass Introduction is public presentation content associated with the Mass.
+
+It is separate from internal planning Notes.
+
+Example:
+
+```text
+Welcome to our celebration of the
+Feast of the Holy Cross.
+```
+
+During PowerPoint generation:
+
+```text
+PowerPoint Title       ← Mass.Name
+
+PowerPoint Date        ← Mass.MassDate
+
+PowerPoint Subtitle    ← Mass.MassIntroduction
+```
+
+Mass Notes are not displayed on the title slide.
+
+---
+
+# Mass Notes
+
+Mass Notes are intended for internal planning information.
+
+Examples may include:
+
+```text
+Choir call time 8:30 AM
+
+Use alternate Gloria arrangement
+
+Check microphone before Mass
+```
+
+Notes should not automatically appear in generated presentations.
 
 ---
 
 # Mass Parts
 
-The initial system should support common Mass parts such as:
+The system supports common Mass parts including:
 
 ```text
 Entrance
@@ -354,13 +346,364 @@ Communion
 Recessional
 ```
 
-The design should allow additional parts to be added later without significant code changes.
+The application architecture allows additional Mass parts to be supported without redesigning the core system.
+
+---
+
+# Mass Music Planning
+
+The Music Plan allows songs from the Music Library to be selected for each Mass part.
+
+Current functionality includes:
+
+* Multiple songs per Mass part
+* Search while planning
+* Display useful song metadata
+* Preserve selected songs
+* Preserve manual presentation ordering
+* Show selected songs while Mass-part sections are collapsed
+* Insert newly selected songs near the appropriate Mass part
+* Reuse the same song for multiple Mass parts
+* Open source music-sheet PDFs where available
+
+Music planning and presentation ordering are related but intentionally separate.
+
+Changing a song selection should not unnecessarily destroy the manually arranged Presentation Order.
+
+---
+
+# Mass Presentation Planning
+
+Each Mass has a unified Presentation Order.
+
+The Presentation Order controls the actual sequence used when generating the PowerPoint.
+
+It can contain:
+
+```text
+Mass Title
+Songs
+Presentation Library Items
+```
+
+Example:
+
+```text
+1. Holy Cross Safety
+2. Gathering Song
+3. Welcome
+4. Mass Title
+5. Entrance Song
+6. Gloria
+7. Psalm Response
+8. Alleluia
+9. Offertory
+10. Holy
+11. Memorial Acclamation
+12. Amen
+13. Communion
+14. Recessional
+```
+
+Items can be reordered using drag and drop.
+
+The PowerPoint generator follows this order directly.
+
+---
+
+# Mass Title
+
+Mass Title is a system-generated Presentation Order item.
+
+It is not a Presentation Library item.
+
+The Mass Title can be moved within the Presentation Order just like other presentation content.
+
+This allows content such as:
+
+```text
+Safety Notice
+Prelude Song
+Welcome
+```
+
+to appear before the Mass title if required.
+
+The Mass Title uses the PowerPoint template layout:
+
+```text
+Title
+```
+
+The mapping is:
+
+```text
+Template Title       ← Mass.Name
+Template Date        ← Mass.MassDate
+Template Subtitle    ← Mass.MassIntroduction
+```
+
+---
+
+# Presentation Library
+
+The Presentation Library stores reusable non-song presentation content.
+
+Examples include:
+
+* Psalm responses
+* Prayers
+* Creed text
+* Congregational responses
+* Notices
+* Safety information
+* Custom presentation content
+
+Presentation Library items can be reused across many Masses.
+
+---
+
+# Presentation Item Information
+
+A Presentation Library item may contain:
+
+```text
+Id
+Title
+Type
+Language
+PresentationText
+PowerPointLayout
+IsActive
+CreatedDate
+UpdatedDate
+```
+
+Supported language classifications include:
+
+```text
+English
+Tagalog
+Bilingual
+Other
+```
+
+Example presentation types include:
+
+```text
+Psalm Response
+Creed
+Prayer
+Response
+Notice
+Custom
+```
+
+---
+
+# Presentation Slide Markers
+
+Presentation Library content can also use explicit slide markers.
+
+The normal layouts are:
+
+```text
+Presentation - Title + Text
+
+Presentation - Text
+```
+
+This allows longer presentation content to be deliberately divided across multiple slides.
+
+---
+
+# Custom PowerPoint Layouts
+
+Presentation Library items can optionally select a specific layout from the PowerPoint template.
+
+If no custom layout is selected, the application uses the normal presentation layouts.
+
+If a custom layout is selected, the PowerPoint generator uses that template layout for the presentation item.
+
+Available layouts are discovered from the configured PowerPoint template rather than being permanently hard-coded into the Presentation Library interface.
+
+---
+
+# Holy Cross Safety
+
+The PowerPoint template currently includes a custom layout:
+
+```text
+HC Safety
+```
+
+Holy Cross safety information is handled as a normal reusable Presentation Library item.
+
+For example:
+
+```text
+Title
+Holy Cross Safety
+
+Type
+Notice
+
+PowerPoint Layout
+HC Safety
+```
+
+It can then be manually added to the Mass Presentation Order and positioned wherever required.
+
+It is deliberately not automatically inserted based on Venue.
+
+This keeps venue information and presentation content independent.
+
+---
+
+# PowerPoint Generation
+
+The application generates `.pptx` presentations using the configured choir PowerPoint template.
+
+PowerPoint generation currently supports:
+
+* Mass title slides
+* Mass date
+* Mass introduction
+* Songs
+* Song lyrics
+* Explicit lyric slide markers
+* Presentation Library items
+* Explicit presentation slide markers
+* Mass-part dividers
+* Custom PowerPoint layouts
+* Background images
+* Background transparency
+* User-controlled Presentation Order
+* Template fonts and positioning
+* Reusable presentation content
+
+PowerPoint generation uses the Open XML SDK.
+
+---
+
+# PowerPoint Template
+
+The current PowerPoint template is stored at:
+
+```text
+Storage/PowerPointTemplates/Template.pptx
+```
+
+The template is intentionally maintained with the application.
+
+Known template layouts include:
+
+```text
+Title
+Song - Title + Lyrics
+Song - Lyrics
+Presentation - Title + Text
+Presentation - Text
+Divider
+HC Safety
+```
+
+The template is currently designed for a widescreen 16:9 presentation.
+
+---
+
+# PowerPoint Background Behaviour
+
+A Mass can have a selected presentation background.
+
+The current presentation rules are:
+
+```text
+Title
+Background transparency: 0%
+
+Divider
+Background transparency: 0%
+
+Song slides
+Background transparency: 85%
+
+Presentation Library slides
+Background transparency: 85%
+
+Custom Presentation layouts
+Background transparency: 85%
+```
+
+This keeps text readable while still showing the selected Mass background.
+
+Custom layouts such as `HC Safety` use the same Mass background behaviour as other Presentation Library content.
+
+---
+
+# Generated PowerPoint Files
+
+Generated presentations are treated as temporary output.
+
+The intended workflow is:
+
+```text
+Generate temporary PPTX
+        ↓
+Read generated file
+        ↓
+Return browser download
+        ↓
+Delete temporary file
+```
+
+Generated PowerPoint files should not need to remain permanently on the server.
+
+The user-facing Mass PowerPoint filename follows the general format:
+
+```text
+{Venue}-{Mass Name}-{yyyyMMdd}.pptx
+```
+
+Example:
+
+```text
+Holy Cross Church-Sunday Mass-20260906.pptx
+```
+
+Temporary internal filenames may contain unique identifiers to prevent collisions, but those identifiers should not be exposed as the browser download filename.
+
+---
+
+# Music Pack PDF Generation
+
+The application can generate a combined PDF containing the music required for a Mass.
+
+The workflow is:
+
+```text
+Mass
+  ↓
+Music Plan
+  ↓
+Selected Songs
+  ↓
+Find Source PDFs
+  ↓
+Remove Duplicate PDFs
+  ↓
+Merge PDFs
+  ↓
+Music Pack
+```
+
+PdfSharpCore is used for PDF merging.
 
 ---
 
 # Duplicate Music-Sheet Handling
 
-One PDF may contain several parts of the Mass.
+One PDF may contain several parts of a Mass.
 
 For example:
 
@@ -386,66 +729,522 @@ Amen                   → Mass of Creation
 Lamb of God            → Mass of Creation
 ```
 
-When generating the choir music pack:
+The generated choir music pack should include:
 
 ```text
 Mass of Creation.pdf
 ```
 
-should only be included **once**.
+only once.
 
-The generated PDF should preserve the appropriate Mass/music order while removing duplicate source documents.
+The generated PDF preserves the appropriate music order while avoiding duplicate source documents.
+
+---
+
+# Mass Templates
+
+Mass Templates allow common Mass structures to be reused.
+
+A template can contain an ordered combination of:
+
+```text
+Mass Title
+Songs
+Presentation Library Items
+```
+
+Templates have their own Presentation Order.
+
+Items can be reordered using drag and drop.
+
+A Mass can also be saved as a new Mass Template.
+
+---
+
+# Mass Template Workflow
+
+Example:
+
+```text
+Mass Template
+      │
+      ├── Mass Title
+      ├── Entrance Song
+      ├── Gloria
+      ├── Psalm Response
+      ├── Creed
+      ├── Holy
+      ├── Communion
+      └── Recessional
+              │
+              ▼
+         Create Mass
+              │
+              ▼
+      Copy Template Plan
+              │
+              ▼
+      Edit for this Mass
+```
+
+The template stores references to reusable Song and Presentation Library records rather than duplicating their content.
+
+---
+
+# MassPlanItem
+
+`MassPlanItem` represents an item in the unified Mass Presentation Order.
+
+Conceptually it contains:
+
+```text
+Id
+MassId
+ItemType
+SongId
+PresentationItemId
+MassPart
+DisplayOrder
+```
+
+Supported item types include:
+
+```text
+MassTitle
+Song
+Presentation
+```
+
+Song and Presentation references are nullable because a system item such as `MassTitle` does not require either.
+
+---
+
+# Presentation Ordering
+
+Presentation ordering uses numeric `DisplayOrder` values.
+
+The application commonly uses increments such as:
+
+```text
+10
+20
+30
+40
+50
+```
+
+This keeps ordering simple while allowing items to be inserted and reordered.
+
+The saved Presentation Order is the authoritative order used during PowerPoint generation.
+
+---
+
+# Technology Stack
+
+## Backend
+
+* ASP.NET Core 10
+* C#
+* Razor Pages
+
+## Database
+
+* Entity Framework Core
+* SQLite
+
+The architecture should remain portable to another Entity Framework Core provider if required in the future.
+
+Possible future database providers include:
+
+* PostgreSQL
+* Microsoft SQL Server
+
+## Frontend
+
+* Razor Pages
+* HTML
+* CSS
+* Bootstrap
+* Bootstrap Icons
+* JavaScript
+* Chart.js
+
+A separate frontend framework such as React or Angular is not currently required.
+
+## PDF
+
+* PdfPig
+* PdfSharpCore
+
+PdfPig is used for PDF metadata/title extraction.
+
+PdfSharpCore is used for generated choir music packs.
+
+## PowerPoint
+
+* DocumentFormat.OpenXml
+
+The Open XML SDK is used for cross-platform PowerPoint generation.
+
+## Development
+
+* Visual Studio Code
+* Git
+* GitHub
+* .NET CLI
+* Entity Framework CLI
+* Docker
+
+---
+
+# Supported Platforms
+
+Development should remain cross-platform.
+
+The application is intended to work across:
+
+```text
+macOS
+Windows
+Linux / Docker
+```
+
+The project should avoid unnecessary operating-system-specific code.
+
+Use cross-platform .NET functionality such as:
+
+```csharp
+Path.Combine(...)
+```
+
+instead of manually constructing operating-system-specific paths.
+
+Do not hard-code paths such as:
+
+```text
+C:\ChoirMusic\
+```
+
+or:
+
+```text
+/Users/username/ChoirMusic/
+```
+
+---
+
+# Application Architecture
+
+The application uses a relatively simple architecture.
+
+```text
+Browser
+   │
+   ▼
+ASP.NET Core Razor Pages
+   │
+   ▼
+Application Services
+   │
+   ├───────────────┐
+   │               │
+   ▼               ▼
+Entity Framework   File Storage
+   │               │
+   ▼               ▼
+ChoirDbContext    Storage/
+   │
+   ▼
+SQLite
+```
+
+The architecture deliberately keeps database access and physical file storage separate.
+
+---
+
+# Database Portability
+
+SQLite is currently used because it is lightweight, cross-platform, and simple to deploy.
+
+Normal application database access should go through:
+
+```text
+Application
+     ↓
+Entity Framework Core
+     ↓
+ChoirDbContext
+     ↓
+Database Provider
+```
+
+This allows another database provider to be considered later.
+
+Possible providers include:
+
+```text
+Entity Framework Core
+        │
+        ├── SQLite
+        │
+        ├── PostgreSQL
+        │
+        └── SQL Server
+```
+
+Avoid database-specific SQL wherever practical.
+
+Entity Framework Core migrations are used to manage schema changes.
+
+---
+
+# Legacy Database Table Names
+
+The application originally used the model names:
+
+```text
+MusicSheet
+MassMusicSheet
+```
+
+The C# domain models were later renamed to:
+
+```text
+Song
+MassSong
+```
+
+For compatibility with the existing database, the physical SQLite table names remain:
+
+```text
+MusicSheets
+MassMusicSheets
+```
+
+and the existing foreign-key column remains:
+
+```text
+MusicSheetId
+```
+
+Entity Framework Core mappings allow the application to use the newer C# model names without requiring physical database table renames.
+
+This is intentional.
+
+---
+
+# File Storage
+
+Music PDFs and other application files are stored separately from the database.
+
+The current storage structure includes:
+
+```text
+Data/
+└── choir.db
+
+Storage/
+├── MusicSheets/
+├── PowerPointTemplates/
+│   └── Template.pptx
+├── Backgrounds/
+├── Generated/
+├── Temp/
+└── Backups/
+
+Songs/
+```
+
+Some folders may only contain runtime-generated content depending on the environment.
+
+---
+
+# Music Sheet Storage
+
+Existing music PDFs are currently stored under:
+
+```text
+Storage/MusicSheets/
+```
+
+The physical music-sheet location should not be unnecessarily changed because existing database records reference these files.
+
+The database stores metadata and file paths.
+
+The PDF itself is stored on the filesystem.
+
+---
+
+# Generated File Storage
+
+Generated output may temporarily use:
+
+```text
+Storage/Generated/
+```
+
+or another configured temporary location.
+
+Generated files are reproducible and should generally not be treated as permanent application data.
+
+Where possible, generated downloads should be removed after being returned to the browser.
+
+---
+
+# PowerPoint Template Storage
+
+PowerPoint templates are stored under:
+
+```text
+Storage/PowerPointTemplates/
+```
+
+The current application template is:
+
+```text
+Storage/PowerPointTemplates/Template.pptx
+```
+
+Unlike normal generated or uploaded runtime data, the main PowerPoint template is intentionally tracked with the application source because presentation generation depends on its layouts.
+
+---
+
+# Background Storage
+
+Uploaded PowerPoint background images are stored under:
+
+```text
+Storage/Backgrounds/
+```
+
+A selected background path can be associated with a Mass and applied during PowerPoint generation.
+
+---
+
+# Backup & Restore
+
+A complete Choir Music System backup must include both the database and physical application files.
+
+The SQLite database alone is not sufficient because uploaded PDFs, backgrounds, templates, and other files are stored outside the database.
+
+Likewise, backing up only the files is not sufficient because Mass plans and metadata are stored in the database.
+
+---
+
+# Backup Contents
+
+The backup process includes the important application data from:
+
+```text
+Data/choir.db
+
+Storage/
+
+Songs/
+```
+
+Generated and backup working folders can be excluded where appropriate because generated output can be recreated.
+
+The database and file storage should be considered one logical backup set.
+
+---
+
+# SQLite-Safe Backups
+
+SQLite may use:
+
+```text
+choir.db
+choir.db-wal
+choir.db-shm
+```
+
+while the application is running.
+
+The backup process must therefore create a consistent SQLite backup rather than simply copying an active database file without considering SQLite's current state.
+
+---
+
+# Restore
+
+Restore must restore the database and associated physical files together.
+
+Conceptually:
+
+```text
+Backup ZIP
+    │
+    ├── Database
+    │
+    ├── Music PDFs
+    │
+    ├── Backgrounds
+    │
+    ├── Templates
+    │
+    └── Other application files
+             │
+             ▼
+      Restore Application
+```
+
+Backup and Restore is a sensitive administrative capability and will require additional authorization controls as part of the security phase.
 
 ---
 
 # Project Structure
 
-The initial project structure should be similar to:
+The application structure is broadly:
 
 ```text
-ChoirMusicSystem/
+choir-music-system/
 │
 ├── Data/
-│   └── ChoirDbContext.cs
+│   ├── ChoirDbContext.cs
+│   └── choir.db
 │
 ├── Models/
 │   ├── Song.cs
 │   ├── Mass.cs
-│   └── MassSong.cs
+│   ├── MassSong.cs
+│   ├── MassPlanItem.cs
+│   ├── PresentationItem.cs
+│   ├── MassTemplate.cs
+│   └── MassTemplateItem.cs
 │
 ├── Services/
-│   ├── SongService.cs
-│   ├── FileStorageService.cs
-│   └── PdfMergeService.cs
+│   ├── PowerPointService.cs
+│   └── PDF / storage services
 │
 ├── Pages/
-│   ├── MusicLibrary/
 │   ├── Masses/
+│   ├── MassTemplates/
+│   ├── MusicLibrary/
+│   ├── PresentationLibrary/
 │   └── Index.cshtml
 │
 ├── Storage/
-│   ├── Songs/
-│   └── Generated/
+│   ├── MusicSheets/
+│   ├── PowerPointTemplates/
+│   ├── Backgrounds/
+│   ├── Generated/
+│   ├── Temp/
+│   └── Backups/
 │
 ├── wwwroot/
+│   └── css/
+│       └── site.css
 │
+├── Migrations/
 ├── appsettings.json
 ├── Program.cs
-├── ChoirMusicSystem.csproj
-├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
+├── deploy.sh
 └── README.md
 ```
 
-Future folders may include:
-
-```text
-Storage/
-├── PowerPointTemplates/
-└── Backgrounds/
-
-Services/
-└── PowerPointService.cs
-```
+Exact runtime folders may vary as the application continues to evolve.
 
 ---
 
@@ -453,17 +1252,7 @@ Services/
 
 ## macOS
 
-### 1. Install Homebrew
-
-Check whether Homebrew is already installed:
-
-```bash
-brew --version
-```
-
-If it is not installed, install Homebrew from its official website.
-
-### 2. Install Git
+### Install Git
 
 ```bash
 brew install git
@@ -475,7 +1264,7 @@ Verify:
 git --version
 ```
 
-### 3. Install Visual Studio Code
+### Install Visual Studio Code
 
 Install Visual Studio Code for macOS.
 
@@ -485,31 +1274,24 @@ Verify:
 code --version
 ```
 
-If `code` is not available from Terminal, open Visual Studio Code and use the Command Palette:
+If `code` is unavailable from Terminal, use the Visual Studio Code Command Palette:
 
 ```text
 Shell Command: Install 'code' command in PATH
 ```
 
-### 4. Install .NET 10 SDK
+### Install .NET 10 SDK
 
-Install the .NET 10 SDK for macOS.
+Install the .NET 10 SDK.
 
 Verify:
 
 ```bash
 dotnet --version
-```
-
-Also check:
-
-```bash
 dotnet --list-sdks
 ```
 
-A .NET 10 SDK should be listed.
-
-### 5. Install SQLite
+### Install SQLite
 
 ```bash
 brew install sqlite
@@ -521,16 +1303,10 @@ Verify:
 sqlite3 --version
 ```
 
-### 6. Install Entity Framework CLI
+### Install Entity Framework CLI
 
 ```bash
 dotnet tool install --global dotnet-ef
-```
-
-Verify:
-
-```bash
-dotnet ef --version
 ```
 
 If already installed:
@@ -539,21 +1315,27 @@ If already installed:
 dotnet tool update --global dotnet-ef
 ```
 
+Verify:
+
+```bash
+dotnet ef --version
+```
+
 ---
 
-# Windows
+# Windows Development
 
-## 1. Install Git
+## Install Git
 
 Install Git for Windows.
 
-Verify from PowerShell or Windows Terminal:
+Verify:
 
 ```powershell
 git --version
 ```
 
-## 2. Install Visual Studio Code
+## Install Visual Studio Code
 
 Install Visual Studio Code for Windows.
 
@@ -563,23 +1345,18 @@ Verify:
 code --version
 ```
 
-## 3. Install .NET 10 SDK
+## Install .NET 10 SDK
 
-Install the .NET 10 SDK for Windows.
+Install the .NET 10 SDK.
 
 Verify:
 
 ```powershell
 dotnet --version
-```
-
-Also check:
-
-```powershell
 dotnet --list-sdks
 ```
 
-## 4. Install SQLite
+## Install SQLite
 
 SQLite can be installed using Windows Package Manager:
 
@@ -593,16 +1370,10 @@ Verify:
 sqlite3 --version
 ```
 
-## 5. Install Entity Framework CLI
+## Install Entity Framework CLI
 
 ```powershell
 dotnet tool install --global dotnet-ef
-```
-
-Verify:
-
-```powershell
-dotnet ef --version
 ```
 
 If already installed:
@@ -611,99 +1382,33 @@ If already installed:
 dotnet tool update --global dotnet-ef
 ```
 
----
-
-# Visual Studio Code Extensions
-
-Install the following extensions on both macOS and Windows:
-
-* C# Dev Kit
-* C#
-* GitHub Pull Requests and Issues
-
-A SQLite viewer extension can also be installed if desired.
-
----
-
-# Verify the Development Environment
-
-Before starting development, verify the tools.
-
-## macOS
-
-```bash
-git --version
-code --version
-dotnet --version
-sqlite3 --version
-dotnet ef --version
-```
-
-## Windows
+Verify:
 
 ```powershell
-git --version
-code --version
-dotnet --version
-sqlite3 --version
 dotnet ef --version
 ```
 
-If all commands return valid versions, the development environment is ready.
-
 ---
 
-# Create the Project
+# Restore Project Dependencies
 
-The project only needs to be created once.
-
-From Terminal on macOS or PowerShell on Windows:
-
-```bash
-dotnet new webapp -n ChoirMusicSystem
-cd ChoirMusicSystem
-code .
-```
-
----
-
-# Install Project Packages
-
-Add Entity Framework Core SQLite:
-
-```bash
-dotnet add package Microsoft.EntityFrameworkCore.Sqlite
-```
-
-Add Entity Framework Core design support:
-
-```bash
-dotnet add package Microsoft.EntityFrameworkCore.Design
-```
-
-Add PDF metadata/title extraction support:
-
-```bash
-dotnet add package PdfPig
-```
-
-Add PDF music-pack generation support:
-
-```bash
-dotnet add package PdfSharpCore
-```
-
-After cloning the repository on another computer, restore project dependencies with:
+After cloning the repository:
 
 ```bash
 dotnet restore
+```
+
+Apply outstanding database migrations:
+
+```bash
+dotnet ef database update
 ```
 
 ---
 
 # HTTPS Development Certificate
 
-Trust the ASP.NET Core development certificate:
+For local HTTPS development:
 
 ```bash
 dotnet dev-certs https --trust
@@ -715,7 +1420,7 @@ Windows may display a certificate confirmation prompt.
 
 ---
 
-# Run the Application
+# Running Locally
 
 From the project directory:
 
@@ -723,17 +1428,9 @@ From the project directory:
 dotnet watch
 ```
 
-The application will display its development URL.
+The application will display the development URL.
 
-For example:
-
-```text
-https://localhost:7000
-```
-
-Open the displayed address in a browser.
-
-Stop the application with:
+Stop the application using:
 
 ```text
 Ctrl + C
@@ -741,292 +1438,865 @@ Ctrl + C
 
 ---
 
-# Database Setup
+# Database Migrations
 
-Once `ChoirDbContext` and the initial models have been created, create the first migration:
+When the data model changes, create an Entity Framework Core migration.
+
+Example:
 
 ```bash
-dotnet ef migrations add InitialCreate
+dotnet ef migrations add MigrationName
 ```
 
-Create the local SQLite database:
+Apply it:
 
 ```bash
 dotnet ef database update
 ```
 
-The same commands work on macOS and Windows.
-
----
-
-# Git
-
-## Initialize Repository
-
-When creating the project for the first time:
+After significant changes, run the project's clean-build process:
 
 ```bash
-git init
-git add .
-git commit -m "Initial choir music system"
-```
-
-A GitHub remote can then be added:
-
-```bash
-git remote add origin <repository-url>
-git branch -M main
-git push -u origin main
+./clean-build.sh
 ```
 
 ---
 
-# Working Between Mac and Windows
+# Git Workflow
 
-Before leaving one development computer:
+The source repository is:
+
+```text
+https://github.com/butchdc/choir-music-system.git
+```
+
+The main development branch is:
+
+```text
+main
+```
+
+Before committing changes:
 
 ```bash
 git status
+```
+
+Commit:
+
+```bash
 git add .
 git commit -m "Describe changes"
 git push
 ```
 
-On the other computer:
+When continuing development on another computer:
 
 ```bash
 git pull
 dotnet restore
 dotnet ef database update
-dotnet watch
 ```
 
-This allows development to continue between macOS and Windows using the same codebase.
+Then run the application normally.
 
 ---
 
-# Local Development Data
+# Source Control and Runtime Data
 
 Source code and database migrations should be stored in Git.
 
-The local SQLite database and uploaded PDF files should normally not be committed.
+Runtime application data should generally not be committed.
 
-Each development computer can maintain its own test database and test PDFs.
+This includes:
 
-Production file storage and database backup will be addressed before deployment.
-
----
-
-# Recommended `.gitignore`
-
-```gitignore
-bin/
-obj/
-
-.vscode/
-
-Data/*.db
-Data/*.db-shm
-Data/*.db-wal
-
-Storage/Songs/*
-!Storage/Songs/.gitkeep
-
-Storage/Generated/*
-!Storage/Generated/.gitkeep
-
-.DS_Store
-Thumbs.db
+```text
+SQLite database
+Uploaded music PDFs
+Uploaded backgrounds
+Generated PDFs
+Generated PowerPoints
+Temporary files
+Backups
 ```
 
-Do not store passwords, connection-string credentials, API keys, or other secrets in Git.
+The main PowerPoint template is an intentional exception.
+
+It is required for presentation generation and is tracked with the source code.
 
 ---
 
-# Development Roadmap
+# Secrets
 
-## Stage 1 — Foundation — Complete
+Passwords, API keys, production credentials, and other secrets must never be committed to Git.
 
-Implemented:
+Development connection strings that contain no credentials may be stored in normal configuration where appropriate.
+
+Production secrets should be supplied through secure environment configuration or another appropriate secrets mechanism.
+
+This becomes especially important before public deployment.
+
+---
+
+# Docker Deployment
+
+The application supports Docker-based deployment.
+
+The production application directory is currently expected to be similar to:
+
+```text
+/docker/choir-music-system
+```
+
+The Docker deployment exposes the application internally through a configured port.
+
+Current deployment mapping:
+
+```text
+5105:8080
+```
+
+Persistent application data should be mounted from the host so that rebuilding the container does not delete the database or uploaded files.
+
+Conceptually:
+
+```text
+Docker Host
+    │
+    ├── Application Container
+    │       └── ASP.NET Core
+    │
+    ├── Data/
+    │       └── choir.db
+    │
+    └── Storage/
+            ├── MusicSheets/
+            ├── Backgrounds/
+            └── Other persistent files
+```
+
+Database migrations are applied as part of the application's deployment/startup process.
+
+---
+
+# Reverse Proxy
+
+A reverse proxy can be placed in front of the application for public deployment.
+
+The intended architecture is:
+
+```text
+Internet
+   │
+   ▼
+HTTPS
+   │
+   ▼
+Reverse Proxy
+   │
+   ▼
+Docker Host
+   │
+   ▼
+Choir Music System
+```
+
+Nginx Proxy Manager can be used for this purpose.
+
+Public deployment should not proceed until the application's security phase is completed.
+
+---
+
+# Development Principles
+
+The project follows several core principles.
+
+## Cross-Platform
+
+Development and execution should remain portable across macOS, Windows, and Linux/Docker environments.
+
+## Simple Architecture
+
+Avoid unnecessary architectural complexity.
+
+The system should remain understandable and maintainable for a small choir application.
+
+## Database Independence
+
+Application logic should use Entity Framework Core rather than depending directly on SQLite-specific functionality wherever practical.
+
+## Storage Independence
+
+File handling should remain sufficiently separated from application logic to allow local storage to be replaced with another storage provider in the future if required.
+
+## Reusable Content
+
+Songs and Presentation Library items should be maintained once and reused across multiple Masses and templates.
+
+## Presentation Order Is Authoritative
+
+The manually arranged Mass Presentation Order determines the generated PowerPoint sequence.
+
+## Venue Is Informational
+
+Venue identifies where the Mass is taking place.
+
+Venue should not be used as hidden application logic for inserting church-specific presentation content.
+
+## No Hard-Coded Paths
+
+Use configuration and cross-platform path handling.
+
+## No Secrets in Source Control
+
+Credentials and secrets must remain outside Git.
+
+## Generated Content Is Disposable
+
+Generated PDF and PowerPoint files should generally be reproducible from source data and should not need permanent server storage.
+
+---
+
+# Completed Development Phases
+
+## Foundation
+
+Completed:
 
 * ASP.NET Core 10 Razor Pages project
 * SQLite configuration
-* Entity Framework Core and migrations
-* Core `Song`, `Mass`, and `MassSong` models
-* Local cross-platform storage structure
+* Entity Framework Core
+* Database migrations
+* Cross-platform development
 * Git/GitHub workflow
-
-## Stage 2 — Music Library — Complete
-
-Implemented:
-
-* Upload individual PDF music sheets
-* Bulk upload existing PDF music sheets
-* Automatic title detection from PDFs using PdfPig
-* Maintain title, composer, arrangement, key, suggested Mass part, and notes
-* Edit music metadata
-* Replace an existing PDF
-* View/preview PDFs
-* Delete music sheets and their physical PDF files
-* Instant client-side Music Library search
-* Reuse the same music sheet across multiple Masses
-
-The completed Music Library workflow is:
-
-```text
-Upload PDF / Bulk Upload
-        ↓
-Detect Title
-        ↓
-Maintain Metadata
-        ↓
-Music Library
-   ├── Search
-   ├── View PDF
-   ├── Edit / Replace
-   └── Delete
-```
-
-PDF remains the source document used when generating choir music packs. Optional MuseScore support may be considered later and is not part of the current phase.
-
-## Stage 3 — Mass Planning — In Progress
-
-Implemented:
-
-* Create a Mass
-* Edit and delete a Mass
-* Duplicate a Mass together with its music plan
-* Mass name, date, and notes
-* Standard Mass parts, including Our Father
-* Select music from the Music Library
-* Multiple songs per Mass part
-* Preserve music display order
-* Search while planning by title, composer, arrangement, suggested Mass part, and key
-* Display richer song information to distinguish music with the same title
-* Open a selected music-sheet PDF in a new browser tab
-* Prioritise useful song metadata while keeping `SongId` as the saved selection identifier
-
-Current Mass parts:
-
-```text
-Entrance
-Kyrie
-Gloria
-Psalm
-Alleluia
-Offertory
-Holy
-Memorial Acclamation
-Amen
-Our Father
-Lamb of God
-Communion
-Recessional
-```
-
-## Stage 4 — Music Pack Generation — In Progress
-
-Implemented foundation:
-
-* PdfSharpCore PDF merge service
-* Read selected music for a Mass
-* Sort selections by Mass/display order
-* Deduplicate selections by `SongId`
-* Include a source PDF only once when it is used for several Mass parts
-* Merge source PDFs into one choir music pack
-* Save generated packs under `Storage/Generated/MusicPacks/`
-
-The workflow is:
-
-```text
-Music Library
-      ↓
-Create / Duplicate Mass
-      ↓
-Plan Music
-      ↓
-Generate Music Pack
-      ↓
-Combined PDF
-```
-
-Further testing and polish of generated packs remains before this stage is considered complete.
-
-## Stage 5 — PowerPoint — Future
-
-PowerPoint work starts only after the PDF music-sheet workflow is stable. Planned capabilities include importing lyrics/order from existing presentations, using a choir template, configurable backgrounds and overlays, preserving template fonts/layout/logo, and generating songs in Mass order.
-
-```text
-Music Library
-      ↓
-Song / Lyrics Library
-      ↓
-Create Mass
-      ↓
-Select Music
-      ↓
-PowerPoint Settings
-      │
-      ├── Template
-      ├── Background
-      └── Overlay Opacity
-      ↓
-Generate PPTX
-```
+* Local file storage
+* Docker deployment foundation
 
 ---
 
-# Design Principles
+## Music Library
 
-The project should follow these principles throughout development:
+Completed:
 
-**Cross-platform.** Development and execution should work on macOS and Windows.
+* Individual PDF upload
+* Bulk PDF upload
+* PDF title detection
+* Song metadata
+* Editing
+* PDF replacement
+* Search
+* Mass-part filtering
+* PDF preview
+* Song archiving/deletion workflow
+* Presentation lyrics
+* Song PowerPoint generation
+* Readiness indicators
 
-**Simple first.** Complete the core music-sheet workflow before adding unnecessary functionality.
+---
 
-**Database independent.** Application logic should use Entity Framework Core and avoid depending directly on SQLite.
+## Mass Planning
 
-**Storage independent.** Application logic should not assume files will always be stored on the local filesystem.
+Completed:
 
-**Reusable music.** Music is maintained once in the library and reused across multiple Masses.
+* Create Mass
+* Edit Mass
+* Delete Mass
+* Duplicate Mass
+* Mass Name
+* Mass Date
+* Venue
+* Mass Introduction
+* Internal Notes
+* PowerPoint background selection
+* Multiple songs per Mass part
+* Song searching
+* Collapsible Mass-part planning
+* Selected-song preview
+* Ordered song insertion
+* Unified Presentation Order
 
-**Future PowerPoint support.** Decisions made during Phase 1 should not prevent PowerPoint templates, lyrics, backgrounds, or presentation generation from being added later.
+---
 
-**No hard-coded paths.** Use configuration and cross-platform path handling.
+## Presentation Library
 
-**No secrets in source control.** Credentials and secrets must remain outside Git.
+Completed:
+
+* Reusable Presentation Library
+* Presentation types
+* Language classification
+* Presentation text
+* Slide markers
+* Custom PowerPoint layouts
+* PowerPoint layout discovery
+* Holy Cross Safety custom-layout support
+
+---
+
+## Mass Templates
+
+Completed:
+
+* Create Mass Templates
+* Edit Mass Templates
+* Template Presentation Order
+* Songs in templates
+* Presentation Library items in templates
+* Mass Title support
+* Drag-and-drop ordering
+* Create Mass from template
+* Save Mass as template
+
+---
+
+## Music Pack Generation
+
+Completed core functionality:
+
+* Read selected songs for a Mass
+* Preserve music order
+* Deduplicate repeated source PDFs
+* Merge source PDFs
+* Generate combined choir music pack
+
+Generated music packs are reproducible from the Mass plan and Music Library.
+
+---
+
+## PowerPoint Generation
+
+Completed core functionality:
+
+* Open XML PowerPoint generation
+* Existing choir PowerPoint template
+* Mass Title
+* Mass Introduction
+* Date
+* Songs
+* Song lyrics
+* Explicit slide markers
+* Presentation Library items
+* Custom layouts
+* Mass-part dividers
+* Selected backgrounds
+* Background transparency
+* Unified Presentation Order
+* Temporary generated files
+* Friendly download filenames
+
+---
+
+## Backup & Restore
+
+Completed core functionality:
+
+* Database backup
+* Application file backup
+* ZIP-based backup package
+* Restore database and files
+* Include important top-level application data
+* Exclude reproducible generated output where appropriate
+* SQLite-safe backup handling
+
+Backup & Restore should be restricted to authorized administrators once application security is implemented.
 
 ---
 
 # Current Milestone
 
-The Music Library core workflow is complete. Development is currently focused on completing and polishing Mass Planning and Music Pack generation.
+The core functional application is now substantially complete.
 
 ```text
-Music Library                 COMPLETE
-      ↓
-Create / Edit / Duplicate Mass    WORKING
-      ↓
-Plan Music                        WORKING
-      ↓
-Generate Music Pack               IN PROGRESS
-      ↓
-PowerPoint                        FUTURE
+                    CHOIR MUSIC SYSTEM
+
+                           │
+          ┌────────────────┴────────────────┐
+          │                                 │
+          ▼                                 ▼
+    Music Library                  Presentation Library
+          │                                 │
+          └────────────────┬────────────────┘
+                           │
+                           ▼
+                     Mass Templates
+                           │
+                           ▼
+                       Create Mass
+                           │
+                           ▼
+                       Plan Mass
+                           │
+               ┌───────────┴───────────┐
+               │                       │
+               ▼                       ▼
+           Music Plan          Presentation Order
+               │                       │
+               ▼                       ▼
+          Music Pack               PowerPoint
+              PDF                     PPTX
 ```
 
-The next priority is to verify and polish the generated choir music pack before beginning PowerPoint functionality.
+The next major development phase is security and preparation for public deployment.
 
 ---
 
-# Backup Requirements
+# Security Roadmap
 
-The local application data is split between the SQLite database and physical files. A useful backup must therefore include both:
+The application should currently be considered suitable for controlled/private deployment.
+
+Before exposing the Choir Music System publicly on the internet, a dedicated security review and implementation phase should be completed.
+
+Security functionality described below is **planned** and should not be considered implemented until the relevant work has been completed and tested.
+
+---
+
+# Authentication
+
+The public deployment should require authentication.
+
+The intended flow is:
+
+```text
+Internet
+   │
+   ▼
+HTTPS
+   │
+   ▼
+Choir Music System
+   │
+   ├── Not authenticated
+   │         │
+   │         ▼
+   │       Login
+   │
+   └── Authenticated
+             │
+             ▼
+        Application
+```
+
+The default security position should be that application functionality is not anonymously accessible.
+
+---
+
+# Authorization
+
+Initial authorization should remain simple.
+
+Two roles are planned:
+
+```text
+Admin
+Member
+```
+
+## Admin
+
+Administrators may eventually have access to:
+
+```text
+View Masses
+Create Masses
+Edit Masses
+Delete Masses
+Plan Masses
+Music Library
+Upload PDFs
+Presentation Library
+Mass Templates
+Generate PDFs
+Generate PowerPoints
+Backup & Restore
+User Management
+Security Settings
+```
+
+## Member
+
+Members may eventually have access to normal choir planning functionality while sensitive system administration functions remain unavailable.
+
+Exact permissions will be decided during implementation rather than being assumed by this README.
+
+---
+
+# Security Review Areas
+
+The security phase should include a review of:
+
+* Authentication
+* Authorization
+* User management
+* Password handling
+* Session and cookie security
+* HTTPS
+* Anti-forgery protection
+* State-changing HTTP requests
+* File upload validation
+* File download protection
+* Path traversal protection
+* Input validation
+* Output encoding
+* Database access
+* Secrets and configuration
+* Production error handling
+* Logging
+* Security headers
+* Rate limiting
+* Dependency vulnerabilities
+* Docker security
+* Filesystem permissions
+* Backup protection
+
+---
+
+# State-Changing Requests
+
+Actions that change application data should use appropriate HTTP methods.
+
+For example:
+
+```text
+Create
+Edit
+Delete
+Duplicate
+Save As Template
+Restore
+Upload
+```
+
+should be reviewed to ensure they use protected POST requests rather than state-changing GET requests.
+
+ASP.NET Core antiforgery protection should be used for browser-based state-changing operations.
+
+---
+
+# File Upload Security
+
+The application accepts files such as:
+
+```text
+PDF music sheets
+Background images
+Backup archives
+```
+
+Before public deployment, uploads should be reviewed for:
+
+```text
+Allowed file extensions
+MIME/content validation
+Maximum file size
+Safe generated filenames
+Storage location
+Path traversal protection
+Archive extraction safety
+Invalid or malicious file handling
+```
+
+Uploaded files should not automatically be trusted because of their original filename or extension.
+
+---
+
+# File Access
+
+Application data files should not be directly exposed through unrestricted public filesystem paths.
+
+Sensitive files include:
 
 ```text
 Data/choir.db
-Storage/Songs/
+Backup ZIP files
+Temporary files
+Application configuration
 ```
 
-The database contains the music metadata and file paths, while `Storage/Songs/` contains the actual PDF music sheets. Backing up only one of these locations is not sufficient to restore the complete Music Library.
+Generated downloads should be provided through controlled application endpoints where appropriate.
 
-Generated music packs under `Storage/Generated/` can normally be regenerated from the database and source PDFs.
+---
+
+# Production Error Handling
+
+Development exception information must not be exposed publicly.
+
+Public users should receive a generic error page.
+
+Detailed information such as:
+
+```text
+Stack traces
+Database details
+Filesystem paths
+Internal exception messages
+Configuration information
+```
+
+should be retained only in appropriate server-side logging.
+
+---
+
+# HTTPS
+
+Public production access should use HTTPS.
+
+The production flow should be:
+
+```text
+Browser
+   │
+   ▼
+HTTPS
+   │
+   ▼
+Reverse Proxy
+   │
+   ▼
+Choir Music System
+```
+
+HTTP traffic should be redirected to HTTPS where appropriate.
+
+---
+
+# Security Headers
+
+Production deployment should review security headers including:
+
+```text
+Content-Security-Policy
+X-Content-Type-Options
+Frame protection
+Referrer-Policy
+HSTS
+```
+
+The exact policy will be determined based on the final application behaviour.
+
+---
+
+# Rate Limiting
+
+Public deployment should consider rate limiting for potentially expensive or sensitive operations such as:
+
+```text
+Authentication
+File uploads
+PowerPoint generation
+PDF generation
+Backup/Restore
+Search
+```
+
+This helps protect the application against accidental or malicious excessive requests.
+
+---
+
+# Secrets and Production Configuration
+
+Production secrets must not be stored in source control.
+
+Examples include:
+
+```text
+Passwords
+API keys
+Authentication secrets
+Database credentials
+Encryption keys
+```
+
+Docker environment configuration or another secure secrets mechanism should be used.
+
+---
+
+# Dependency Security
+
+Before public deployment, application dependencies should be reviewed for known vulnerabilities.
+
+This includes:
+
+```text
+.NET / ASP.NET Core
+Entity Framework Core
+Open XML SDK
+PdfPig
+PdfSharpCore
+Frontend libraries
+Docker base images
+```
+
+Dependencies should continue to be maintained after deployment.
+
+---
+
+# Backup Security
+
+Backup archives can contain a large portion of the application's data.
+
+Backup functionality should therefore be treated as an administrative operation.
+
+Public users should not be able to:
+
+```text
+Create unrestricted backups
+Download backups
+Upload restore packages
+Restore application data
+Browse backup storage
+```
+
+without appropriate authorization.
+
+---
+
+# Public Deployment Target
+
+The eventual public architecture is expected to resemble:
+
+```text
+                         INTERNET
+                            │
+                            ▼
+                          HTTPS
+                            │
+                            ▼
+                   ┌─────────────────┐
+                   │ Reverse Proxy   │
+                   │ / TLS           │
+                   └────────┬────────┘
+                            │
+                            ▼
+                   ┌─────────────────┐
+                   │ Authentication  │
+                   └────────┬────────┘
+                            │
+                            ▼
+                   ┌─────────────────┐
+                   │ Authorization   │
+                   └────────┬────────┘
+                            │
+                    ┌───────┴───────┐
+                    │               │
+                    ▼               ▼
+                  ADMIN           MEMBER
+                    │               │
+                    └───────┬───────┘
+                            │
+                            ▼
+                   ┌─────────────────┐
+                   │ Choir Music     │
+                   │ System          │
+                   └────────┬────────┘
+                            │
+                    ┌───────┴────────┐
+                    │                │
+                    ▼                ▼
+                 SQLite          File Storage
+```
+
+Authentication and authorization are the next major implementation priorities before the application is intentionally exposed to the public internet.
+
+---
+
+# Next Development Phase
+
+The next major phase is:
+
+```text
+SECURITY & PUBLIC DEPLOYMENT
+```
+
+The planned implementation order is:
+
+```text
+1. Authentication
+        ↓
+2. User Accounts
+        ↓
+3. Admin / Member Authorization
+        ↓
+4. Protect Administrative Functions
+        ↓
+5. Review State-Changing Requests
+        ↓
+6. File Upload / Download Security
+        ↓
+7. Secrets and Production Configuration
+        ↓
+8. Production Error Handling
+        ↓
+9. HTTPS and Security Headers
+        ↓
+10. Rate Limiting
+        ↓
+11. Dependency / Deployment Review
+        ↓
+12. Security Testing
+        ↓
+13. Public Deployment
+```
+
+Security changes should be implemented incrementally and tested after each stage so the existing Mass planning, PDF, PowerPoint, template, and backup workflows continue to operate correctly.
+
+---
+
+# Future Enhancements
+
+Potential future improvements may include:
+
+* Additional user roles
+* Per-church permissions
+* Cloud file storage
+* PostgreSQL or SQL Server
+* Additional PowerPoint templates
+* Additional presentation layouts
+* More configurable Mass parts
+* Improved audit logging
+* Activity history
+* Additional backup options
+* MuseScore integration
+* Additional reporting
+* Mobile-focused improvements
+
+These are optional future enhancements and are not required for the current core system.
+
+---
+
+# Project Direction
+
+The Choir Music System has moved beyond the original PDF-only prototype.
+
+It now provides an integrated workflow for:
+
+```text
+Music
++
+Presentation Content
++
+Mass Planning
++
+Reusable Templates
++
+PDF Generation
++
+PowerPoint Generation
++
+Backup & Restore
++
+Multi-Church Planning
+```
+
+The priority is now to protect those capabilities appropriately before making the application publicly accessible.
+
+The project should continue to favour:
+
+```text
+Simple
+Secure
+Cross-platform
+Maintainable
+Reusable
+Choir-focused
+```
+
+over unnecessary complexity.
