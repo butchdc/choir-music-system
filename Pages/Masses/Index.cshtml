@@ -288,7 +288,10 @@ else
 
                                     @mass.MassDate.ToString("dddd, d MMMM yyyy")
                                 </span>
-
+                                <span>
+                                    <i class="bi bi-clock"></i>
+                                    @mass.MassDate.ToString("h:mm tt")
+                                </span>
 
                                 @if (!string.IsNullOrWhiteSpace(mass.Venue))
                                 {
