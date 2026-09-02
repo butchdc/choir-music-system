@@ -2,9 +2,11 @@ using System.IO.Compression;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.Sqlite;
+using Microsoft.AspNetCore.Authorization;
 
 namespace choir_music_system.Pages.Admin;
 
+[Authorize(Policy = "AdminOnly")]
 public class BackupModel : PageModel
 {
     private readonly IWebHostEnvironment _environment;

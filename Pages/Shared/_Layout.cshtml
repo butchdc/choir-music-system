@@ -168,18 +168,54 @@
                         </li>
 
 
-                        <li class="nav-item">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
 
-                            <a class="nav-link"
-                               asp-page="/Admin/Backup">
+                                <a class="nav-link"
+                                asp-page="/Admin/Backup">
 
-                                <i class="bi bi-database-gear"></i>
+                                    <i class="bi bi-database-gear"></i>
 
-                                Backup & Restore
+                                    Backup & Restore
 
-                            </a>
+                                </a>
 
-                        </li>
+                            </li>
+
+                            <li class="nav-item">
+
+                                <a class="nav-link"
+                                asp-page="/Admin/Users/Index">
+
+                                    <i class="bi bi-people"></i>
+
+                                    Users
+
+                                </a>
+
+                            </li>
+                        }
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <li class="nav-item ms-md-2">
+                                    <form method="post"
+                                        asp-page="/Account/Logout"
+                                        class="d-inline">
+
+                                        <button type="submit"
+                                                class="nav-link btn btn-link border-0">
+
+                                            <i class="bi bi-box-arrow-right"></i>
+
+                                            Logout
+
+                                        </button>
+
+                                    </form>
+                                </li>
+                            }
 
                     </ul>
 

@@ -22,9 +22,15 @@ public class ChoirDbContext : DbContext
 
     public DbSet<MassTemplateItem> MassTemplateItems { get; set; } = null!;
 
+    public DbSet<AppUser> AppUsers => Set<AppUser>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<AppUser>()
+            .HasIndex(x => x.NormalizedEmail)
+            .IsUnique();
 
         // Keep using the existing database tables after the C# rename.
         modelBuilder.Entity<Song>()

@@ -1,0 +1,72 @@
+@page
+@model choir_music_system.Pages.Admin.Users.CreateModel
+@{
+    ViewData["Title"] = "Invite User";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h1 class="h3 mb-1">Invite User</h1>
+        <p class="text-muted mb-0">
+            Allow a Google account to access the Choir Music System.
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Email"
+                           class="form-label">
+                        Google Email
+                    </label>
+
+                    <input asp-for="Email"
+                           class="form-control"
+                           placeholder="name@gmail.com" />
+
+                    <span asp-validation-for="Email"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Role"
+                           class="form-label">
+                        Role
+                    </label>
+
+                    <select asp-for="Role"
+                            class="form-select">
+
+                        <option value="Member">Member</option>
+                        <option value="Admin">Admin</option>
+
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Invite User
+                    </button>
+
+                    <a asp-page="Index"
+                       class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
