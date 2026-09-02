@@ -289,7 +289,10 @@ Next slide..."></textarea>
 
                         <div class="presentation-editor-hint">
 
-                            <code>[SLIDE:TITLED]</code>
+                            <code class="copy-slide-marker"
+                                role="button"
+                                title="Click to copy"
+                                onclick="copySlideMarker('[SLIDE:TITLED]', this)">[SLIDE:TITLED]</code>
 
                             <span>
                                 Starts a slide using the item's
@@ -300,7 +303,10 @@ Next slide..."></textarea>
 
                         <div class="presentation-editor-hint">
 
-                            <code>[SLIDE]</code>
+                            <code class="copy-slide-marker"
+                                role="button"
+                                title="Click to copy"
+                                onclick="copySlideMarker('[SLIDE]', this)">[SLIDE]</code>
 
                             <span>
                                 Starts a standard continuation slide.
@@ -501,4 +507,17 @@ Next slide..."></textarea>
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        async function copySlideMarker(text, element) {
+            await navigator.clipboard.writeText(text);
+
+            const originalText = element.textContent;
+
+            element.textContent = "Copied!";
+
+            setTimeout(() => {
+                element.textContent = originalText;
+            }, 1000);
+        }
+    </script>
 }

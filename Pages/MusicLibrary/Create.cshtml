@@ -400,7 +400,10 @@ Next slide lyrics here..."></textarea>
 
                         <div>
 
-                            <code>[SLIDE:TITLED]</code>
+                            <code class="copy-slide-marker"
+                                role="button"
+                                title="Click to copy"
+                                onclick="copySlideMarker('[SLIDE:TITLED]', this)">[SLIDE:TITLED]</code>
 
                             <span>
                                 Title, composer and licence slide
@@ -410,7 +413,10 @@ Next slide lyrics here..."></textarea>
 
                         <div>
 
-                            <code>[SLIDE]</code>
+                            <code class="copy-slide-marker"
+                                role="button"
+                                title="Click to copy"
+                                onclick="copySlideMarker('[SLIDE]', this)">[SLIDE]</code>
 
                             <span>
                                 Lyrics-only continuation slide
@@ -579,6 +585,18 @@ Next slide lyrics here..."></textarea>
 
             }
         );
+
+        async function copySlideMarker(text, element) {
+            await navigator.clipboard.writeText(text);
+
+            const originalText = element.textContent;
+
+            element.textContent = "Copied!";
+
+            setTimeout(() => {
+                element.textContent = originalText;
+            }, 1000);
+        }  
 
     </script>
 }
