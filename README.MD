@@ -26,12 +26,14 @@ Backup & Restore                  COMPLETE
 Multi-Church / Venue Support      IMPLEMENTED
 Docker Deployment                 IMPLEMENTED
 
-NEXT MAJOR PHASE
-
-Security & Public Deployment      PLANNED
+Security & Public Deployment      IMPLEMENTED
+Google SSO                        IMPLEMENTED
+Invite-Only Access                IMPLEMENTED
+Admin / Member Roles              IMPLEMENTED
+Break-Glass Admin                 IMPLEMENTED
 ```
 
-The current focus is preparing the application for secure public-facing deployment.
+The application is now deployed publicly with authentication, authorization, administrative access controls, and production security configuration in place.
 
 ---
 
@@ -1188,7 +1190,7 @@ Backup ZIP
       Restore Application
 ```
 
-Backup and Restore is a sensitive administrative capability and will require additional authorization controls as part of the security phase.
+Backup and Restore is a sensitive administrative capability and is restricted to users with the Admin role.
 
 ---
 
@@ -1534,7 +1536,7 @@ Development connection strings that contain no credentials may be stored in norm
 
 Production secrets should be supplied through secure environment configuration or another appropriate secrets mechanism.
 
-This becomes especially important before public deployment.
+Production authentication and break-glass secrets are supplied outside source control through environment configuration.
 
 ---
 
@@ -1797,7 +1799,7 @@ Completed core functionality:
 * Exclude reproducible generated output where appropriate
 * SQLite-safe backup handling
 
-Backup & Restore should be restricted to authorized administrators once application security is implemented.
+Backup & Restore is restricted to authorized administrators.
 
 ---
 
@@ -1835,211 +1837,124 @@ The core functional application is now substantially complete.
               PDF                     PPTX
 ```
 
-The next major development phase is security and preparation for public deployment.
+The core security and public deployment phase is now implemented. Future work can focus on security maintenance, usability, and additional choir functionality.
 
 ---
 
-# Security Roadmap
+# Security & Public Deployment
 
-The application should currently be considered suitable for controlled/private deployment.
-
-Before exposing the Choir Music System publicly on the internet, a dedicated security review and implementation phase should be completed.
-
-Security functionality described below is **planned** and should not be considered implemented until the relevant work has been completed and tested.
+The security and public deployment phase has been implemented and tested. Normal application functionality now requires an authenticated user unless a page or endpoint is explicitly allowed to be anonymous.
 
 ---
 
 # Authentication
 
-The public deployment should require authentication.
+Google SSO is the primary authentication method. Successful Google authentication alone does not grant application access: the Google account email must also exist as an active user in the application's invite-only user list.
 
-The intended flow is:
+A temporary external authentication cookie is used while the Google identity is validated. After validation, the application creates its own authentication cookie containing the user's application identity and role.
+
+Static assets required by the login page are explicitly available anonymously so the authentication screen can load its CSS, icons, and presentation resources while the application remains protected.
+
+---
+
+# Invite-Only Access
+
+Application access is controlled through the `AppUsers` database table.
+
+An invited user contains information including:
 
 ```text
-Internet
-   │
-   ▼
-HTTPS
-   │
-   ▼
-Choir Music System
-   │
-   ├── Not authenticated
-   │         │
-   │         ▼
-   │       Login
-   │
-   └── Authenticated
-             │
-             ▼
-        Application
+Email
+NormalizedEmail
+DisplayName
+Role
+IsActive
+InvitedAt
+LastLoginAt
+InvitedBy
 ```
 
-The default security position should be that application functionality is not anonymously accessible.
+Google accounts that authenticate successfully but do not have an active matching application user are denied access.
+
+Administrators can invite users through User Management. An invitation currently means adding the Google email address to the application allow-list; the application does not send an invitation email.
 
 ---
 
 # Authorization
 
-Initial authorization should remain simple.
-
-Two roles are planned:
+Two roles are implemented:
 
 ```text
 Admin
 Member
 ```
 
-## Admin
+Administrators have normal choir functionality plus sensitive administration functions. Current Admin-only functionality includes User Management and Backup & Restore.
 
-Administrators may eventually have access to:
+Admin authorization is enforced server-side through the `AdminOnly` policy. Administrative navigation items are hidden from Members, but navigation visibility is not relied upon as the security control.
 
-```text
-View Masses
-Create Masses
-Edit Masses
-Delete Masses
-Plan Masses
-Music Library
-Upload PDFs
-Presentation Library
-Mass Templates
-Generate PDFs
-Generate PowerPoints
-Backup & Restore
-User Management
-Security Settings
-```
+Members retain normal choir planning functionality including the Music Library, Masses, Presentation Library, Mass Templates, and generation workflows.
 
-## Member
-
-Members may eventually have access to normal choir planning functionality while sensitive system administration functions remain unavailable.
-
-Exact permissions will be decided during implementation rather than being assumed by this README.
+The application also prevents an administrator from disabling or demoting the last active Admin account.
 
 ---
 
-# Security Review Areas
+# User Management
 
-The security phase should include a review of:
+Admin User Management supports:
 
-* Authentication
-* Authorization
-* User management
-* Password handling
-* Session and cookie security
-* HTTPS
-* Anti-forgery protection
-* State-changing HTTP requests
-* File upload validation
-* File download protection
-* Path traversal protection
-* Input validation
-* Output encoding
-* Database access
-* Secrets and configuration
-* Production error handling
-* Logging
-* Security headers
-* Rate limiting
-* Dependency vulnerabilities
-* Docker security
-* Filesystem permissions
-* Backup protection
+* View application users
+* Invite a Google account
+* Assign `Admin` or `Member`
+* Activate or deactivate users
+* Review last-login information
+* Protect the last active Admin from being disabled or demoted
+
+Deactivating an application user prevents future Google sign-ins from creating an application session.
 
 ---
 
-# State-Changing Requests
+# Break-Glass Administrator
 
-Actions that change application data should use appropriate HTTP methods.
+The application has an independent break-glass administrator for emergency recovery. This account is deliberately separate from Google SSO and the `AppUsers` table so access can be recovered if normal Google/Admin access is unavailable.
 
-For example:
+Break-glass configuration uses:
 
 ```text
-Create
-Edit
-Delete
-Duplicate
-Save As Template
-Restore
-Upload
+Security:BreakGlass:Enabled
+Security:BreakGlass:Username
+Security:BreakGlass:PasswordHash
 ```
 
-should be reviewed to ensure they use protected POST requests rather than state-changing GET requests.
+The plaintext password is not stored in source control or the application database. Only a secure ASP.NET Core password hash is stored in protected configuration.
 
-ASP.NET Core antiforgery protection should be used for browser-based state-changing operations.
+A successful break-glass login creates a temporary Admin identity. The emergency session is non-persistent, cannot be refreshed, and expires after 30 minutes.
+
+The emergency login is rate limited. Failed and successful break-glass login events are logged without recording passwords or password hashes.
+
+The break-glass account is not managed through normal User Management.
 
 ---
 
-# File Upload Security
+# Session and Cookie Security
 
-The application accepts files such as:
-
-```text
-PDF music sheets
-Background images
-Backup archives
-```
-
-Before public deployment, uploads should be reviewed for:
+The main application authentication cookie uses:
 
 ```text
-Allowed file extensions
-MIME/content validation
-Maximum file size
-Safe generated filenames
-Storage location
-Path traversal protection
-Archive extraction safety
-Invalid or malicious file handling
+HttpOnly        Enabled
+SameSite        Lax
+Secure          Always
+Sliding         Enabled
+Lifetime        8 hours
 ```
 
-Uploaded files should not automatically be trusted because of their original filename or extension.
+The temporary Google external-authentication cookie is also `HttpOnly`, `SameSite=Lax`, and restricted to secure HTTPS transport.
 
 ---
 
-# File Access
+# HTTPS and Reverse Proxy
 
-Application data files should not be directly exposed through unrestricted public filesystem paths.
-
-Sensitive files include:
-
-```text
-Data/choir.db
-Backup ZIP files
-Temporary files
-Application configuration
-```
-
-Generated downloads should be provided through controlled application endpoints where appropriate.
-
----
-
-# Production Error Handling
-
-Development exception information must not be exposed publicly.
-
-Public users should receive a generic error page.
-
-Detailed information such as:
-
-```text
-Stack traces
-Database details
-Filesystem paths
-Internal exception messages
-Configuration information
-```
-
-should be retained only in appropriate server-side logging.
-
----
-
-# HTTPS
-
-Public production access should use HTTPS.
-
-The production flow should be:
+Production is deployed through Nginx Proxy Manager.
 
 ```text
 Browser
@@ -2048,110 +1963,100 @@ Browser
 HTTPS
    │
    ▼
-Reverse Proxy
+Nginx Proxy Manager
    │
    ▼
-Choir Music System
+Docker-hosted ASP.NET Core application
 ```
 
-HTTP traffic should be redirected to HTTPS where appropriate.
+The application processes forwarded proxy headers so ASP.NET Core understands that the original public request used HTTPS. This allows authentication redirects such as the Google OAuth `/signin-google` callback to use the correct public HTTPS scheme.
+
+The production Google OAuth client must contain the exact public HTTPS callback URL as an authorized redirect URI.
 
 ---
 
 # Security Headers
 
-Production deployment should review security headers including:
+Browser security headers are applied by the application, including:
 
 ```text
-Content-Security-Policy
-X-Content-Type-Options
-Frame protection
-Referrer-Policy
-HSTS
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
 ```
 
-The exact policy will be determined based on the final application behaviour.
+HSTS is enabled outside the Development environment.
+
+A Content Security Policy has not yet been introduced and can be reviewed separately against the application's frontend resources.
 
 ---
 
-# Rate Limiting
+# Rate Limiting and Security Logging
 
-Public deployment should consider rate limiting for potentially expensive or sensitive operations such as:
+The emergency break-glass login is protected by ASP.NET Core rate limiting using a fixed window by source IP. Rejected requests return HTTP `429 Too Many Requests`.
 
-```text
-Authentication
-File uploads
-PowerPoint generation
-PDF generation
-Backup/Restore
-Search
-```
+Break-glass authentication also records security-relevant events through ASP.NET Core logging, including failed login attempts, successful emergency logins, configuration problems, and source IP information. Passwords and password hashes are never logged.
 
-This helps protect the application against accidental or malicious excessive requests.
-
----
-
-# Secrets and Production Configuration
-
-Production secrets must not be stored in source control.
-
-Examples include:
-
-```text
-Passwords
-API keys
-Authentication secrets
-Database credentials
-Encryption keys
-```
-
-Docker environment configuration or another secure secrets mechanism should be used.
-
----
-
-# Dependency Security
-
-Before public deployment, application dependencies should be reviewed for known vulnerabilities.
-
-This includes:
-
-```text
-.NET / ASP.NET Core
-Entity Framework Core
-Open XML SDK
-PdfPig
-PdfSharpCore
-Frontend libraries
-Docker base images
-```
-
-Dependencies should continue to be maintained after deployment.
+Broader rate limiting and application-wide audit history remain possible future enhancements.
 
 ---
 
 # Backup Security
 
-Backup archives can contain a large portion of the application's data.
+Backup & Restore is restricted to the `Admin` role.
 
-Backup functionality should therefore be treated as an administrative operation.
+The restore implementation includes safeguards such as ZIP file requirement, safe archive extraction/path validation, SQLite integrity validation, a safety backup before restore, and controlled replacement of application database and file storage.
 
-Public users should not be able to:
-
-```text
-Create unrestricted backups
-Download backups
-Upload restore packages
-Restore application data
-Browse backup storage
-```
-
-without appropriate authorization.
+Because restore can replace live application data, authorization is enforced on the server rather than relying only on navigation visibility.
 
 ---
 
-# Public Deployment Target
+# Secrets and Production Configuration
 
-The eventual public architecture is expected to resemble:
+Passwords, OAuth credentials, password hashes, API keys, and other production secrets must never be committed to Git.
+
+Local development uses .NET User Secrets for sensitive authentication configuration.
+
+Production Docker deployment supplies secrets through environment configuration. Current production security configuration includes:
+
+```text
+Authentication__Google__ClientId
+Authentication__Google__ClientSecret
+Security__BreakGlass__Enabled
+Security__BreakGlass__Username
+Security__BreakGlass__PasswordHash
+```
+
+Docker Compose references environment values rather than embedding secret values in source control. A server-side `.env` file may provide these values and must remain excluded from Git with restrictive filesystem permissions.
+
+---
+
+# Production Error Handling
+
+Outside Development, the application uses its production error handler and HSTS configuration. Detailed stack traces, database details, filesystem paths, credentials, and configuration values should remain in server-side diagnostics rather than being displayed publicly.
+
+---
+
+# State-Changing Requests and File Security
+
+ASP.NET Core Razor Pages antiforgery protection applies to normal form-based state-changing operations. Sensitive actions should continue to be reviewed as the application evolves.
+
+The application handles music PDFs, presentation resources, backgrounds, generated documents, and backup archives. Existing backup restore handling includes safe archive path validation. Application data such as the SQLite database, backup archives, temporary files, and configuration must not be exposed as unrestricted public static files.
+
+Additional upload validation can be added if the application's trust model or user population changes.
+
+---
+
+# Dependency and Deployment Security
+
+The application should continue to keep .NET/ASP.NET Core, Entity Framework Core, Google authentication, Open XML SDK, PdfPig, PdfSharpCore, frontend libraries, and Docker base images maintained.
+
+Dependency vulnerability review remains an ongoing maintenance responsibility rather than a one-time deployment task.
+
+---
+
+# Production Security Architecture
 
 ```text
                          INTERNET
@@ -2160,83 +2065,71 @@ The eventual public architecture is expected to resemble:
                           HTTPS
                             │
                             ▼
-                   ┌─────────────────┐
-                   │ Reverse Proxy   │
-                   │ / TLS           │
-                   └────────┬────────┘
+                   Nginx Proxy Manager
                             │
                             ▼
-                   ┌─────────────────┐
-                   │ Authentication  │
-                   └────────┬────────┘
-                            │
-                            ▼
-                   ┌─────────────────┐
-                   │ Authorization   │
-                   └────────┬────────┘
+                 Google SSO + Invite Check
                             │
                     ┌───────┴───────┐
-                    │               │
                     ▼               ▼
                   ADMIN           MEMBER
                     │               │
                     └───────┬───────┘
-                            │
                             ▼
-                   ┌─────────────────┐
-                   │ Choir Music     │
-                   │ System          │
-                   └────────┬────────┘
+                   Choir Music System
                             │
-                    ┌───────┴────────┐
-                    │                │
-                    ▼                ▼
-                 SQLite          File Storage
+                    ┌───────┴───────┐
+                    ▼               ▼
+                  SQLite        File Storage
+
+Emergency recovery:
+Break-Glass Login → Temporary Admin Session → Choir Music System
 ```
 
-Authentication and authorization are the next major implementation priorities before the application is intentionally exposed to the public internet.
+---
+
+# Security Status
+
+The core public-deployment security phase is complete.
+
+```text
+Google SSO                         COMPLETE
+Invite-only access                 COMPLETE
+Admin / Member roles               COMPLETE
+Admin User Management              COMPLETE
+Admin-only Backup & Restore        COMPLETE
+Last-active-Admin protection       COMPLETE
+Break-glass administrator          COMPLETE
+Hashed emergency password          COMPLETE
+30-minute emergency session        COMPLETE
+Emergency rate limiting            COMPLETE
+Emergency security logging         COMPLETE
+Secure authentication cookies      COMPLETE
+HTTPS reverse-proxy handling       COMPLETE
+Security headers                   COMPLETE
+Production secret configuration    COMPLETE
+Public Docker deployment           COMPLETE
+```
+
+Ongoing security maintenance includes dependency updates, security testing after significant changes, log review, production configuration review, and revisiting controls as the application or user population grows.
 
 ---
 
 # Next Development Phase
 
-The next major phase is:
+With the core application and public-deployment security controls implemented, development can return to functional improvements and operational refinement.
+
+Potential priorities include:
 
 ```text
-SECURITY & PUBLIC DEPLOYMENT
+1. Security testing and maintenance
+2. Improved audit/activity history
+3. UI and usability improvements
+4. Additional choir workflow enhancements
+5. Dependency and Docker image maintenance
 ```
 
-The planned implementation order is:
-
-```text
-1. Authentication
-        ↓
-2. User Accounts
-        ↓
-3. Admin / Member Authorization
-        ↓
-4. Protect Administrative Functions
-        ↓
-5. Review State-Changing Requests
-        ↓
-6. File Upload / Download Security
-        ↓
-7. Secrets and Production Configuration
-        ↓
-8. Production Error Handling
-        ↓
-9. HTTPS and Security Headers
-        ↓
-10. Rate Limiting
-        ↓
-11. Dependency / Deployment Review
-        ↓
-12. Security Testing
-        ↓
-13. Public Deployment
-```
-
-Security changes should be implemented incrementally and tested after each stage so the existing Mass planning, PDF, PowerPoint, template, and backup workflows continue to operate correctly.
+Security changes should continue to be implemented incrementally and tested so existing Mass planning, PDF, PowerPoint, template, authentication, and backup workflows remain operational.
 
 ---
 
@@ -2286,7 +2179,7 @@ Backup & Restore
 Multi-Church Planning
 ```
 
-The priority is now to protect those capabilities appropriately before making the application publicly accessible.
+The application is now publicly deployed with authentication and authorization controls protecting these capabilities.
 
 The project should continue to favour:
 
