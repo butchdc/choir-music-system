@@ -45,8 +45,6 @@ Desktop.ini
 # Runtime database files do not.
 # --------------------------------------------
 
-#Data/
-
 *.db
 *.db-shm
 *.db-wal
@@ -56,12 +54,11 @@ Desktop.ini
 
 # --------------------------------------------
 # Application Storage
-# User-uploaded PDFs must not be committed.
-#
-# MusicSheets = existing storage location
-# Songs       = future storage location
+# Runtime/user-uploaded content must not
+# be committed.
 # --------------------------------------------
 
+# Music PDFs / uploaded music files
 Storage/MusicSheets/*
 !Storage/MusicSheets/.gitkeep
 
@@ -70,7 +67,21 @@ Storage/Songs/*
 
 
 # --------------------------------------------
+# Custom PowerPoint Uploads
+# --------------------------------------------
+
+# Custom PowerPoints attached to songs
+Storage/SongPresentations/*
+!Storage/SongPresentations/.gitkeep
+
+# Manually edited/final PowerPoints for Masses
+Storage/MassPresentations/*
+!Storage/MassPresentations/.gitkeep
+
+
+# --------------------------------------------
 # Generated Files
+# Generated PowerPoints and other output
 # --------------------------------------------
 
 Storage/Generated/*
@@ -78,13 +89,21 @@ Storage/Generated/*
 
 
 # --------------------------------------------
-# PowerPoint
-# Keep folders, not local/user content.
+# PowerPoint Template
+# Keep the default system template in Git.
+# Runtime replacement templates should
+# otherwise not be committed.
 # --------------------------------------------
 
 Storage/PowerPointTemplates/*
 !Storage/PowerPointTemplates/.gitkeep
 !Storage/PowerPointTemplates/Template.pptx
+
+
+# --------------------------------------------
+# Mass Background Images
+# User-uploaded background images.
+# --------------------------------------------
 
 Storage/Backgrounds/*
 !Storage/Backgrounds/.gitkeep
@@ -97,18 +116,34 @@ Storage/Backgrounds/*
 Storage/Temp/*
 !Storage/Temp/.gitkeep
 
-*.tmp
-*.temp
-*.bak
-*.swp
-*~
-
 
 # --------------------------------------------
 # Other User Uploads
 # --------------------------------------------
 
 uploads/
+
+
+# --------------------------------------------
+# Backup Files
+# Production/application backups must never
+# be committed to source control.
+# --------------------------------------------
+
+backups/
+Backups/
+
+*.bak
+
+
+# --------------------------------------------
+# Temporary Files
+# --------------------------------------------
+
+*.tmp
+*.temp
+*.swp
+*~
 
 
 # --------------------------------------------
@@ -152,6 +187,3 @@ coverage.json
 packages/
 
 !packages.lock.json
-
-# Production database backups
-backups/
