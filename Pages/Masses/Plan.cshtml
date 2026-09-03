@@ -1176,28 +1176,41 @@
                                                     in selectedSongs
                                                         .Take(2))
                                                 {
-                                                    <div class="mass-part-summary-song">
+                                                   <div class="mass-part-summary-song">
 
-                                                        <span>
+                                                        <div class="mass-part-summary-song-title">
                                                             @song.Title
-                                                        </span>
+                                                        </div>
 
-                                                        @if (!string.IsNullOrWhiteSpace(song.OneLicenseNumber))
-                                                        {
-                                                            <button type="button" class="badge text-bg-success border-0 ms-2"
-                                                                    title="Click to copy OneLicense number"
-                                                                    onclick="copyOneLicense('@song.OneLicenseNumber', this)">
-                                                                <i class="bi bi-clipboard me-1"></i>
-                                                                @song.OneLicenseNumber
-                                                            </button>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span class="badge text-bg-warning ms-2">
-                                                                <i class="bi bi-exclamation-triangle me-1"></i>
-                                                                OneLicense missing
-                                                            </span>
-                                                        }
+                                                        <div class="mass-part-summary-song-meta">
+
+                                                            @if (!string.IsNullOrWhiteSpace(song.OneLicenseNumber))
+                                                            {
+                                                                <button type="button"
+                                                                        class="badge text-bg-success border-0 mass-song-meta-badge"
+                                                                        title="Copy OneLicense number"
+                                                                        data-bs-toggle="tooltip"
+                                                                        onclick="copyOneLicense('@song.OneLicenseNumber', this)">
+
+                                                                    <i class="bi bi-clipboard"></i>
+                                                                    OL
+
+                                                                </button>
+                                                            }
+
+                                                            @if (string.IsNullOrWhiteSpace(song.PresentationLyrics))
+                                                            {
+                                                                <span class="badge text-bg-warning mass-song-meta-badge"
+                                                                    title="Missing lyrics"
+                                                                    data-bs-toggle="tooltip">
+
+                                                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                                                    ML
+
+                                                                </span>
+                                                            }
+
+                                                        </div>
 
                                                     </div>
                                                 }

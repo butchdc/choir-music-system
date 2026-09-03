@@ -97,38 +97,27 @@
     </div>
 
 
-    <form method="get" asp-page="Index" class="masses-search-form">
+        <div class="presentation-library-search">
 
-        <input type="hidden" name="filter" value="@Model.ActiveFilter" />
+            <i class="bi bi-search"></i>
 
-        <div class="input-group">
+            <input type="text"
+                id="massesSearch"
+                class="form-control"
+                placeholder="Search Mass name or venue..."
+                autocomplete="off"
+                aria-label="Search Masses" />
 
-            <span class="input-group-text">
-                <i class="bi bi-search"></i>
-            </span>
+            <button type="button"
+                    id="massesSearchClear"
+                    class="presentation-library-clear"
+                    title="Clear search">
 
-            <input type="search" name="search" value="@Model.Search" class="form-control"
-                   placeholder="Search Mass name or venue..." aria-label="Search Masses" />
-
-            @if (!string.IsNullOrWhiteSpace(Model.Search))
-            {
-                <a asp-page="Index" asp-route-filter="@Model.ActiveFilter" class="btn btn-outline-secondary"
-                   title="Clear search">
-
-                    <i class="bi bi-x-lg"></i>
-
-                </a>
-            }
-
-            <button type="submit" class="btn btn-outline-primary">
-
-                Search
+                <i class="bi bi-x-lg"></i>
 
             </button>
 
         </div>
-
-    </form>
 
 </div>
 
@@ -221,7 +210,8 @@ else
                 mass.MassDate.Date == DateTime.Today;
 
 
-            <div class="mass-list-card @(isPast ? "is-past" : "")">
+            <div class="mass-list-card @(isPast ? "is-past" : "")"
+                data-search="@($"{mass.Name} {mass.Venue}".ToLowerInvariant())">
 
                 <!-- DATE -->
 
@@ -589,4 +579,80 @@ else
 
         </div>
     }
+}
+
+@section Scripts
+{
+    <script>
+        const massesSearch =
+            document.getElementById("massesSearch");
+
+        const massesSearchClear =
+            document.getElementById("massesSearchClear");
+
+        const massCards =
+            Array.from(
+                document.querySelectorAll(".mass-list-card")
+            );
+
+        function updateMassesClearButton() {
+
+            if (!massesSearchClear || !massesSearch) {
+                return;
+            }
+
+            massesSearchClear.style.display =
+                massesSearch.value.trim()
+                    ? "inline-flex"
+                    : "none";
+        }
+
+
+        function filterMasses() {
+
+            if (!massesSearch) {
+                return;
+            }
+
+            const query =
+                massesSearch.value
+                    .toLowerCase()
+                    .trim();
+
+            massCards.forEach(function (card) {
+
+                const searchValue =
+                    card.dataset.search || "";
+
+                card.style.display =
+                    !query || searchValue.includes(query)
+                        ? ""
+                        : "none";
+            });
+
+            updateMassesClearButton();
+        }
+
+
+        massesSearch?.addEventListener(
+            "input",
+            filterMasses
+        );
+
+
+        massesSearchClear?.addEventListener(
+            "click",
+            function () {
+
+                massesSearch.value = "";
+
+                filterMasses();
+
+                massesSearch.focus();
+            }
+        );
+
+
+        updateMassesClearButton();
+    </script>
 }
