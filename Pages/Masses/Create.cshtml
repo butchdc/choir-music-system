@@ -329,10 +329,23 @@
                         </div>
 
 
-                        <input asp-for="BackgroundImage"
-                               type="file"
-                               accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-                               class="form-control" />
+                        <div class="app-file-picker">
+
+                            <input asp-for="BackgroundImage"
+                                type="file"
+                                accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                                class="app-file-picker-input" />
+
+                            <label for="BackgroundImage"
+                                class="app-file-picker-button">
+                                Choose File
+                            </label>
+
+                            <span class="app-file-picker-name">
+                                No file selected
+                            </span>
+
+                        </div>
 
                         <span asp-validation-for="BackgroundImage"
                               class="text-danger">

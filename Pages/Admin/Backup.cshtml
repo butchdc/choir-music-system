@@ -272,11 +272,24 @@
                                 Backup File
                             </label>
 
-                            <input asp-for="BackupFile"
-                                   type="file"
-                                   accept=".zip,application/zip"
-                                   class="form-control"
-                                   required />
+                            <div class="app-file-picker">
+
+                                <input asp-for="BackupFile"
+                                    type="file"
+                                    accept=".zip,application/zip"
+                                    class="app-file-picker-input"
+                                    required />
+
+                                <label for="BackupFile"
+                                    class="app-file-picker-button">
+                                    Choose File
+                                </label>
+
+                                <span class="app-file-picker-name">
+                                    No file selected
+                                </span>
+
+                            </div>
 
                             <div class="backup-upload-help">
                                 Select a ZIP backup exported by

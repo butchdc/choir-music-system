@@ -312,10 +312,23 @@
 
                         </label>
 
-                        <input asp-for="BackgroundImage"
-                               type="file"
-                               accept=".jpg,.jpeg,.png,image/jpeg,image/png"
-                               class="form-control" />
+                        <div class="app-file-picker">
+
+                            <input asp-for="BackgroundImage"
+                                type="file"
+                                accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                                class="app-file-picker-input" />
+
+                            <label for="BackgroundImage"
+                                class="app-file-picker-button">
+                                Choose File
+                            </label>
+
+                            <span class="app-file-picker-name">
+                                No file selected
+                            </span>
+
+                        </div>
 
                         <div class="form-text">
                             JPG or PNG · Maximum 10 MB.

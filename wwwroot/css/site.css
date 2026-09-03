@@ -11821,6 +11821,7 @@ a.presentation-item-title:hover {
 
 .final-presentation-upload-button {
     flex-shrink: 0;
+    margin-bottom: 1.45rem;
 }
 
 @media (max-width: 767.98px) {
@@ -11839,4 +11840,81 @@ a.presentation-item-title:hover {
     .final-presentation-upload-button {
         width: 100%;
     }
+}
+/* =========================================================
+   Reusable File Picker
+   ========================================================= */
+
+.app-file-picker {
+    display: flex;
+    align-items: stretch;
+
+    min-height: 38px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+}
+
+.app-file-picker:focus-within {
+    border-color: #7aa5f7;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.app-file-picker-input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+.app-file-picker-button {
+    display: flex;
+    align-items: center;
+
+    flex-shrink: 0;
+
+    margin: 0;
+    padding: .42rem .75rem;
+
+    color: #334155;
+    background: #f8fafc;
+
+    border-right: 1px solid var(--border-strong);
+
+    font-size: .9rem;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.app-file-picker-button:hover {
+    background: #f1f5f9;
+}
+
+.app-file-picker-name {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    flex: 1;
+
+    padding: .42rem .75rem;
+
+    overflow: hidden;
+
+    color: #334155;
+
+    font-size: .9rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

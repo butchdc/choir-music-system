@@ -590,3 +590,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+document.addEventListener("change", function (event) {
+
+    const input =
+        event.target.closest(".app-file-picker-input");
+
+    if (!input) {
+        return;
+    }
+
+    const picker =
+        input.closest(".app-file-picker");
+
+    if (!picker) {
+        return;
+    }
+
+    const fileName =
+        picker.querySelector(".app-file-picker-name");
+
+    if (!fileName) {
+        return;
+    }
+
+    fileName.textContent =
+        input.files && input.files.length > 0
+            ? input.files[0].name
+            : "No file selected";
+});

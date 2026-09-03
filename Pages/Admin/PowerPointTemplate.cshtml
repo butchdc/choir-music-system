@@ -90,10 +90,23 @@
                                 PowerPoint Template
                             </label>
 
-                            <input asp-for="TemplateFile"
-                                   type="file"
-                                   class="form-control"
-                                   accept=".pptx" />
+                            <div class="app-file-picker">
+
+                                <input asp-for="TemplateFile"
+                                    type="file"
+                                    accept=".pptx"
+                                    class="app-file-picker-input" />
+
+                                <label for="TemplateFile"
+                                    class="app-file-picker-button">
+                                    Choose File
+                                </label>
+
+                                <span class="app-file-picker-name">
+                                    No file selected
+                                </span>
+
+                            </div>
 
                         </div>
 

@@ -119,11 +119,24 @@
 
                         </label>
 
-                        <input asp-for="PdfFile"
-                               type="file"
-                               accept=".pdf,application/pdf"
-                               class="form-control"
-                               id="pdfFileInput" />
+                        <div class="app-file-picker">
+
+                            <input asp-for="PdfFile"
+                                type="file"
+                                accept=".pdf,application/pdf"
+                                class="app-file-picker-input"
+                                id="pdfFileInput" />
+
+                            <label for="pdfFileInput"
+                                class="app-file-picker-button">
+                                Choose File
+                            </label>
+
+                            <span class="app-file-picker-name">
+                                No file selected
+                            </span>
+
+                        </div>
 
                         @if (string.IsNullOrWhiteSpace(
                             Model.PendingPdfFileName))

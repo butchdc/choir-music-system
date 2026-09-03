@@ -902,12 +902,13 @@
 
             <div class="progress">
 
-                <div class="progress-bar" role="progressbar" style="width: @(totalMassParts == 0
-                                                                                                                                  ? 0
-                                                                                                                                  : (int)Math.Round(
-                                                                                                                                      (double)plannedPartCount /
-                                                                                                                                      totalMassParts * 100
-                                                                                                                                  ))%">
+                <div class="progress-bar" role="progressbar"
+                     style="width: @(totalMassParts == 0
+                                                                                                                                                                                                 ? 0
+                                                                                                                                                                                                 : (int)Math.Round(
+                                                                                                                                                                                                     (double)plannedPartCount /
+                                                                                                                                                                                                     totalMassParts * 100
+                                                                                                                                                                                                 ))%">
                 </div>
 
             </div>
@@ -945,6 +946,22 @@
             <span class="tab-count">
                 @Model.PlanItems.Count
             </span>
+
+        </button>
+
+        <button type="button" class="mass-plan-tab" data-tab-target="finalPowerPointTab">
+
+            <i class="bi bi-file-earmark-slides-fill"></i>
+
+            Final PowerPoint
+
+            @if (!string.IsNullOrWhiteSpace(
+                    Model.Mass.FinalPresentationPath))
+            {
+                <span class="tab-count">
+                    <i class="bi bi-check-lg"></i>
+                </span>
+            }
 
         </button>
 
@@ -1014,8 +1031,8 @@
 
 
                     <div class="mass-part @(hasPlannedSong
-                                                                                                                                                         ? "is-planned"
-                                                                                                                                                         : "is-unplanned")"
+                                                                                                                                                                                                                                    ? "is-planned"
+                                                                                                                                                                                                                                    : "is-unplanned")"
                          data-mass-part="@part">
 
 
@@ -1284,22 +1301,22 @@
                                                                " — ",
                                                                new[]
                                                                {
-                                                                                                          selectedMusic.Title,
-                                                                                                          selectedMusic.Composer,
-                                                                                                          string.IsNullOrWhiteSpace(
-                                                                                                              selectedMusic.Arrangement)
-                                                                                                              ? null
-                                                                                                              : $"Arr: {selectedMusic.Arrangement}",
-                                                                                                          selectedMusic.SuggestedMassPart,
-                                                                                                          string.IsNullOrWhiteSpace(
-                                                                                                              selectedMusic.Key)
-                                                                                                              ? null
-                                                                                                              : $"Key: {selectedMusic.Key}"
+                                                                                                                               selectedMusic.Title,
+                                                                                                                               selectedMusic.Composer,
+                                                                                                                               string.IsNullOrWhiteSpace(
+                                                                                                                                   selectedMusic.Arrangement)
+                                                                                                                                   ? null
+                                                                                                                                   : $"Arr: {selectedMusic.Arrangement}",
+                                                                                                                               selectedMusic.SuggestedMassPart,
+                                                                                                                               string.IsNullOrWhiteSpace(
+                                                                                                                                   selectedMusic.Key)
+                                                                                                                                   ? null
+                                                                                                                                   : $"Key: {selectedMusic.Key}"
                                                                }
                                                                .Where(x =>
                                                                    !string.IsNullOrWhiteSpace(x))
                                                            )
-                                                                                                                                                                                                                                                                                                                      )"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                               )"
                                                        data-music-id="@selectedMusic?.Id" placeholder="Search music..."
                                                        autocomplete="off" />
 
@@ -1324,12 +1341,12 @@
 
                                             <a class="btn view-music"
                                                href="@(selectedMusic is null
-                                                                                                                                                                                                                                                                                              ? "#"
-                                                                                                                                                                                                                                                                                              : $"/MusicLibrary/View/{selectedMusic.Id}")"
+                                                                                                                                                                                                                                                                                                                                                                                                                                           ? "#"
+                                                                                                                                                                                                                                                                                                                                                                                                                                           : $"/MusicLibrary/View/{selectedMusic.Id}")"
                                                target="_blank" rel="noopener noreferrer"
                                                style="@(selectedMusic is null
-                                                                                                                                                                                                                                                                                              ? "display:none;"
-                                                                                                                                                                                                                                                                                              : "")"
+                                                                                                                                                                                                                                                                                                                                                                                                                                           ? "display:none;"
+                                                                                                                                                                                                                                                                                                                                                                                                                                           : "")"
                                                title="View music sheet" data-bs-toggle="tooltip">
 
                                                 <i class="bi bi-file-earmark-pdf"></i>
@@ -1391,8 +1408,8 @@
                     </strong>
 
                     song@(plannedSongCount == 1
-                                                                                                                            ? ""
-                                                                                                                            : "s")
+                                                                                                                                                                                        ? ""
+                                                                                                                                                                                        : "s")
                     selected
 
                 </span>
@@ -1624,189 +1641,6 @@
 
             </aside>
 
-            <!-- =================================================
-     FINAL PRESENTATION
-     ================================================= -->
-
-            <section class="final-presentation-section">
-
-                <div class="final-presentation-header">
-
-                    <div class="final-presentation-heading">
-
-                        <div class="final-presentation-icon">
-                            <i class="bi bi-file-earmark-slides-fill"></i>
-                        </div>
-
-                        <div>
-
-                            <div class="final-presentation-kicker">
-                                Final PowerPoint
-                            </div>
-
-                            <h3>
-                                Final Presentation
-                            </h3>
-
-                            <p>
-                                Upload the final manually edited PowerPoint
-                                for this Mass after adding any one-off slides
-                                or presentation changes.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    @if (!string.IsNullOrWhiteSpace(
-                            Model.Mass.FinalPresentationPath))
-                    {
-                        <span class="badge text-bg-success">
-                            <i class="bi bi-check-circle me-1"></i>
-                            Final uploaded
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="badge text-bg-secondary">
-                            Generated only
-                        </span>
-                    }
-
-                </div>
-
-
-                @if (TempData["FinalPresentationError"] is string finalError)
-                {
-                    <div class="alert alert-danger mt-3 mb-0">
-                        <i class="bi bi-exclamation-triangle me-1"></i>
-                        @finalError
-                    </div>
-                }
-
-
-                @if (!string.IsNullOrWhiteSpace(
-                        Model.Mass.FinalPresentationPath))
-                {
-                    <div class="final-presentation-current">
-
-                        <div class="final-presentation-file">
-
-                            <div class="final-presentation-file-icon">
-                                <i class="bi bi-file-earmark-slides"></i>
-                            </div>
-
-                            <div>
-
-                                <div class="final-presentation-file-label">
-                                    Current Final Presentation
-                                </div>
-
-                                <strong>
-                                    @Model.Mass.FinalPresentationFileName
-                                </strong>
-
-                                @if (Model.Mass.FinalPresentationUpdatedDate.HasValue)
-                                {
-                                    <div class="final-presentation-date">
-                                        Uploaded
-                                        @Model.Mass.FinalPresentationUpdatedDate.Value
-                                        .ToLocalTime()
-                                        .ToString("d MMM yyyy h:mm tt")
-                                    </div>
-                                }
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="final-presentation-actions">
-
-                            <a asp-page="Plan" asp-page-handler="DownloadFinalPresentation" asp-route-id="@Model.Mass.Id"
-                               class="btn btn-sm btn-outline-primary">
-
-                                <i class="bi bi-download me-1"></i>
-                                Download Final
-
-                            </a>
-
-
-                            <form method="post" asp-page-handler="RemoveFinalPresentation">
-
-                                <input type="hidden" name="id" value="@Model.Mass.Id" />
-
-                                <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Remove the final presentation for this Mass? The generated presentation will still remain available.');">
-
-                                    <i class="bi bi-trash me-1"></i>
-                                    Remove
-
-                                </button>
-
-                            </form>
-
-                        </div>
-
-                    </div>
-                }
-
-
-                <form method="post" enctype="multipart/form-data" asp-page-handler="UploadFinalPresentation"
-                      class="final-presentation-upload">
-
-                    <input type="hidden" name="id" value="@Model.Mass.Id" />
-
-
-                    <div class="final-presentation-upload-field">
-
-                        <label asp-for="FinalPresentationFile" class="form-label">
-
-                            @if (!string.IsNullOrWhiteSpace(
-                                    Model.Mass.FinalPresentationPath))
-                            {
-                                <text>Replace Final Presentation</text>
-                            }
-                            else
-                            {
-                                <text>Upload Final Presentation</text>
-                            }
-
-                        </label>
-
-                        <input asp-for="FinalPresentationFile" type="file"
-                               accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                               class="form-control" />
-
-                        <div class="form-text">
-                            Upload the manually edited .pptx.
-                            Generating a fresh presentation will not overwrite this file.
-                        </div>
-
-                    </div>
-
-
-                    <button type="submit" class="btn btn-outline-primary final-presentation-upload-button">
-
-                        <i class="bi bi-cloud-arrow-up me-1"></i>
-
-                        @if (!string.IsNullOrWhiteSpace(
-                                Model.Mass.FinalPresentationPath))
-                        {
-                            <text>Replace Final</text>
-                        }
-                        else
-                        {
-                            <text>Upload Final</text>
-                        }
-
-                    </button>
-
-                </form>
-
-            </section>
-
 
             <!-- =================================================
                  PRESENTATION ORDER
@@ -1862,8 +1696,8 @@
 
 
                                 item@(Model.PlanItems.Count == 1
-                                                                                                                                                                                                    ? ""
-                                                                                                                                                                                                    : "s")
+                                                                                                                                                                                                                                                                                                    ? ""
+                                                                                                                                                                                                                                                                                                    : "s")
 
                             </div>
                         }
@@ -1926,10 +1760,10 @@
                                 <div class="mass-plan-item
                                     presentation-timeline-item
                                     @(planItem.ItemType == "Song"
-                                             ? "is-song"
-                                             : planItem.ItemType == "MassTitle"
-                                                 ? "is-mass-title"
-                                                 : "is-presentation")" data-plan-item-id="@planItem.Id"
+                                                ? "is-song"
+                                                : planItem.ItemType == "MassTitle"
+                                                    ? "is-mass-title"
+                                                    : "is-presentation")" data-plan-item-id="@planItem.Id"
                                      draggable="true">
 
 
@@ -2179,6 +2013,284 @@
 
     </section>
 
+    <!-- =====================================================
+     FINAL POWERPOINT TAB
+     ===================================================== -->
+
+    <section id="finalPowerPointTab" class="mass-plan-tab-panel">
+
+        <div class="mass-plan-column-heading">
+
+            <h2>
+                Final PowerPoint
+            </h2>
+
+            <p>
+                Generate the latest presentation from the Mass plan,
+                then optionally upload your manually edited final version.
+            </p>
+
+        </div>
+
+
+        <!-- GENERATED PRESENTATION -->
+
+        <section class="final-presentation-section">
+
+            <div class="final-presentation-header">
+
+                <div class="final-presentation-heading">
+
+                    <div class="final-presentation-icon">
+                        <i class="bi bi-stars"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="final-presentation-kicker">
+                            Generated PowerPoint
+                        </div>
+
+                        <h3>
+                            Generate Fresh Presentation
+                        </h3>
+
+                        <p>
+                            Create a new PowerPoint using the current
+                            Presentation Plan, songs and selected background.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-3 d-flex flex-wrap gap-2">
+
+                <a asp-page="/Masses/Index"
+                asp-page-handler="GeneratePpt"
+                asp-route-id="@Model.Mass.Id"
+                class="btn btn-primary">
+
+                    <i class="bi bi-file-earmark-slides me-1"></i>
+                    Generate Fresh PowerPoint
+
+                </a>
+
+                <a asp-page="/Admin/PowerPointTemplate"
+                asp-page-handler="Download"
+                class="btn btn-outline-secondary">
+
+                    <i class="bi bi-download me-1"></i>
+                    Download PowerPoint Template
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- FINAL PRESENTATION -->
+
+        <!-- =================================================
+     FINAL PRESENTATION
+     ================================================= -->
+
+        <section class="final-presentation-section">
+
+            <div class="final-presentation-header">
+
+                <div class="final-presentation-heading">
+
+                    <div class="final-presentation-icon">
+                        <i class="bi bi-file-earmark-slides-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="final-presentation-kicker">
+                            Final PowerPoint
+                        </div>
+
+                        <h3>
+                            Final Presentation
+                        </h3>
+
+                        <p>
+                            Upload the final manually edited PowerPoint
+                            for this Mass after adding any one-off slides
+                            or presentation changes.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                @if (!string.IsNullOrWhiteSpace(
+                        Model.Mass.FinalPresentationPath))
+                {
+                    <span class="badge text-bg-success">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Final uploaded
+                    </span>
+                }
+                else
+                {
+                    <span class="badge text-bg-secondary">
+                        Generated only
+                    </span>
+                }
+
+            </div>
+
+
+            @if (TempData["FinalPresentationError"] is string finalError)
+            {
+                <div class="alert alert-danger mt-3 mb-0">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    @finalError
+                </div>
+            }
+
+
+            @if (!string.IsNullOrWhiteSpace(
+                    Model.Mass.FinalPresentationPath))
+            {
+                <div class="final-presentation-current">
+
+                    <div class="final-presentation-file">
+
+                        <div class="final-presentation-file-icon">
+                            <i class="bi bi-file-earmark-slides"></i>
+                        </div>
+
+                        <div>
+
+                            <div class="final-presentation-file-label">
+                                Current Final Presentation
+                            </div>
+
+                            <strong>
+                                @Model.Mass.FinalPresentationFileName
+                            </strong>
+
+                            @if (Model.Mass.FinalPresentationUpdatedDate.HasValue)
+                            {
+                                <div class="final-presentation-date">
+                                    Uploaded
+                                    @Model.Mass.FinalPresentationUpdatedDate.Value
+                                    .ToLocalTime()
+                                    .ToString("d MMM yyyy h:mm tt")
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="final-presentation-actions">
+
+                        <a asp-page="Plan" asp-page-handler="DownloadFinalPresentation" asp-route-id="@Model.Mass.Id"
+                           class="btn btn-sm btn-outline-primary">
+
+                            <i class="bi bi-download me-1"></i>
+                            Download Final
+
+                        </a>
+
+
+                        <form method="post" asp-page-handler="RemoveFinalPresentation">
+
+                            <input type="hidden" name="id" value="@Model.Mass.Id" />
+
+                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Remove the final presentation for this Mass? The generated presentation will still remain available.');">
+
+                                <i class="bi bi-trash me-1"></i>
+                                Remove
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+            }
+
+
+            <form method="post" enctype="multipart/form-data" asp-page-handler="UploadFinalPresentation"
+                  class="final-presentation-upload">
+
+                <input type="hidden" name="id" value="@Model.Mass.Id" />
+
+
+                <div class="final-presentation-upload-field">
+
+                    <label asp-for="FinalPresentationFile" class="form-label">
+
+                        @if (!string.IsNullOrWhiteSpace(
+                                Model.Mass.FinalPresentationPath))
+                        {
+                            <text>Replace Final Presentation</text>
+                        }
+                        else
+                        {
+                            <text>Upload Final Presentation</text>
+                        }
+
+                    </label>
+
+                    <div class="app-file-picker">
+
+                        <input asp-for="FinalPresentationFile" type="file" accept=".pptx"
+                               class="app-file-picker-input" />
+
+                        <label for="FinalPresentationFile" class="app-file-picker-button">
+                            Choose File
+                        </label>
+
+                        <span class="app-file-picker-name">
+                            No file selected
+                        </span>
+
+                    </div>
+
+                    <div class="form-text">
+                        Upload the manually edited .pptx.
+                        Generating a fresh presentation will not overwrite this file.
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="btn btn-outline-primary final-presentation-upload-button">
+
+                    <i class="bi bi-cloud-arrow-up me-1"></i>
+
+                    @if (!string.IsNullOrWhiteSpace(
+                            Model.Mass.FinalPresentationPath))
+                    {
+                        <text>Replace Final</text>
+                    }
+                    else
+                    {
+                        <text>Upload Final</text>
+                    }
+
+                </button>
+
+            </form>
+
+        </section>
+
+    </section>
+
 </div>
 
 
@@ -2281,14 +2393,11 @@
 
 
                 if (
-                    savedTab ===
-                    "musicPlanTab" ||
-                    savedTab ===
-                    "presentationPlanTab"
+                    savedTab === "musicPlanTab" ||
+                    savedTab === "presentationPlanTab" ||
+                    savedTab === "finalPowerPointTab"
                 ) {
-                    activateTab(
-                        savedTab
-                    );
+                    activateTab(savedTab);
                 }
 
 
@@ -2515,40 +2624,40 @@
 
                 const presentationLibrary = [
 
-                                        @foreach (
+                                                    @foreach (
             var item
             in Model.PresentationLibrary
-                                                                                                                                                                                                                                                                                                        .OrderBy(x => x.Type)
-                                                                                                                                                                                                                                                                                                        .ThenBy(x => x.Title))
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .OrderBy(x => x.Type)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .ThenBy(x => x.Title))
                     {
                         @:{
-                                                                @:id: @item.Id,
+                                                                                        @:id: @item.Id,
                         @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Title))",
                         @:type: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Type ?? ""))",
                         @:language: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(item.Language ?? ""))"
-                                                                @:},
+                                                                                        @:},
             }
 
-                                    ];
+                                                ];
 
 
         const musicLibrary = [
 
-                                        @foreach (
+                                                    @foreach (
     var music
     in Model.Songs)
             {
                 @:{
-                                                                @:id: @music.Id,
+                                                                                        @:id: @music.Id,
                 @:title: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Title))",
                 @:composer: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Composer ?? ""))",
                 @:arrangement: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Arrangement ?? ""))",
                 @:suggestedPart: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.SuggestedMassPart ?? ""))",
                 @:key: "@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(music.Key ?? ""))"
-                                                                @:},
+                                                                                        @:},
         }
 
-                                    ];
+                                                ];
 
 
         /* =================================================
@@ -2714,9 +2823,9 @@
 
 
                 empty.innerHTML = `
-                                                <i class="bi bi-search"></i>
-                                                <span>No presentation items found</span>
-                                            `;
+                                                            <i class="bi bi-search"></i>
+                                                            <span>No presentation items found</span>
+                                                        `;
 
 
                 presentationResults
@@ -3072,57 +3181,57 @@
 
 
             row.innerHTML = `
-                                            <div class="music-picker position-relative">
+                                                        <div class="music-picker position-relative">
 
-                                                <div class="mass-song-search-wrap">
+                                                            <div class="mass-song-search-wrap">
 
-                                                    <i class="bi bi-search"></i>
+                                                                <i class="bi bi-search"></i>
 
-                                                    <input type="text"
-                                                           class="form-control music-search"
-                                                           data-music-id=""
-                                                           placeholder="Search music..."
-                                                           autocomplete="off" />
+                                                                <input type="text"
+                                                                       class="form-control music-search"
+                                                                       data-music-id=""
+                                                                       placeholder="Search music..."
+                                                                       autocomplete="off" />
 
-                                                </div>
+                                                            </div>
 
-                                                <div class="music-results
-                                                            list-group
-                                                            position-absolute
-                                                            w-100
-                                                            shadow"
-                                                     style="
-                                                         z-index:1000;
-                                                         max-height:250px;
-                                                         overflow-y:auto;
-                                                         display:none;">
-                                                </div>
+                                                            <div class="music-results
+                                                                        list-group
+                                                                        position-absolute
+                                                                        w-100
+                                                                        shadow"
+                                                                 style="
+                                                                     z-index:1000;
+                                                                     max-height:250px;
+                                                                     overflow-y:auto;
+                                                                     display:none;">
+                                                            </div>
 
-                                            </div>
+                                                        </div>
 
-                                            <div class="mass-song-actions">
+                                                        <div class="mass-song-actions">
 
-                                                <a class="btn view-music"
-                                                   href="#"
-                                                   target="_blank"
-                                                   rel="noopener noreferrer"
-                                                   style="display:none;"
-                                                   title="View music sheet">
+                                                            <a class="btn view-music"
+                                                               href="#"
+                                                               target="_blank"
+                                                               rel="noopener noreferrer"
+                                                               style="display:none;"
+                                                               title="View music sheet">
 
-                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                                <i class="bi bi-file-earmark-pdf"></i>
 
-                                                </a>
+                                                            </a>
 
-                                                <button type="button"
-                                                        class="btn remove-song"
-                                                        title="Remove song">
+                                                            <button type="button"
+                                                                    class="btn remove-song"
+                                                                    title="Remove song">
 
-                                                    <i class="bi bi-x-lg"></i>
+                                                                <i class="bi bi-x-lg"></i>
 
-                                                </button>
+                                                            </button>
 
-                                            </div>
-                                        `;
+                                                        </div>
+                                                    `;
 
 
             return row;
@@ -4483,8 +4592,8 @@
             }
         }
 
-                                }
-                            );
+                                            }
+                                        );
 
         async function copyOneLicense(number, button) {
             await navigator.clipboard.writeText(number);

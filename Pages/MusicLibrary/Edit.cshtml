@@ -273,7 +273,23 @@
 
                         </label>
 
-                        <input asp-for="PdfFile" type="file" accept=".pdf,application/pdf" class="form-control" />
+                        <div class="app-file-picker">
+
+                            <input asp-for="PdfFile"
+                                type="file"
+                                accept=".pdf,application/pdf"
+                                class="app-file-picker-input" />
+
+                            <label for="PdfFile"
+                                class="app-file-picker-button">
+                                Choose File
+                            </label>
+
+                            <span class="app-file-picker-name">
+                                No file selected
+                            </span>
+
+                        </div>
 
                         <div class="form-text">
 
@@ -535,9 +551,23 @@
 
                         </label>
 
-                        <input asp-for="CustomPresentationFile" type="file"
-                               accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                               class="form-control" />
+                        <div class="app-file-picker">
+
+                            <input asp-for="CustomPresentationFile"
+                                type="file"
+                                accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                class="app-file-picker-input" />
+
+                            <label for="CustomPresentationFile"
+                                class="app-file-picker-button">
+                                Choose File
+                            </label>
+
+                            <span class="app-file-picker-name">
+                                No file selected
+                            </span>
+
+                        </div>
 
                         <div class="form-text">
 
