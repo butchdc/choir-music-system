@@ -19,8 +19,22 @@
                          alt="Choir Music System"
                          class="login-logo" />
 
-                    @if (!string.IsNullOrWhiteSpace(
-                        Model.ErrorMessage))
+                    <div class="login-welcome text-start">
+
+                        <h2>Welcome</h2>
+
+                        <p>
+                            Music planning and resources for our choir community.
+                        </p>
+
+                        <p>
+                            Choir members can sign in to access music,
+                            Mass plans and presentation resources.
+                        </p>
+
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
                     {
                         <div class="alert alert-danger text-start">
                             @Model.ErrorMessage
@@ -44,6 +58,11 @@
 
                     </form>
 
+                    <div class="login-invite-note">
+                        <i class="bi bi-lock-fill"></i>
+                        Invited members only
+                    </div>
+
                 </div>
 
             </div>
@@ -66,7 +85,7 @@
                         </h2>
 
                         <p class="text-muted small mb-0">
-                            Our upcoming services
+                            Join us at our upcoming Masses
                         </p>
 
                     </div>
@@ -99,26 +118,24 @@
                                             @mass.Name
                                         </div>
 
-                                        <div class="public-mass-full-date">
-                                            <i class="bi bi-calendar3 me-1"></i>
-                                            @mass.MassDate.ToString(
-                                                "dddd, d MMMM yyyy")
-                                        </div>
-
                                         <div class="public-mass-time">
                                             <i class="bi bi-clock me-1"></i>
-                                            @mass.MassDate.ToString(
-                                                "h:mm tt")
+                                            @mass.MassDate.ToString("h:mm tt")
                                         </div>
 
-                                        @if (!string.IsNullOrWhiteSpace(
-                                            mass.Venue))
+                                        @if (!string.IsNullOrWhiteSpace(mass.Venue))
                                         {
                                             <div class="public-mass-venue">
                                                 <i class="bi bi-geo-alt me-1"></i>
                                                 @mass.Venue
                                             </div>
                                         }
+
+                                        <div class="public-mass-full-date">
+                                            <i class="bi bi-calendar3 me-1"></i>
+                                            @mass.MassDate.ToString(
+                                                "dddd, d MMMM yyyy")
+                                        </div>
 
                                     </div>
 
