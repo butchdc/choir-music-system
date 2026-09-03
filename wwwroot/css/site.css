@@ -11614,3 +11614,29 @@ a.presentation-item-title:hover {
     font-size: 0.72rem;
     font-weight: 500;
 }
+.music-library-custom-ppt,
+.music-library-generated-ppt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    padding: 0.18rem 0.4rem;
+
+    border-radius: 999px;
+
+    font-size: 0.58rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.music-library-custom-ppt {
+    color: #6d28d9;
+    background: #f3e8ff;
+    border: 1px solid #e9d5ff;
+}
+
+.music-library-generated-ppt {
+    color: #64748b;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}

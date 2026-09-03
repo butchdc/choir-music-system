@@ -34,6 +34,11 @@ public class Song
 
     [StringLength(10000)]
     public string? PresentationLyrics { get; set; }
+    public string? CustomPresentationFileName { get; set; }
+
+    public string? CustomPresentationPath { get; set; }
+
+    public DateTime? CustomPresentationUpdatedDate { get; set; }
 
     public bool IsActive { get; set; } = true;
 

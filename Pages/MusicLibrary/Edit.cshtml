@@ -9,8 +9,7 @@
 
     <div class="music-editor-header">
 
-        <a asp-page="Index"
-           class="music-editor-back">
+        <a asp-page="Index" class="music-editor-back">
 
             <i class="bi bi-arrow-left"></i>
             Music Library
@@ -44,16 +43,12 @@
     </div>
 
 
-    <form method="post"
-          enctype="multipart/form-data"
-          class="music-editor-form">
+    <form method="post" enctype="multipart/form-data" class="music-editor-form">
 
-        <input type="hidden"
-               asp-for="Song.Id" />
+        <input type="hidden" asp-for="Song.Id" />
 
 
-        <div asp-validation-summary="ModelOnly"
-             class="alert alert-danger">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger">
         </div>
 
 
@@ -90,16 +85,13 @@
 
                         <div class="music-editor-field music-editor-title">
 
-                            <label asp-for="Song.Title"
-                                   class="form-label">
+                            <label asp-for="Song.Title" class="form-label">
                                 Title
                             </label>
 
-                            <input asp-for="Song.Title"
-                                   class="form-control" />
+                            <input asp-for="Song.Title" class="form-control" />
 
-                            <span asp-validation-for="Song.Title"
-                                  class="text-danger">
+                            <span asp-validation-for="Song.Title" class="text-danger">
                             </span>
 
                         </div>
@@ -107,13 +99,11 @@
 
                         <div class="music-editor-field">
 
-                            <label asp-for="Song.SuggestedMassPart"
-                                   class="form-label">
+                            <label asp-for="Song.SuggestedMassPart" class="form-label">
                                 Suggested Mass Part
                             </label>
 
-                            <select asp-for="Song.SuggestedMassPart"
-                                    class="form-select">
+                            <select asp-for="Song.SuggestedMassPart" class="form-select">
 
                                 <option value="">
                                     None / Not specified
@@ -141,40 +131,33 @@
 
                         <div class="music-editor-field">
 
-                            <label asp-for="Song.Composer"
-                                   class="form-label">
+                            <label asp-for="Song.Composer" class="form-label">
                                 Composer
                             </label>
 
-                            <input asp-for="Song.Composer"
-                                   class="form-control" />
+                            <input asp-for="Song.Composer" class="form-control" />
 
                         </div>
 
 
                         <div class="music-editor-field">
 
-                            <label asp-for="Song.Arrangement"
-                                   class="form-label">
+                            <label asp-for="Song.Arrangement" class="form-label">
                                 Arrangement
                             </label>
 
-                            <input asp-for="Song.Arrangement"
-                                   class="form-control" />
+                            <input asp-for="Song.Arrangement" class="form-control" />
 
                         </div>
 
 
                         <div class="music-editor-field">
 
-                            <label asp-for="Song.Key"
-                                   class="form-label">
+                            <label asp-for="Song.Key" class="form-label">
                                 Key
                             </label>
 
-                            <input asp-for="Song.Key"
-                                   class="form-control"
-                                   placeholder="e.g. G" />
+                            <input asp-for="Song.Key" class="form-control" placeholder="e.g. G" />
 
                         </div>
 
@@ -183,14 +166,11 @@
 
                     <div class="music-editor-field mt-3">
 
-                        <label asp-for="Song.Notes"
-                               class="form-label">
+                        <label asp-for="Song.Notes" class="form-label">
                             Notes
                         </label>
 
-                        <textarea asp-for="Song.Notes"
-                                  class="form-control"
-                                  rows="4"
+                        <textarea asp-for="Song.Notes" class="form-control" rows="4"
                                   placeholder="Optional notes about this arrangement or usage..."></textarea>
 
                     </div>
@@ -244,10 +224,7 @@
                             </div>
 
 
-                            <a asp-page="View"
-                               asp-route-id="@Model.Song.Id"
-                               target="_blank"
-                               rel="noopener noreferrer"
+                            <a asp-page="View" asp-route-id="@Model.Song.Id" target="_blank" rel="noopener noreferrer"
                                class="btn btn-sm btn-outline-primary">
 
                                 <i class="bi bi-box-arrow-up-right me-1"></i>
@@ -283,8 +260,7 @@
 
                     <div class="music-editor-field">
 
-                        <label asp-for="PdfFile"
-                               class="form-label">
+                        <label asp-for="PdfFile" class="form-label">
 
                             @if (!string.IsNullOrWhiteSpace(Model.Song.PdfFileName))
                             {
@@ -297,10 +273,7 @@
 
                         </label>
 
-                        <input asp-for="PdfFile"
-                               type="file"
-                               accept=".pdf,application/pdf"
-                               class="form-control" />
+                        <input asp-for="PdfFile" type="file" accept=".pdf,application/pdf" class="form-control" />
 
                         <div class="form-text">
 
@@ -319,8 +292,7 @@
 
                         </div>
 
-                        <span asp-validation-for="PdfFile"
-                              class="text-danger">
+                        <span asp-validation-for="PdfFile" class="text-danger">
                         </span>
 
                     </div>
@@ -357,28 +329,22 @@
 
                         <div class="music-editor-field">
 
-                            <label asp-for="Song.OneLicenseNumber"
-                                   class="form-label">
+                            <label asp-for="Song.OneLicenseNumber" class="form-label">
                                 OneLicense Number
                             </label>
 
-                            <input asp-for="Song.OneLicenseNumber"
-                                   class="form-control"
-                                   placeholder="e.g. 87214" />
+                            <input asp-for="Song.OneLicenseNumber" class="form-control" placeholder="e.g. 87214" />
 
                         </div>
 
 
                         <div class="music-editor-field">
 
-                            <label asp-for="Song.Publisher"
-                                   class="form-label">
+                            <label asp-for="Song.Publisher" class="form-label">
                                 Publisher
                             </label>
 
-                            <input asp-for="Song.Publisher"
-                                   class="form-control"
-                                   placeholder="e.g. OCP" />
+                            <input asp-for="Song.Publisher" class="form-control" placeholder="e.g. OCP" />
 
                         </div>
 
@@ -387,14 +353,11 @@
 
                     <div class="music-editor-field mt-3">
 
-                        <label asp-for="Song.CopyrightText"
-                               class="form-label">
+                        <label asp-for="Song.CopyrightText" class="form-label">
                             Copyright / Licence Text
                         </label>
 
-                        <textarea asp-for="Song.CopyrightText"
-                                  class="form-control"
-                                  rows="3"
+                        <textarea asp-for="Song.CopyrightText" class="form-control" rows="3"
                                   placeholder="Optional copyright or licence wording"></textarea>
 
                     </div>
@@ -429,14 +392,12 @@
 
                     <div class="music-editor-field">
 
-                        <textarea asp-for="Song.PresentationLyrics"
-                                  class="form-control music-presentation-editor"
-                                  rows="16"
-                                  placeholder="[SLIDE:TITLED]
-First slide lyrics here...
+                        <textarea asp-for="Song.PresentationLyrics" class="form-control music-presentation-editor"
+                                  rows="16" placeholder="[SLIDE:TITLED]
+                        First slide lyrics here...
 
-[SLIDE]
-Next slide lyrics here..."></textarea>
+                        [SLIDE]
+                        Next slide lyrics here..."></textarea>
 
                     </div>
 
@@ -445,10 +406,8 @@ Next slide lyrics here..."></textarea>
 
                         <div>
 
-                            <code class="copy-slide-marker"
-                                role="button"
-                                title="Click to copy"
-                                onclick="copySlideMarker('[SLIDE:TITLED]', this)">[SLIDE:TITLED]</code>
+                            <code class="copy-slide-marker" role="button" title="Click to copy"
+                                  onclick="copySlideMarker('[SLIDE:TITLED]', this)">[SLIDE:TITLED]</code>
 
                             <span>
                                 Title, composer and licence slide
@@ -458,16 +417,152 @@ Next slide lyrics here..."></textarea>
 
                         <div>
 
-                            <code class="copy-slide-marker"
-                                role="button"
-                                title="Click to copy"
-                                onclick="copySlideMarker('[SLIDE]', this)">[SLIDE]</code>
+                            <code class="copy-slide-marker" role="button" title="Click to copy"
+                                  onclick="copySlideMarker('[SLIDE]', this)">[SLIDE]</code>
 
                             <span>
                                 Lyrics-only continuation slide
                             </span>
 
                         </div>
+
+                    </div>
+                    <hr class="my-4" />
+
+                    <div class="music-editor-field">
+
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+
+                            <div>
+                                <label class="form-label mb-1">
+                                    Custom Song Presentation
+                                </label>
+
+                                <div class="form-text mt-0">
+                                    Optional custom PowerPoint used instead of
+                                    generated lyrics slides when building a Mass presentation.
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                    Model.Song.CustomPresentationPath))
+                            {
+                                <span class="badge text-bg-success">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Custom
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-secondary">
+                                    Generated
+                                </span>
+                            }
+
+                        </div>
+
+
+                        @if (!string.IsNullOrWhiteSpace(
+                                Model.Song.CustomPresentationFileName))
+                        {
+                            <div class="music-current-pdf mb-3">
+
+                                <div class="music-current-pdf-icon">
+                                    <i class="bi bi-file-earmark-slides"></i>
+                                </div>
+
+                                <div class="music-current-pdf-content">
+
+                                    <div class="music-current-pdf-label">
+                                        Current Custom Presentation
+                                    </div>
+
+                                    <strong>
+                                        @Model.Song.CustomPresentationFileName
+                                    </strong>
+
+                                    @if (Model.Song.CustomPresentationUpdatedDate.HasValue)
+                                    {
+                                        <div class="small text-muted mt-1">
+                                            Uploaded
+                                            @Model.Song.CustomPresentationUpdatedDate.Value
+                                            .ToLocalTime()
+                                            .ToString("d MMM yyyy h:mm tt")
+                                        </div>
+                                    }
+                                    <div class="d-flex align-items-center gap-2 mt-3">
+
+                                        <a asp-page="Edit"
+                                        asp-page-handler="DownloadCustomPresentation"
+                                        asp-route-id="@Model.Song.Id"
+                                        class="btn btn-sm btn-outline-primary">
+
+                                            <i class="bi bi-download me-1"></i>
+                                            Download Custom
+
+                                        </a>
+
+                                        <button type="submit"
+                                                asp-page-handler="RemoveCustomPresentation"
+                                                class="btn btn-sm btn-outline-danger"
+                                                formnovalidate
+                                                onclick="return confirm('Remove the custom presentation for this song? The generated presentation from lyrics will still be available.');">
+
+                                            <i class="bi bi-trash me-1"></i>
+                                            Remove Custom
+
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+
+
+                        <label asp-for="CustomPresentationFile" class="form-label">
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                    Model.Song.CustomPresentationPath))
+                            {
+                                <text>Replace Custom Presentation</text>
+                            }
+                            else
+                            {
+                                <text>Upload Custom Presentation</text>
+                            }
+
+                        </label>
+
+                        <input asp-for="CustomPresentationFile" type="file"
+                               accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                               class="form-control" />
+
+                        <div class="form-text">
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                    Model.Song.CustomPresentationPath))
+                            {
+                                <text>
+                                    Leave blank to keep the current custom presentation.
+                                    You can still generate a fresh presentation from the
+                                    lyrics at any time.
+                                </text>
+                            }
+                            else
+                            {
+                                <text>
+                                    Upload a customised .pptx if this song needs a
+                                    presentation different from the automatically
+                                    generated version.
+                                </text>
+                            }
+
+                        </div>
+
+                        <span asp-validation-for="CustomPresentationFile" class="text-danger">
+                        </span>
 
                     </div>
 
@@ -600,16 +695,14 @@ Next slide lyrics here..."></textarea>
 
             <div class="music-editor-actions-buttons">
 
-                <a asp-page="Index"
-                   class="btn btn-outline-secondary">
+                <a asp-page="Index" class="btn btn-outline-secondary">
 
                     Cancel
 
                 </a>
 
 
-                <button type="submit"
-                        class="btn btn-warning music-editor-save">
+                <button type="submit" class="btn btn-warning music-editor-save">
 
                     <i class="bi bi-check2-circle me-1"></i>
                     Save Changes

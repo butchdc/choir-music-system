@@ -464,6 +464,148 @@ public class PowerPointService
 
         return outputPath;
     }
+
+    private static uint AppendSlidesFromPresentation(
+    PresentationPart destinationPresentationPart,
+    P.SlideIdList destinationSlideIdList,
+    string sourcePresentationPath,
+    uint nextSlideId)
+    {
+        using var sourceDocument =
+            PresentationDocument.Open(
+                sourcePresentationPath,
+                false);
+
+        var sourcePresentationPart =
+            sourceDocument.PresentationPart
+            ?? throw new InvalidOperationException(
+                "The custom presentation does not contain a presentation part.");
+
+        var sourceSlideIdList =
+            sourcePresentationPart
+                .Presentation
+                .SlideIdList;
+
+        if (sourceSlideIdList is null)
+        {
+            return nextSlideId;
+        }
+
+
+        foreach (var sourceSlideId in
+                 sourceSlideIdList.Elements<P.SlideId>())
+        {
+            var relationshipId =
+                sourceSlideId.RelationshipId?.Value;
+
+            if (string.IsNullOrWhiteSpace(
+                    relationshipId))
+            {
+                continue;
+            }
+
+
+            var sourceSlidePart =
+                sourcePresentationPart
+                    .GetPartById(relationshipId)
+                as SlidePart;
+
+            if (sourceSlidePart is null)
+            {
+                continue;
+            }
+
+
+            // Find the layout used by the custom slide.
+            var sourceLayoutPart =
+                sourceSlidePart.SlideLayoutPart;
+
+            var sourceLayoutName =
+                sourceLayoutPart?
+                    .SlideLayout?
+                    .CommonSlideData?
+                    .Name?
+                    .Value;
+
+
+            // Match it against the layout in the CURRENT
+            // Mass PowerPoint template.
+            SlideLayoutPart? destinationLayout = null;
+
+            if (!string.IsNullOrWhiteSpace(
+                    sourceLayoutName))
+            {
+                destinationLayout =
+                    FindLayout(
+                        destinationPresentationPart,
+                        sourceLayoutName);
+            }
+
+
+            // Default custom song presentations to the
+            // normal titled-song layout if necessary.
+            destinationLayout ??=
+                FindLayout(
+                    destinationPresentationPart,
+                    "Song - Title + Lyrics")
+                ?? throw new InvalidOperationException(
+                    "Song presentation layout was not found.");
+
+
+            // Create an entirely new slide in the
+            // destination presentation.
+            var destinationSlidePart =
+                destinationPresentationPart
+                    .AddNewPart<SlidePart>();
+
+
+            // Clone the customised slide XML itself.
+            destinationSlidePart.Slide =
+                (P.Slide)sourceSlidePart
+                    .Slide
+                    .CloneNode(true);
+
+
+            // IMPORTANT:
+            // Attach the slide to the destination Mass
+            // template's layout, not the custom PPT's layout.
+            destinationSlidePart.AddPart(
+                destinationLayout);
+
+
+            // Copy slide-level relationships such as
+            // pictures/images.
+            foreach (var part in sourceSlidePart.Parts)
+            {
+                // Do not copy the source layout.
+                if (part.OpenXmlPart is SlideLayoutPart)
+                {
+                    continue;
+                }
+
+                destinationSlidePart.AddPart(
+                    part.OpenXmlPart,
+                    part.RelationshipId);
+            }
+
+
+            destinationSlidePart.Slide.Save();
+
+
+            destinationSlideIdList.Append(
+                new P.SlideId
+                {
+                    Id = nextSlideId++,
+                    RelationshipId =
+                        destinationPresentationPart
+                            .GetIdOfPart(
+                                destinationSlidePart)
+                });
+        }
+
+
+        return nextSlideId;
+    }
     public string GenerateMassPresentation(Mass mass)
     {
         string? backgroundPath = null;
@@ -663,6 +805,31 @@ public class PowerPointService
                 planItem.Song is not null)
             {
                 var song = planItem.Song;
+
+                // -------------------------------------------------
+                // CUSTOM SONG PRESENTATION
+                // -------------------------------------------------
+
+                if (!string.IsNullOrWhiteSpace(
+                        song.CustomPresentationPath))
+                {
+                    var customPresentationPath =
+                        Path.Combine(
+                            _environment.ContentRootPath,
+                            song.CustomPresentationPath);
+
+                    if (File.Exists(customPresentationPath))
+                    {
+                        nextSlideId =
+                            AppendSlidesFromPresentation(
+                                presentationPart,
+                                slideIdList,
+                                customPresentationPath,
+                                nextSlideId);
+
+                        continue;
+                    }
+                }
 
                 var blocks =
                     ParseLyrics(song.PresentationLyrics);

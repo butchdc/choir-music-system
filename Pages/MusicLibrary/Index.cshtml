@@ -295,6 +295,28 @@ else
 
                                                 </span>
                                             }
+                                            @if (!string.IsNullOrWhiteSpace(Song.CustomPresentationPath))
+                                            {
+                                                <span class="music-library-custom-ppt"
+                                                    title="Custom presentation uploaded"
+                                                    data-bs-toggle="tooltip">
+
+                                                    <i class="bi bi-stars"></i>
+                                                    Custom
+
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="music-library-generated-ppt"
+                                                    title="Presentation will be generated from lyrics"
+                                                    data-bs-toggle="tooltip">
+
+                                                    <i class="bi bi-magic"></i>
+                                                    Generated
+
+                                                </span>
+                                            }
 
                                         </div>
 
@@ -431,7 +453,20 @@ else
 
                                     </a>
 
-                                    @if (User.IsInRole("Admin"))
+                                    @if (!string.IsNullOrWhiteSpace(Song.CustomPresentationPath))
+                                    {
+                                        <a asp-page="Edit"
+                                        asp-page-handler="DownloadCustomPresentation"
+                                        asp-route-id="@Song.Id"
+                                        class="btn btn-sm btn-outline-success table-action"
+                                        title="Download custom presentation"
+                                        data-bs-toggle="tooltip">
+
+                                            <i class="bi bi-download"></i>
+
+                                        </a>
+                                    }
+                                                                        @if (User.IsInRole("Admin"))
                                     {
                                         <a asp-page="Delete" asp-route-id="@Song.Id"
                                         class="btn btn-sm btn-outline-danger table-action" title="Delete"

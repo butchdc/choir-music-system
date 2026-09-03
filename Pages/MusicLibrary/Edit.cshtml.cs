@@ -25,6 +25,9 @@ public class EditModel : PageModel
     [BindProperty]
     public IFormFile? PdfFile { get; set; }
 
+    [BindProperty]
+    public IFormFile? CustomPresentationFile { get; set; }
+
     [BindProperty(SupportsGet = true)]
     public string? ReturnUrl { get; set; }
 
@@ -41,6 +44,84 @@ public class EditModel : PageModel
         Song = existingSong;
 
         return Page();
+    }
+
+    public async Task<IActionResult> OnGetDownloadCustomPresentationAsync(
+        int id)
+    {
+        var song = await _context.Songs
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (song is null)
+        {
+            return NotFound();
+        }
+
+        if (string.IsNullOrWhiteSpace(
+                song.CustomPresentationPath))
+        {
+            return NotFound();
+        }
+
+        var fullPath = Path.Combine(
+            _environment.ContentRootPath,
+            song.CustomPresentationPath);
+
+        if (!System.IO.File.Exists(fullPath))
+        {
+            return NotFound();
+        }
+
+        var downloadName =
+            !string.IsNullOrWhiteSpace(
+                song.CustomPresentationFileName)
+                ? song.CustomPresentationFileName
+                : $"{song.Title}.pptx";
+
+        return PhysicalFile(
+            fullPath,
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            downloadName);
+    }
+
+
+    public async Task<IActionResult> OnPostRemoveCustomPresentationAsync()
+    {
+        var song = await _context.Songs
+            .FirstOrDefaultAsync(x => x.Id == Song.Id);
+
+        if (song is null)
+        {
+            return NotFound();
+        }
+
+        if (!string.IsNullOrWhiteSpace(
+                song.CustomPresentationPath))
+        {
+            var fullPath = Path.Combine(
+                _environment.ContentRootPath,
+                song.CustomPresentationPath);
+
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
+        }
+
+        song.CustomPresentationFileName = null;
+        song.CustomPresentationPath = null;
+        song.CustomPresentationUpdatedDate = null;
+        song.UpdatedDate = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToPage(
+            new
+            {
+                id = song.Id,
+                ReturnUrl
+            });
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -123,6 +204,115 @@ public class EditModel : PageModel
         }
 
         existingSong.Title = Song.Title;
+        if (CustomPresentationFile is not null &&
+    CustomPresentationFile.Length > 0)
+        {
+            const long maxPresentationSize =
+                50 * 1024 * 1024;
+
+            if (CustomPresentationFile.Length >
+                maxPresentationSize)
+            {
+                ModelState.AddModelError(
+                    nameof(CustomPresentationFile),
+                    "The PowerPoint file must be 50 MB or smaller."
+                );
+
+                Song.CustomPresentationFileName =
+                    existingSong.CustomPresentationFileName;
+
+                Song.CustomPresentationPath =
+                    existingSong.CustomPresentationPath;
+
+                Song.CustomPresentationUpdatedDate =
+                    existingSong.CustomPresentationUpdatedDate;
+
+                return Page();
+            }
+
+            var extension =
+                Path.GetExtension(
+                    CustomPresentationFile.FileName);
+
+            if (!string.Equals(
+                    extension,
+                    ".pptx",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError(
+                    nameof(CustomPresentationFile),
+                    "Only PowerPoint .pptx files are allowed."
+                );
+
+                Song.CustomPresentationFileName =
+                    existingSong.CustomPresentationFileName;
+
+                Song.CustomPresentationPath =
+                    existingSong.CustomPresentationPath;
+
+                Song.CustomPresentationUpdatedDate =
+                    existingSong.CustomPresentationUpdatedDate;
+
+                return Page();
+            }
+
+            var presentationFolder =
+                Path.Combine(
+                    _environment.ContentRootPath,
+                    "Storage",
+                    "SongPresentations");
+
+            Directory.CreateDirectory(
+                presentationFolder);
+
+            var storedFileName =
+                $"{Guid.NewGuid():N}.pptx";
+
+            var fullPath =
+                Path.Combine(
+                    presentationFolder,
+                    storedFileName);
+
+            await using (
+                var stream =
+                    new FileStream(
+                        fullPath,
+                        FileMode.Create))
+            {
+                await CustomPresentationFile
+                    .CopyToAsync(stream);
+            }
+
+            // Remove the previous custom presentation
+            // only after the new file has saved successfully.
+            if (!string.IsNullOrWhiteSpace(
+                    existingSong.CustomPresentationPath))
+            {
+                var oldPresentationPath =
+                    Path.Combine(
+                        _environment.ContentRootPath,
+                        existingSong.CustomPresentationPath);
+
+                if (System.IO.File.Exists(
+                        oldPresentationPath))
+                {
+                    System.IO.File.Delete(
+                        oldPresentationPath);
+                }
+            }
+
+            existingSong.CustomPresentationFileName =
+                CustomPresentationFile.FileName;
+
+            existingSong.CustomPresentationPath =
+                Path.Combine(
+                    "Storage",
+                    "SongPresentations",
+                    storedFileName);
+
+            existingSong.CustomPresentationUpdatedDate =
+                DateTime.UtcNow;
+        }
         existingSong.SuggestedMassPart = Song.SuggestedMassPart;
         existingSong.Composer = Song.Composer;
         existingSong.Arrangement = Song.Arrangement;
