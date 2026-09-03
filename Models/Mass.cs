@@ -29,6 +29,13 @@ public class Mass
 
     [StringLength(500)]
     public string? PresentationBackgroundPath { get; set; }
+    [StringLength(500)]
+    public string? FinalPresentationFileName { get; set; }
+
+    [StringLength(500)]
+    public string? FinalPresentationPath { get; set; }
+
+    public DateTime? FinalPresentationUpdatedDate { get; set; }
     public ICollection<MassPlanItem> PlanItems { get; set; }
     = new List<MassPlanItem>();
 }

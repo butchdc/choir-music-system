@@ -696,12 +696,47 @@ public class PowerPointService
         }
 
         uint nextSlideId = 256;
-        string? currentMassPart = null;
+        var isFirstPlanItem = true;
 
         foreach (var planItem in mass.PlanItems
-                     .OrderBy(x => x.DisplayOrder))
+                    .OrderBy(x => x.DisplayOrder))
         {
+            // -------------------------------------------------
+            // DIVIDER BETWEEN PRESENTATION ORDER ITEMS
+            // -------------------------------------------------
 
+            if (!isFirstPlanItem)
+            {
+                var dividerLayout =
+                    FindLayout(
+                        presentationPart,
+                        "Divider")
+                    ?? throw new InvalidOperationException(
+                        "Layout 'Divider' was not found.");
+
+                var dividerSlidePart =
+                    presentationPart.AddNewPart<SlidePart>();
+
+                dividerSlidePart.Slide =
+                    CreateSlideFromLayout(
+                        dividerLayout);
+
+                dividerSlidePart.AddPart(
+                    dividerLayout);
+
+                dividerSlidePart.Slide.Save();
+
+                slideIdList.Append(
+                    new P.SlideId
+                    {
+                        Id = nextSlideId++,
+                        RelationshipId =
+                            presentationPart.GetIdOfPart(
+                                dividerSlidePart)
+                    });
+            }
+
+            isFirstPlanItem = false;
             // -------------------------------------------------
             // MASS TITLE
             // -------------------------------------------------
@@ -753,48 +788,7 @@ public class PowerPointService
                                 titleSlidePart)
                     });
 
-                currentMassPart = null;
-
                 continue;
-            }
-            // -------------------------------------------------
-            // Divider when Mass Part changes
-            // -------------------------------------------------
-
-            var needsDivider =
-                !string.IsNullOrWhiteSpace(planItem.MassPart) &&
-                !string.Equals(
-                    currentMassPart,
-                    planItem.MassPart,
-                    StringComparison.OrdinalIgnoreCase);
-
-            if (needsDivider)
-            {
-                currentMassPart = planItem.MassPart;
-
-                var dividerLayout =
-                    FindLayout(presentationPart, "Divider")
-                    ?? throw new InvalidOperationException(
-                        "Layout 'Divider' was not found.");
-
-                var dividerSlidePart =
-                    presentationPart.AddNewPart<SlidePart>();
-
-                dividerSlidePart.Slide =
-                    CreateSlideFromLayout(dividerLayout);
-
-                dividerSlidePart.AddPart(dividerLayout);
-
-                dividerSlidePart.Slide.Save();
-
-                slideIdList.Append(
-                    new P.SlideId
-                    {
-                        Id = nextSlideId++,
-                        RelationshipId =
-                            presentationPart.GetIdOfPart(
-                                dividerSlidePart)
-                    });
             }
 
             // -------------------------------------------------
@@ -943,7 +937,8 @@ public class PowerPointService
             {
                 var item = planItem.PresentationItem;
 
-                var blocks = ParseLyrics(item.PresentationText);
+                var blocks =
+                    ParseLyrics(item.PresentationText);
 
                 if (blocks.Count == 0)
                 {

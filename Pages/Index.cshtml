@@ -533,6 +533,24 @@
                     </span>
 
                 </a>
+
+                @if (Model.NextMass.HasFinalPresentation)
+                {
+                    <a asp-page="/Masses/Plan"
+                    asp-page-handler="DownloadFinalPresentation"
+                    asp-route-id="@Model.NextMass.Id"
+                    class="btn btn-outline-secondary"
+                    title="Download Final Presentation"
+                    data-bs-toggle="tooltip">
+
+                        <i class="bi bi-file-earmark-check"></i>
+
+                        <span class="next-mass-action-label">
+                            Final PPT
+                        </span>
+
+                    </a>
+                }
             }
 
         </div>

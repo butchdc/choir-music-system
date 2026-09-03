@@ -9,10 +9,14 @@ namespace choir_music_system.Pages.Masses;
 public class PlanModel : PageModel
 {
     private readonly ChoirDbContext _context;
+    private readonly IWebHostEnvironment _environment;
 
-    public PlanModel(ChoirDbContext context)
+    public PlanModel(
+        ChoirDbContext context,
+        IWebHostEnvironment environment)
     {
         _context = context;
+        _environment = environment;
     }
 
     public Mass Mass { get; set; } = null!;
@@ -29,6 +33,9 @@ public class PlanModel : PageModel
     [BindProperty]
     public List<MassPartSelection> Selections { get; set; }
         = new();
+
+    [BindProperty]
+    public IFormFile? FinalPresentationFile { get; set; }
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
@@ -376,6 +383,185 @@ public class PlanModel : PageModel
             nextPlanOrder += 10;
         }
 
+        mass.UpdatedDate = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostUploadFinalPresentationAsync(
+        int id)
+    {
+        var mass = await _context.Masses
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (mass is null)
+        {
+            return NotFound();
+        }
+
+        if (FinalPresentationFile is null ||
+            FinalPresentationFile.Length == 0)
+        {
+            return RedirectToPage(new { id });
+        }
+
+        const long maxFileSize =
+            100 * 1024 * 1024;
+
+        if (FinalPresentationFile.Length > maxFileSize)
+        {
+            TempData["FinalPresentationError"] =
+                "The PowerPoint file must be 100 MB or smaller.";
+
+            return RedirectToPage(new { id });
+        }
+
+        var extension =
+            Path.GetExtension(
+                FinalPresentationFile.FileName);
+
+        if (!string.Equals(
+                extension,
+                ".pptx",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            TempData["FinalPresentationError"] =
+                "Only PowerPoint .pptx files are allowed.";
+
+            return RedirectToPage(new { id });
+        }
+
+        var storageFolder =
+            Path.Combine(
+                _environment.ContentRootPath,
+                "Storage",
+                "MassPresentations");
+
+        Directory.CreateDirectory(
+            storageFolder);
+
+        var storedFileName =
+            $"{Guid.NewGuid():N}.pptx";
+
+        var fullPath =
+            Path.Combine(
+                storageFolder,
+                storedFileName);
+
+        await using (
+            var stream =
+                new FileStream(
+                    fullPath,
+                    FileMode.Create))
+        {
+            await FinalPresentationFile
+                .CopyToAsync(stream);
+        }
+
+        // Remove the previous final presentation
+        // only after the replacement saved successfully.
+        if (!string.IsNullOrWhiteSpace(
+                mass.FinalPresentationPath))
+        {
+            var oldPath =
+                Path.Combine(
+                    _environment.ContentRootPath,
+                    mass.FinalPresentationPath);
+
+            if (System.IO.File.Exists(oldPath))
+            {
+                System.IO.File.Delete(oldPath);
+            }
+        }
+
+        mass.FinalPresentationFileName =
+            FinalPresentationFile.FileName;
+
+        mass.FinalPresentationPath =
+            Path.Combine(
+                "Storage",
+                "MassPresentations",
+                storedFileName);
+
+        mass.FinalPresentationUpdatedDate =
+            DateTime.UtcNow;
+
+        mass.UpdatedDate =
+            DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToPage(new { id });
+    }
+
+
+    public async Task<IActionResult> OnGetDownloadFinalPresentationAsync(
+        int id)
+    {
+        var mass = await _context.Masses
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (mass is null ||
+            string.IsNullOrWhiteSpace(
+                mass.FinalPresentationPath))
+        {
+            return NotFound();
+        }
+
+        var fullPath =
+            Path.Combine(
+                _environment.ContentRootPath,
+                mass.FinalPresentationPath);
+
+        if (!System.IO.File.Exists(fullPath))
+        {
+            return NotFound();
+        }
+
+        var downloadName =
+            !string.IsNullOrWhiteSpace(
+                mass.FinalPresentationFileName)
+                ? mass.FinalPresentationFileName
+                : $"{mass.Name}-Final.pptx";
+
+        return PhysicalFile(
+            fullPath,
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            downloadName);
+    }
+
+
+    public async Task<IActionResult> OnPostRemoveFinalPresentationAsync(
+        int id)
+    {
+        var mass = await _context.Masses
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (mass is null)
+        {
+            return NotFound();
+        }
+
+        if (!string.IsNullOrWhiteSpace(
+                mass.FinalPresentationPath))
+        {
+            var fullPath =
+                Path.Combine(
+                    _environment.ContentRootPath,
+                    mass.FinalPresentationPath);
+
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
+        }
+
+        mass.FinalPresentationFileName = null;
+        mass.FinalPresentationPath = null;
+        mass.FinalPresentationUpdatedDate = null;
         mass.UpdatedDate = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();

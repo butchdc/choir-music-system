@@ -416,6 +416,21 @@ else
                                 PowerPoint
 
                             </a>
+                            @if (!string.IsNullOrWhiteSpace(
+                                    mass.FinalPresentationPath))
+                            {
+                                <a asp-page="Plan"
+                                asp-page-handler="DownloadFinalPresentation"
+                                asp-route-id="@mass.Id"
+                                class="mass-output-button mass-output-button-final"
+                                title="Download Final Presentation"
+                                data-bs-toggle="tooltip">
+
+                                    <i class="bi bi-file-earmark-check"></i>
+                                    Final PPT
+
+                                </a>
+                            }
 
                         </div>
 

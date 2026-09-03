@@ -148,7 +148,11 @@ public class IndexModel : PageModel
 
                 HasBackground =
                     x.PresentationBackgroundPath != null &&
-                    x.PresentationBackgroundPath != ""
+                    x.PresentationBackgroundPath != "",
+
+                HasFinalPresentation =
+                    x.FinalPresentationPath != null &&
+                    x.FinalPresentationPath != ""
             })
             .ToListAsync();
 
@@ -196,6 +200,7 @@ public class IndexModel : PageModel
         public int PresentationItemCount { get; set; }
 
         public bool HasBackground { get; set; }
+        public bool HasFinalPresentation { get; set; }
     }
 
 
